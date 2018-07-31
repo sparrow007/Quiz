@@ -3,20 +3,28 @@ package android.zersey.expense_manger;
 import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Handler;
 import android.os.Parcelable;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.app.AlertDialog;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -24,10 +32,13 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -40,51 +51,72 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Timer;
+
+
+import android.support.v7.widget.Toolbar;
 import android.zersey.expense_manger.Data.Transaction_contract.Transaction_Entry;
 import android.zersey.expense_manger.Data.Transactiondbhelper;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.github.florent37.materialtextfield.MaterialTextField;
 
 public class MainActivity extends AppCompatActivity {
 ImageView Img_File;
-
-private MaterialTextField Material_Title,Material_Amount,Material_Date;
+private ImageButton More_Button;
+private AutoCompleteTextView AutoCompleteContacts;
+private ArrayAdapter<String> ContactAdapter;
+private MaterialTextField Material_Title,Material_Amount,Material_Date,Material_Notes;
 public View layout_view=null;
 private List<Custom_items> customlist;
+private ArrayList<String> Contact_list;
 private TextView Category_text_view;
 private int year_x,month_x,day_x,Selected_date=0,Updated_Id;
 private String Category_text,Notes_text,Amount_text,Title_text;
 private Uri Image_uri=null;
 private static int DIALOG_ID=0;
-private EditText dateEdit,AmountEdit,NotesEdit,TitleEdit;
+private EditText dateEdit,AmountEdit,TitleEdit;
 private String CardClicked,Updated_Category,Updated_Title,Updated_Amount,Updated_Date;
 private Calendar cal;
-private String[] Months={"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"};
-private LinearLayout Clothing,Entertainment,Food,Fuel,Health,Salary,More;
+private String[] Months={"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"},Contact_Names;
+private LinearLayout Clothing,Entertainment,Food,Fuel,Health,Salary,More,Notes_Layout;
 private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_checkbox,Health_checkbox,Salary_checkbox,More_checkbox;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setTitle("Expense Manager");
+        //getSupportActionBar().setTitle("Expense Manager");
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        //getSupportActionBar().setTitle("Add Expense");
+        //toolbar.setSubtitle("Android-er.blogspot.com");
+        //toolbar.setLogo(android.R.drawable.ic_menu_info_details);
+
+
         checkRunTimePermission();
-        customlist=new ArrayList<>();
+        showContacts();
+        Contact_list=new ArrayList<String>();
+
         //customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
         Material_Title=(MaterialTextField)findViewById(R.id.Material_Title);
         Material_Amount=(MaterialTextField)findViewById(R.id.Material_Amount);
         Material_Date=(MaterialTextField)findViewById(R.id.Material_Date);
+        Material_Notes=(MaterialTextField)findViewById(R.id.Material_Notes);
+        Notes_Layout=(LinearLayout)findViewById(R.id.Notes_Layout);
+
+        Notes_Layout.setVisibility(View.GONE);
         cal=Calendar.getInstance();
         year_x=cal.get(Calendar.YEAR);
         day_x=cal.get(Calendar.DAY_OF_MONTH);
         month_x=cal.get(Calendar.MONTH);
-
+        More_Button=(ImageButton)findViewById(R.id.MoreButton);
         //requestPermissions(Manifest.permission.CAMERA,1111);
         Img_File=(ImageView)findViewById(R.id.Img_file);
         dateEdit=(EditText)findViewById(R.id.Date_Edit);
         dateEdit.setText(day_x+" "+Months[month_x]+" "+year_x);
         TitleEdit=(EditText)findViewById(R.id.Title_Edit);
         AmountEdit=(EditText)findViewById(R.id.Amount_Edit);
-        NotesEdit=(EditText)findViewById(R.id.Notes_Edit);
+        AutoCompleteContacts=(AutoCompleteTextView) findViewById(R.id.Notes_Edit);
         Clothing=(LinearLayout)findViewById(R.id.Clothing_layout);
         Entertainment=(LinearLayout)findViewById(R.id.Entertainment_layout);
         Food=(LinearLayout)findViewById(R.id.food_layout);
@@ -144,8 +176,26 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
             dateEdit.setText(Updated_Date);
         }
 
+        Fetch_Contacts();
+        //Toast.makeText(this, Contact_list.size()+" Contact Names", Toast.LENGTH_SHORT).show();
+
+        th.run();
+
+
     }
 
+    Thread th= new Thread(){
+        @Override
+        public void run() {
+            final String[] COUNTRIES = new String[]{
+                    "balanced", "high-protein", "high-fiber", "low-fat", "low-carb", "low-sodium"};
+            ArrayAdapter<String> contactAdapter=new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_dropdown_item_1line,Contact_Names);
+            AutoCompleteTextView autoCompleteContacts=(AutoCompleteTextView)findViewById(R.id.Notes_Edit);
+
+            autoCompleteContacts.setThreshold(1);
+            autoCompleteContacts.setAdapter(contactAdapter);
+        }
+    };
 
     private CheckBox.OnCheckedChangeListener checkedChangeListener=
             new CheckBox.OnCheckedChangeListener() {
@@ -311,13 +361,27 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
             Img_File.setVisibility(View.VISIBLE);
             Img_File.setImageURI(uri);
             Image_uri=uri;
-        }
-        if (requestCode == 1 && resultCode==RESULT_OK) {
+        }else if (requestCode == 1 && resultCode==RESULT_OK) {
             //Bitmap photo = (Bitmap) data.getExtras().get("data");
             Uri uri = data.getData();
             Img_File.setVisibility(View.VISIBLE);
             Image_uri=uri;
             Img_File.setImageURI(uri);
+        }else if (requestCode == 3 && resultCode==RESULT_OK) {
+            //Bitmap photo = (Bitmap) data.getExtras().get("data");
+           // Uri uri = data.getData();
+            Uri contactData = data.getData();
+            Cursor c = managedQuery(contactData, null, null, null, null);
+            if (c.moveToFirst()) {
+                String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                if(TextUtils.isEmpty(AutoCompleteContacts.getText().toString())){
+                    AutoCompleteContacts.setText(name);
+                    //Material_Notes.setHasFocus(true);
+                }else {
+                    AutoCompleteContacts.append(" , " + name);
+                    //Material_Notes.setHasFocus(true);}
+                }
+            }
         }
     }
 
@@ -402,7 +466,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         String[] permissionArrays = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(permissionArrays, 11111);
+            ActivityCompat.requestPermissions(this,permissionArrays, 11111);
         } else {
             // if already permition granted
             // PUT YOUR ACTION (Like Open cemara etc..)
@@ -413,7 +477,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
 
     public void Submit(View view){
         Amount_text=AmountEdit.getText().toString();
-        Notes_text=NotesEdit.getText().toString();
+        Notes_text=AutoCompleteContacts.getText().toString();
         Title_text=TitleEdit.getText().toString();
         View focus=null;
         Boolean cancel=false;
@@ -494,21 +558,116 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         }
     }
 
+ public void MoreButton(View view){
+        if(Notes_Layout.getVisibility()==View.GONE){
+            Notes_Layout.setVisibility(View.VISIBLE);
+            YoYo.with(Techniques.SlideInLeft)
+                    .duration(1000)
+                    .repeat(0)
+                    .playOn(Notes_Layout);
+            Material_Notes.setHasFocus(true);
+            More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
+
+        }else{Material_Notes.setHasFocus(false);
+            YoYo.with(Techniques.SlideOutLeft)
+                    .duration(1000)
+                    .repeat(0)
+                    .playOn(Notes_Layout);
+            final Handler handler3 = new Handler();
+            handler3.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Notes_Layout.setVisibility(View.GONE);
+                    More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
+                }
+            }, 500);
+
+        }
+ }
 
 
-    /*public void clothing(View view){
+ public void Contact_Button(View view){
+     Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
+
+     startActivityForResult(intent, 3);
+ }
 
 
 
-       if(check_clothing==false){
-           //view.setBackgroundColor(Color.parseColor("#0091EA"));
-           view.setBackgroundTintList(this.getResources().getColorStateList(R.color.newlightblue));
-           check_clothing=true;
-       }else if(check_clothing==true){
-           view.setBackgroundTintList(this.getResources().getColorStateList(R.color.newdarkblue));
-           //view.setBackgroundColor(Color.parseColor("#E1F5FE"));
-           check_clothing=false;
-       }
 
-    }*/
+
+    private void showContacts() {
+        String[] permissionArrays = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CONTACTS};
+        // Check the SDK version and whether the permission is already granted or not.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+            if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_CONTACTS)==PackageManager.PERMISSION_GRANTED){
+                Toast.makeText(getApplicationContext(),"Permission Granted", Toast.LENGTH_LONG).show();
+            }else {
+                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
+                    Toast.makeText(getApplicationContext(),"Permission Granted should", Toast.LENGTH_LONG).show();
+                }else{
+                    ActivityCompat.requestPermissions(this, permissionArrays, 100);}
+            }//After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            Toast.makeText(getApplicationContext(),"Permission Granted", Toast.LENGTH_LONG).show();
+            // Android version is lesser than 6.0 or the permission is already granted.
+            //List<String> contacts = getContactNames();
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contacts);
+            //lstNames.setAdapter(adapter);
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 100: {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
+
+    public void Fetch_Contacts(){
+        ContentResolver cr = getContentResolver();
+     Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
+     //phones.moveToFirst();
+     while (phones.moveToNext())
+     {
+         String name=phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+         //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+         //Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
+         Contact_list.add(name);
+         phones.moveToNext();
+     }
+     phones.close();
+
+     Contact_Names=new String[200];
+     for(int i=0;i<200;i++){
+         Contact_Names[i]=Contact_list.get(i);
+     }
+        Toast.makeText(getApplicationContext(),Contact_list.size()+" ", Toast.LENGTH_LONG).show();
+     Toast.makeText(getApplicationContext(),Contact_Names[199], Toast.LENGTH_LONG).show();
+
+ }
+
 }
