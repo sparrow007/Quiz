@@ -1,6 +1,7 @@
 package android.zersey.expense_manger;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.ContentResolver;
@@ -60,6 +61,11 @@ import android.zersey.expense_manger.Data.Transactiondbhelper;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.github.florent37.materialtextfield.MaterialTextField;
+import com.karumi.dexter.Dexter;
+import com.karumi.dexter.MultiplePermissionsReport;
+import com.karumi.dexter.PermissionToken;
+import com.karumi.dexter.listener.PermissionRequest;
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 public class MainActivity extends AppCompatActivity {
 ImageView Img_File;
@@ -93,8 +99,18 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         //toolbar.setLogo(android.R.drawable.ic_menu_info_details);
 
 
-        checkRunTimePermission();
-        showContacts();
+        Dexter.withActivity(this)
+                .withPermissions(
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_CONTACTS
+                ).withListener(new MultiplePermissionsListener() {
+            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+        }).check();
+        //checkRunTimePermission();
+        //showContacts();
+        //askForContactPermission();
         Contact_list=new ArrayList<String>();
 
         //customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
@@ -176,10 +192,10 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
             dateEdit.setText(Updated_Date);
         }
 
-        Fetch_Contacts();
+        //Fetch_Contacts();
         //Toast.makeText(this, Contact_list.size()+" Contact Names", Toast.LENGTH_SHORT).show();
 
-        th.run();
+        //th.run();
 
 
     }
@@ -462,16 +478,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                      }
              };
 
-    private void checkRunTimePermission() {
-        String[] permissionArrays = new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(this,permissionArrays, 11111);
-        } else {
-            // if already permition granted
-            // PUT YOUR ACTION (Like Open cemara etc..)
-        }
-    }
 
 
 
@@ -559,6 +566,8 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
     }
 
  public void MoreButton(View view){
+     Fetch_Contacts();
+     th.run();
         if(Notes_Layout.getVisibility()==View.GONE){
             Notes_Layout.setVisibility(View.VISIBLE);
             YoYo.with(Techniques.SlideInLeft)
@@ -597,26 +606,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
 
 
 
-    private void showContacts() {
-        String[] permissionArrays = new String[]{Manifest.permission.READ_CONTACTS, Manifest.permission.READ_CONTACTS};
-        // Check the SDK version and whether the permission is already granted or not.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
-            if(ContextCompat.checkSelfPermission(MainActivity.this,Manifest.permission.READ_CONTACTS)==PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(getApplicationContext(),"Permission Granted", Toast.LENGTH_LONG).show();
-            }else {
-                if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)){
-                    Toast.makeText(getApplicationContext(),"Permission Granted should", Toast.LENGTH_LONG).show();
-                }else{
-                    ActivityCompat.requestPermissions(this, permissionArrays, 100);}
-            }//After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-        } else {
-            Toast.makeText(getApplicationContext(),"Permission Granted", Toast.LENGTH_LONG).show();
-            // Android version is lesser than 6.0 or the permission is already granted.
-            //List<String> contacts = getContactNames();
-            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, contacts);
-            //lstNames.setAdapter(adapter);
-        }
-    }
+
 
 
     @Override
@@ -665,9 +655,13 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
      for(int i=0;i<200;i++){
          Contact_Names[i]=Contact_list.get(i);
      }
-        Toast.makeText(getApplicationContext(),Contact_list.size()+" ", Toast.LENGTH_LONG).show();
-     Toast.makeText(getApplicationContext(),Contact_Names[199], Toast.LENGTH_LONG).show();
+        Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
+     Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
 
  }
+
+
+
+
 
 }
