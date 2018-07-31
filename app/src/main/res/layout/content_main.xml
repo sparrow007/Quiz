@@ -247,7 +247,6 @@
                     android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     app:mtf_labelColor="#666"
                     >
                     <EditText
@@ -314,6 +313,8 @@
         android:layout_marginTop="10dp"
         app:mtf_openKeyboardOnFocus="true">
     <AutoCompleteTextView
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_margin="5dp"
         android:id="@+id/Notes_Edit"
         android:layout_width="match_parent"
@@ -331,13 +332,15 @@
 
 
 
+
     <ImageButton
         android:onClick="Contact_Button"
         android:id="@+id/button1"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:background="#ffffff"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="10dp"
+        android:foregroundGravity="center_vertical"
         android:layout_gravity="center_vertical"
         android:src="@drawable/phone_book"
         android:scaleType="centerCrop"
@@ -347,19 +350,29 @@
         android:text="Button"/>
 
 </LinearLayout>
-                <ImageButton
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/downarrow"
+
+
+                <com.github.florent37.materialtextfield.MaterialTextField
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/Material_Amount_Due"
+                    app:mtf_labelColor="#666"
                     android:layout_marginTop="10dp"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center_horizontal"
-                    android:gravity="center_horizontal|center_vertical"
-                    android:onClick="MoreButton"
-                    android:backgroundTint="#ffffff"
-                    android:background="@drawable/layout_bg"
-                    android:id="@+id/MoreButton"
-                    />
+                    app:mtf_openKeyboardOnFocus="true">
+
+                    <EditText
+                        android:gravity="center_vertical"
+                        android:layout_gravity="center_vertical"
+                        android:inputType="number"
+                        android:id="@+id/Amount_Due_Edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="#3F51B5"
+                        android:hint="Amount Due" />
+                </com.github.florent37.materialtextfield.MaterialTextField>
+
 
 
                 <ImageView
@@ -367,13 +380,26 @@
                     android:layout_width="match_parent"
                     android:layout_height="180dp"
                     android:scaleType="fitXY"
-                    android:id="@+id/Img_file"
-                    android:visibility="invisible"/>
+                    android:id="@+id/Img_file" />
 
             </LinearLayout>
 
         </ScrollView>
-
+    <TextView
+        android:padding="5dp"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        android:text="More"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:gravity="center_horizontal|center_vertical"
+        android:onClick="MoreButton"
+        android:background="@android:color/transparent"
+        android:id="@+id/MoreButton"
+        />
         <Button
             android:onClick="Submit"
             android:backgroundTint="#0091EA"

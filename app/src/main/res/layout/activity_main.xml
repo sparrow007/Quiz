@@ -22,6 +22,8 @@
         android:background="?attr/colorPrimary"
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
+
+
         <ImageButton
             android:layout_marginRight="5dp"
             android:background="?attr/colorPrimary"
@@ -30,10 +32,21 @@
             android:foregroundGravity="center"
             android:src="@drawable/camera"
             android:id="@+id/toolbarbtn"
-            android:layout_width="35dp"
+            android:layout_width="30dp"
+            android:layout_marginLeft="20dp"
             android:layout_height="30dp"
             android:text="Button"
-            android:layout_gravity="right"/>
+            android:layout_gravity="center_vertical|right"/>
+        <ImageButton
+            android:onClick="Delete_Button"
+            android:id="@+id/Delete_Button"
+            android:layout_gravity="center_vertical|right"
+            android:background="?attr/colorPrimary"
+            android:scaleType="centerCrop"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/delete"/>
+
     </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>

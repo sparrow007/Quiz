@@ -33,8 +33,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -69,10 +71,11 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
 public class MainActivity extends AppCompatActivity {
 ImageView Img_File;
-private ImageButton More_Button;
+private TextView More_Button;
+private ImageButton Delete_Button;
 private AutoCompleteTextView AutoCompleteContacts;
 private ArrayAdapter<String> ContactAdapter;
-private MaterialTextField Material_Title,Material_Amount,Material_Date,Material_Notes;
+private MaterialTextField Material_Title,Material_Amount,Material_Date,Material_Notes,Material_Amount_Due;
 public View layout_view=null;
 private List<Custom_items> customlist;
 private ArrayList<String> Contact_list;
@@ -81,7 +84,7 @@ private int year_x,month_x,day_x,Selected_date=0,Updated_Id;
 private String Category_text,Notes_text,Amount_text,Title_text;
 private Uri Image_uri=null;
 private static int DIALOG_ID=0;
-private EditText dateEdit,AmountEdit,TitleEdit;
+private EditText dateEdit,AmountEdit,TitleEdit,Amount_Due_Edit;
 private String CardClicked,Updated_Category,Updated_Title,Updated_Amount,Updated_Date;
 private Calendar cal;
 private String[] Months={"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"},Contact_Names;
@@ -93,6 +96,8 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         //getSupportActionBar().setTitle("Expense Manager");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 //        setSupportActionBar(toolbar);
         //getSupportActionBar().setTitle("Add Expense");
         //toolbar.setSubtitle("Android-er.blogspot.com");
@@ -115,23 +120,32 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
 
         //customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
         Material_Title=(MaterialTextField)findViewById(R.id.Material_Title);
+        Material_Title.setHasFocus(true);
         Material_Amount=(MaterialTextField)findViewById(R.id.Material_Amount);
+        Material_Amount.setHasFocus(true);
         Material_Date=(MaterialTextField)findViewById(R.id.Material_Date);
+        Material_Date.setHasFocus(true);
         Material_Notes=(MaterialTextField)findViewById(R.id.Material_Notes);
         Notes_Layout=(LinearLayout)findViewById(R.id.Notes_Layout);
+        Material_Amount_Due=(MaterialTextField)findViewById(R.id.Material_Amount_Due);
+        Material_Amount_Due.setVisibility(View.GONE);
 
         Notes_Layout.setVisibility(View.GONE);
         cal=Calendar.getInstance();
         year_x=cal.get(Calendar.YEAR);
         day_x=cal.get(Calendar.DAY_OF_MONTH);
         month_x=cal.get(Calendar.MONTH);
-        More_Button=(ImageButton)findViewById(R.id.MoreButton);
+        More_Button=(TextView) findViewById(R.id.MoreButton);
+        Delete_Button=(ImageButton)findViewById(R.id.Delete_Button);
+        Delete_Button.setVisibility(View.GONE);
         //requestPermissions(Manifest.permission.CAMERA,1111);
         Img_File=(ImageView)findViewById(R.id.Img_file);
+        Img_File.setVisibility(View.GONE);
         dateEdit=(EditText)findViewById(R.id.Date_Edit);
         dateEdit.setText(day_x+" "+Months[month_x]+" "+year_x);
         TitleEdit=(EditText)findViewById(R.id.Title_Edit);
         AmountEdit=(EditText)findViewById(R.id.Amount_Edit);
+        Amount_Due_Edit=(EditText)findViewById(R.id.Amount_Due_Edit);
         AutoCompleteContacts=(AutoCompleteTextView) findViewById(R.id.Notes_Edit);
         Clothing=(LinearLayout)findViewById(R.id.Clothing_layout);
         Entertainment=(LinearLayout)findViewById(R.id.Entertainment_layout);
@@ -158,6 +172,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
         CardClicked=getIntent().getStringExtra("CardClicked");
         if (!TextUtils.isEmpty(CardClicked)){
+            Delete_Button.setVisibility(View.VISIBLE);
             Material_Title.setHasFocus(true);
             Material_Amount.setHasFocus(true);
             Material_Date.setHasFocus(true);
@@ -382,7 +397,9 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
             Uri uri = data.getData();
             Img_File.setVisibility(View.VISIBLE);
             Image_uri=uri;
+            Img_File.setVisibility(View.VISIBLE);
             Img_File.setImageURI(uri);
+
         }else if (requestCode == 3 && resultCode==RESULT_OK) {
             //Bitmap photo = (Bitmap) data.getExtras().get("data");
            // Uri uri = data.getData();
@@ -565,20 +582,43 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         }
     }
 
+
+    public void Delete_Button(View view){
+        Transactiondbhelper mdbhelper = new Transactiondbhelper(this);
+        SQLiteDatabase db = mdbhelper.getWritableDatabase();
+       // ContentValues values = new ContentValues();
+        db.delete(Transaction_Entry.Table_name, Transaction_Entry._id + " = ?", new String[]{""+Updated_Id});
+        Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+        startActivity(intent);
+
+    }
+
+
+
  public void MoreButton(View view){
      Fetch_Contacts();
      th.run();
         if(Notes_Layout.getVisibility()==View.GONE){
             Notes_Layout.setVisibility(View.VISIBLE);
-            YoYo.with(Techniques.SlideInLeft)
+            Material_Amount_Due.setVisibility(View.VISIBLE);
+            if(!TextUtils.isEmpty(AmountEdit.getText().toString())) {
+                Amount_Due_Edit.setText(AmountEdit.getText().toString());
+            }else{Amount_Due_Edit.setText("");}
+            /*YoYo.with(Techniques.SlideInLeft)
                     .duration(1000)
                     .repeat(0)
-                    .playOn(Notes_Layout);
+                    .playOn(Notes_Layout);*/
             Material_Notes.setHasFocus(true);
-            More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
+            Material_Amount_Due.setHasFocus(true);
+           // More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
 
-        }else{Material_Notes.setHasFocus(false);
-            YoYo.with(Techniques.SlideOutLeft)
+        }else{
+            Material_Notes.setHasFocus(false);
+            Material_Amount_Due.setHasFocus(false);
+            Notes_Layout.setVisibility(View.GONE);
+            Material_Amount_Due.setVisibility(View.GONE);
+            //More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
+           /* YoYo.with(Techniques.SlideOutLeft)
                     .duration(1000)
                     .repeat(0)
                     .playOn(Notes_Layout);
@@ -590,7 +630,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                     Notes_Layout.setVisibility(View.GONE);
                     More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
                 }
-            }, 500);
+            }, 500);*/
 
         }
  }
@@ -655,8 +695,8 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
      for(int i=0;i<200;i++){
          Contact_Names[i]=Contact_list.get(i);
      }
-        Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
-     Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
+       // Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
+     //Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
 
  }
 
