@@ -10,9 +10,9 @@ import javax.net.ssl.SSLSocketFactory;
 public class Tls12SocketFactory extends SSLSocketFactory {
 	private static final String[] TLS_V12_ONLY = { "TLSv1.2" };
 
-	final SSLSocketFactory delegate;
+	private final SSLSocketFactory delegate;
 
-	public Tls12SocketFactory(SSLSocketFactory base) {
+	Tls12SocketFactory(SSLSocketFactory base) {
 		this.delegate = base;
 	}
 

@@ -3,14 +3,12 @@ package android.zersey.expense_manger;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity {
 
 	ProgressDialog progressDialog;
 
-
 	public void showProgress(String message, boolean... isCancelable) throws IllegalStateException {
-		if (isDestroyed())
-			return;
+		if (isDestroyed()) return;
 		if (progressDialog != null) {
 			progressDialog.dismiss();
 		}
@@ -26,7 +24,6 @@ public class BaseActivity extends AppCompatActivity {
 	public void dismissProgress() throws IllegalStateException {
         /*if (isDestroyed())
             return;*/
-		if (progressDialog != null)
-			progressDialog.dismiss();
+		if (progressDialog != null) progressDialog.dismiss();
 	}
 }

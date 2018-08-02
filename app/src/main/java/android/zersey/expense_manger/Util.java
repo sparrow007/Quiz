@@ -18,10 +18,9 @@ public class Util {
 	}
 
 	public static void setLockPassword(Context context, @NonNull String pass) {
-		SharedPreferences preferences = context.getSharedPreferences("locker",
-			Context.MODE_PRIVATE);
+		SharedPreferences preferences =
+			context.getSharedPreferences("locker", Context.MODE_PRIVATE);
 		preferences.edit().putString("pass", pass).apply();
 	}
-
 }
 

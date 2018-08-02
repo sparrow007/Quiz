@@ -8,6 +8,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.telephony.SmsMessage;
 import android.text.Editable;
 import android.text.InputType;
@@ -65,38 +66,38 @@ public class PasswordOtpActivity extends BaseActivity {
 		// getting user activity type weather signup or login from intent
 		UserActivity = getIntent().getStringExtra("UserActivity");
 
-		rest = (TextView) findViewById(R.id.rest);
+		rest = findViewById(R.id.rest);
 		//Typeface type = Typeface.createFromAsset(getAssets(), "RobotoThin.ttf");
 		//first.setTypeface(type, BOLD);
 		//rest.setTypeface(type);
 
 		//back button
-		back = (ImageView) findViewById(R.id.back);
+		back = findViewById(R.id.back);
 
 		sign_up_layout = findViewById(R.id.sign_up_layout);
 		login_layout = findViewById(R.id.login_layout);
 
 		//signup widgets
-		otp1 = (EditText) findViewById(R.id.otp1);
-		otp2 = (EditText) findViewById(R.id.otp2);
-		otp3 = (EditText) findViewById(R.id.otp3);
-		otp4 = (EditText) findViewById(R.id.otp4);
-		otp5 = (EditText) findViewById(R.id.otp5);
-		otp6 = (EditText) findViewById(R.id.otp6);
-		resend_otp = (TextView) findViewById(R.id.resend_otp);
-		otp_by_voice = (TextView) findViewById(R.id.otp_by_voice);
-		password = (EditText) findViewById(R.id.password_sign_up);
-		show_hide_password = (ImageView) findViewById(R.id.show_hide_password);
-		name = (EditText) findViewById(R.id.name_sign_up);
-		dob = (EditText) findViewById(R.id.dob_signup);
+		otp1 = findViewById(R.id.otp1);
+		otp2 = findViewById(R.id.otp2);
+		otp3 = findViewById(R.id.otp3);
+		otp4 = findViewById(R.id.otp4);
+		otp5 = findViewById(R.id.otp5);
+		otp6 = findViewById(R.id.otp6);
+		resend_otp = findViewById(R.id.resend_otp);
+		otp_by_voice = findViewById(R.id.otp_by_voice);
+		password = findViewById(R.id.password_sign_up);
+		show_hide_password = findViewById(R.id.show_hide_password);
+		name = findViewById(R.id.name_sign_up);
+		dob = findViewById(R.id.dob_signup);
 		dob.setKeyListener(null);
-		proceed = (TextView) findViewById(R.id.proceed);
+		proceed = findViewById(R.id.proceed);
 
 		//login widgets
-		password_login = (EditText) findViewById(R.id.password_login);
-		show_hide_password_login = (ImageView) findViewById(R.id.show_hide_password_login);
-		proceed_login = (TextView) findViewById(R.id.proceed_login);
-		TextView forgot_pass = (TextView) findViewById(R.id.forgot_pass);
+		password_login = findViewById(R.id.password_login);
+		show_hide_password_login = findViewById(R.id.show_hide_password_login);
+		proceed_login = findViewById(R.id.proceed_login);
+		TextView forgot_pass = findViewById(R.id.forgot_pass);
 
 		//forgot pass on clickListener
 		forgot_pass.setOnClickListener(new View.OnClickListener() {
@@ -180,7 +181,7 @@ public class PasswordOtpActivity extends BaseActivity {
 					password_login.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 					password_login.setSelection(password_login.getText().length());
 					show_hide_password_login.setImageResource(R.drawable.visible_new);
-				} else if (isLoginPasswordShown) {
+				} else {
 					isLoginPasswordShown = false;
 					password_login.setInputType(
 						InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -228,7 +229,7 @@ public class PasswordOtpActivity extends BaseActivity {
 					password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 					password.setSelection(password.getText().length());
 					show_hide_password.setImageResource(R.drawable.visible_new);
-				} else if (isSignUpPasswordShown) {
+				} else {
 					isSignUpPasswordShown = false;
 					password.setInputType(
 						InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -314,26 +315,28 @@ public class PasswordOtpActivity extends BaseActivity {
 
 					final Object[] pdusObj = (Object[]) bundle.get("pdus");
 
-					for (int i = 0; i < pdusObj.length; i++) {
+					if (pdusObj != null) {
+						for (Object aPdusObj : pdusObj) {
 
-						SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) pdusObj[i]);
-						String phoneNumber = currentMessage.getDisplayOriginatingAddress();
+							SmsMessage currentMessage = SmsMessage.createFromPdu((byte[]) aPdusObj);
 
-						String senderNum = phoneNumber;
-						String message = currentMessage.getDisplayMessageBody();
+							String senderNum = currentMessage.getDisplayOriginatingAddress();
+							String message = currentMessage.getDisplayMessageBody();
 
-						Log.i("SmsReceiver", "senderNum: " + senderNum + "; message: " + message);
+							Log.i("SmsReceiver",
+								"senderNum: " + senderNum + "; message: " + message);
 
-						if (senderNum.equalsIgnoreCase("HP-PLVSMS")) {
-							String otp = message.trim().split(" ")[0];
-							otp1.setText(otp.substring(0, 1));
-							otp2.setText(otp.substring(1, 2));
-							otp3.setText(otp.substring(2, 3));
-							otp4.setText(otp.substring(3, 4));
-							otp5.setText(otp.substring(4, 5));
-							otp6.setText(otp.substring(5, 6));
-						}
-					} // end for loop
+							if (senderNum.equalsIgnoreCase("HP-PLVSMS")) {
+								String otp = message.trim().split(" ")[0];
+								otp1.setText(otp.substring(0, 1));
+								otp2.setText(otp.substring(1, 2));
+								otp3.setText(otp.substring(2, 3));
+								otp4.setText(otp.substring(3, 4));
+								otp5.setText(otp.substring(4, 5));
+								otp6.setText(otp.substring(5, 6));
+							}
+						} // end for loop
+					}
 				} // bundle is null
 			} catch (Exception e) {
 				Log.e("SmsReceiver", "Exception smsReceiver" + e);
@@ -349,7 +352,7 @@ public class PasswordOtpActivity extends BaseActivity {
 	private class Watcher implements TextWatcher {
 		private EditText editText;
 
-		public Watcher(EditText editText) {
+		Watcher(EditText editText) {
 			this.editText = editText;
 		}
 
@@ -387,7 +390,8 @@ public class PasswordOtpActivity extends BaseActivity {
 		RestAdapterAPI api = NetworkUtil.getRestAdapter(this);
 		Call<JsonObject> result = api.verifyPassword(password, "android_app");
 		result.enqueue(new Callback<JsonObject>() {
-			@Override public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
 				try {
 					JsonObject jsonObject = response.body();
 					Boolean success = jsonObject.get("success").getAsBoolean();
@@ -433,7 +437,7 @@ public class PasswordOtpActivity extends BaseActivity {
 				dismissProgress();
 			}
 
-			@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 				Toast.makeText(PasswordOtpActivity.this, "Network error!", Toast.LENGTH_SHORT)
 					.show();
 				dismissProgress();
@@ -446,7 +450,8 @@ public class PasswordOtpActivity extends BaseActivity {
 		RestAdapterAPI api = NetworkUtil.getRestAdapter(this);
 		Call<JsonObject> result = api.resendOtp();
 		result.enqueue(new Callback<JsonObject>() {
-			@Override public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
 				try {
 					JsonObject jsonObject = response.body();
 					Boolean success = jsonObject.get("success").getAsBoolean();
@@ -460,7 +465,7 @@ public class PasswordOtpActivity extends BaseActivity {
 				dismissProgress();
 			}
 
-			@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 				dismissProgress();
 				Toast.makeText(PasswordOtpActivity.this, "Network error!", Toast.LENGTH_SHORT)
 					.show();
@@ -474,7 +479,8 @@ public class PasswordOtpActivity extends BaseActivity {
 		RestAdapterAPI api = NetworkUtil.getRestAdapter(this);
 		Call<JsonObject> result = api.signUp(password, fullName, otp, dob, actualReward, id);
 		result.enqueue(new Callback<JsonObject>() {
-			@Override public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
 				try {
 					JsonObject jsonObject = response.body();
 					Boolean success = jsonObject.get("success").getAsBoolean();
@@ -486,7 +492,7 @@ public class PasswordOtpActivity extends BaseActivity {
 								.getAsJsonObject()
 								.get("mobile")
 								.getAsString();
-						} catch (Exception e) {
+						} catch (Exception ignored) {
 
 						}
 						String username = jsonObject.get("username").getAsString();
@@ -520,7 +526,7 @@ public class PasswordOtpActivity extends BaseActivity {
 				dismissProgress();
 			}
 
-			@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 				dismissProgress();
 				Toast.makeText(PasswordOtpActivity.this, "Network error!", Toast.LENGTH_SHORT)
 					.show();
@@ -533,7 +539,8 @@ public class PasswordOtpActivity extends BaseActivity {
 		RestAdapterAPI api = NetworkUtil.getRestAdapter(this);
 		Call<JsonObject> result = api.forgotPassword(password, otp);
 		result.enqueue(new Callback<JsonObject>() {
-			@Override public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
 				try {
 					JsonObject jsonObject = response.body();
 					Boolean success = jsonObject.get("success").getAsBoolean();
@@ -567,7 +574,7 @@ public class PasswordOtpActivity extends BaseActivity {
 				dismissProgress();
 			}
 
-			@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 				dismissProgress();
 			}
 		});
@@ -575,13 +582,7 @@ public class PasswordOtpActivity extends BaseActivity {
 
 	//checking if password is valid
 	public Boolean IsPasswordValid(String myPassword) {
-		if (myPassword.length() < 7) {
-			return false;
-		} else if (myPassword.matches("[A-Za-z0-9]+")) {
-			return true;
-		} else {
-			return false;
-		}
+		return myPassword.length() >= 7 && myPassword.matches("[A-Za-z0-9]+");
 	}
 
 	private void sendVoiceOtp() {
@@ -589,13 +590,13 @@ public class PasswordOtpActivity extends BaseActivity {
 		RestAdapterAPI api = NetworkUtil.getRestAdapter(this);
 		Call<Void> result = api.sendVoiceOTP();
 		result.enqueue(new Callback<Void>() {
-			@Override public void onResponse(Call call, Response response) {
+			@Override public void onResponse(@NonNull Call call, @NonNull Response response) {
 				dismissProgress();
 				Toast.makeText(getApplicationContext(), "You'll receive a call soon",
 					Toast.LENGTH_LONG).show();
 			}
 
-			@Override public void onFailure(Call call, Throwable t) {
+			@Override public void onFailure(@NonNull Call call, @NonNull Throwable t) {
 				dismissProgress();
 				Toast.makeText(PasswordOtpActivity.this, "Network error!", Toast.LENGTH_SHORT)
 					.show();

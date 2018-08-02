@@ -7,24 +7,20 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
-import okhttp3.internal.Util;
 
 public class ProgressDialog extends Dialog {
 
 	String message = "Loading...";
-	private View view;
-	TextView textView;
+	private TextView textView;
 
-	public ProgressDialog(@NonNull Context context) {
+	ProgressDialog(@NonNull Context context) {
 		super(context);
 	}
 
-
-	@Override
-	public void onCreate(@Nullable Bundle savedInstanceState) {
+	@Override public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.progress_dialog);
-		view = getWindow().getDecorView().findViewById(android.R.id.content);
+		View view = getWindow().getDecorView().findViewById(android.R.id.content);
 		textView = findViewById(R.id.text);
 		textView.setText(message);
 	}
@@ -33,8 +29,7 @@ public class ProgressDialog extends Dialog {
 		this.message = message;
 	}
 
-	@Override
-	protected void onStart() {
+	@Override protected void onStart() {
 		//AnimationUtil.applyZoomEffect(view);
 	}
 

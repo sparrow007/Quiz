@@ -424,7 +424,7 @@
         />
         <Button
             android:onClick="Submit"
-            android:backgroundTint="#0091EA"
+            android:backgroundTint="@color/colorPrimary"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginLeft="10dp"

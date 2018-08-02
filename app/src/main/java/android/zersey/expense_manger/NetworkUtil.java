@@ -27,8 +27,7 @@ public class NetworkUtil {
 	private static class ReceivedCookiesInterceptor implements Interceptor {
 		Context context;
 
-		@Override
-		public Response intercept(Chain chain) throws IOException {
+		@Override public Response intercept(@NonNull Chain chain) throws IOException {
 			Response originalResponse = chain.proceed(chain.request());
 
 			if (!originalResponse.headers("Set-Cookie").isEmpty()) {
@@ -39,39 +38,40 @@ public class NetworkUtil {
 					cookie = header;
 				}
 
-				context.getSharedPreferences("login", Context.MODE_PRIVATE).edit().putString("cookies", cookie).apply();
+				context.getSharedPreferences("login", Context.MODE_PRIVATE)
+					.edit()
+					.putString("cookies", cookie)
+					.apply();
 			}
 
 			return originalResponse;
 		}
 	}
 
-
 	public static RestAdapterAPI getRestAdapter(@NonNull Context context) {
-		cookie = context.getSharedPreferences("login", Context.MODE_PRIVATE).getString("cookies", "");
+		cookie =
+			context.getSharedPreferences("login", Context.MODE_PRIVATE).getString("cookies", "");
 		HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
 		// set your desired log level
 		logging.setLevel(HttpLoggingInterceptor.Level.BODY);
 
 		// set header
 		Interceptor header = new Interceptor() {
-			@Override
-			public Response intercept(Chain chain) throws IOException {
+			@Override public Response intercept(Chain chain) throws IOException {
 				Request original = chain.request();
 
 				// Request customization: add request headers
-				Request.Builder requestBuilder = original.newBuilder()
-					.addHeader("Cookie", cookie);
+				Request.Builder requestBuilder = original.newBuilder().addHeader("Cookie", cookie);
 
 				Request request = requestBuilder.build();
 				return chain.proceed(request);
 			}
 		};
 
-		OkHttpClient.Builder httpClient = new OkHttpClient.Builder()
-			.connectTimeout(20, TimeUnit.SECONDS)
-			.writeTimeout(20, TimeUnit.SECONDS)
-			.readTimeout(30, TimeUnit.SECONDS);
+		OkHttpClient.Builder httpClient =
+			new OkHttpClient.Builder().connectTimeout(20, TimeUnit.SECONDS)
+				.writeTimeout(20, TimeUnit.SECONDS)
+				.readTimeout(30, TimeUnit.SECONDS);
 
 		ReceivedCookiesInterceptor receivedCookiesInterceptor = new ReceivedCookiesInterceptor();
 		receivedCookiesInterceptor.context = context;
@@ -81,26 +81,24 @@ public class NetworkUtil {
 			.addInterceptor(header)
 			.addInterceptor(logging);
 
-		Retrofit retrofit = new Retrofit.Builder()
-			.baseUrl(RestAdapterAPI.END_POINT_ZERSEY)
+		Retrofit retrofit = new Retrofit.Builder().baseUrl(RestAdapterAPI.END_POINT_ZERSEY)
 			.addConverterFactory(GsonConverterFactory.create())
 			.client(enableTls12OnPreLollipop(httpClient).build())
 			.build();
 
-
 		return retrofit.create(RestAdapterAPI.class);
 	}
 
-	public static OkHttpClient.Builder enableTls12OnPreLollipop(OkHttpClient.Builder client) {
+	private static OkHttpClient.Builder enableTls12OnPreLollipop(OkHttpClient.Builder client) {
 		if (Build.VERSION.SDK_INT < 22) {
 			try {
 				SSLContext sc = SSLContext.getInstance("TLSv1.2");
 				sc.init(null, null, null);
 				client.sslSocketFactory(new Tls12SocketFactory(sc.getSocketFactory()));
 
-				ConnectionSpec cs = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS)
-					.tlsVersions(TlsVersion.TLS_1_2)
-					.build();
+				ConnectionSpec cs =
+					new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS).tlsVersions(
+						TlsVersion.TLS_1_2).build();
 
 				List<ConnectionSpec> specs = new ArrayList<>();
 				specs.add(cs);
@@ -115,6 +113,4 @@ public class NetworkUtil {
 
 		return client;
 	}
-
-
 }
