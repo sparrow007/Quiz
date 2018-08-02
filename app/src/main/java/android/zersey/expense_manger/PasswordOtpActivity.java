@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.SmsMessage;
@@ -28,37 +27,34 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.graphics.Typeface.BOLD;
-
 public class PasswordOtpActivity extends BaseActivity {
 
-	private static final String TAG = PasswordOtpActivity.class.getSimpleName();
+	//private static final String TAG = PasswordOtpActivity.class.getSimpleName();
 	//common widgets
 	ImageView back;
 
-	View forget_password_layout, signup_layout, login_layout;
+	View sign_up_layout, login_layout;
 
-	//signup widgets
+	//sign up widgets
 	ImageView show_hide_password;
 	private EditText otp1, otp2, otp3, otp4, otp5, otp6;//global To-Do otp reader
 	EditText password, name, dob;
-	TextView otp_by_voice, resend_otp, proceed, wrongOtp;
+	TextView otp_by_voice, resend_otp, proceed;
 
 	//login widgets
 	EditText password_login;
 	ImageView show_hide_password_login;
-	TextView proceed_login, error_message, forgot_pass, first, rest;
+	TextView proceed_login, rest;
 
 	//constants
 	final String Signup = "signup";//applicable for variable UserActivity
 
 	//variables
 	String UserActivity;
-	Boolean isSignupPasswordShown = false;
+	Boolean isSignUpPasswordShown = false;
 	Boolean isLoginPasswordShown = false;
 	SharedPreferences prefs;
 	Boolean isResetPass = false;
-	private String rewardId;
 	protected String actualReward;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +65,6 @@ public class PasswordOtpActivity extends BaseActivity {
 		// getting user activity type weather signup or login from intent
 		UserActivity = getIntent().getStringExtra("UserActivity");
 
-		first = (TextView) findViewById(R.id.first);
 		rest = (TextView) findViewById(R.id.rest);
 		//Typeface type = Typeface.createFromAsset(getAssets(), "RobotoThin.ttf");
 		//first.setTypeface(type, BOLD);
@@ -78,8 +73,7 @@ public class PasswordOtpActivity extends BaseActivity {
 		//back button
 		back = (ImageView) findViewById(R.id.back);
 
-		forget_password_layout = findViewById(R.id.forgot_pass_layout);
-		signup_layout = findViewById(R.id.signup_layout);
+		sign_up_layout = findViewById(R.id.sign_up_layout);
 		login_layout = findViewById(R.id.login_layout);
 
 		//signup widgets
@@ -89,27 +83,25 @@ public class PasswordOtpActivity extends BaseActivity {
 		otp4 = (EditText) findViewById(R.id.otp4);
 		otp5 = (EditText) findViewById(R.id.otp5);
 		otp6 = (EditText) findViewById(R.id.otp6);
-		wrongOtp = (TextView) findViewById(R.id.wrongOtp);
 		resend_otp = (TextView) findViewById(R.id.resend_otp);
 		otp_by_voice = (TextView) findViewById(R.id.otp_by_voice);
-		password = (EditText) findViewById(R.id.password_signup);
+		password = (EditText) findViewById(R.id.password_sign_up);
 		show_hide_password = (ImageView) findViewById(R.id.show_hide_password);
-		name = (EditText) findViewById(R.id.name_signup);
+		name = (EditText) findViewById(R.id.name_sign_up);
 		dob = (EditText) findViewById(R.id.dob_signup);
 		dob.setKeyListener(null);
 		proceed = (TextView) findViewById(R.id.proceed);
 
 		//login widgets
-		error_message = (TextView) findViewById(R.id.error_message);
 		password_login = (EditText) findViewById(R.id.password_login);
 		show_hide_password_login = (ImageView) findViewById(R.id.show_hide_password_login);
 		proceed_login = (TextView) findViewById(R.id.proceed_login);
-		forgot_pass = (TextView) findViewById(R.id.forgot_pass);
+		TextView forgot_pass = (TextView) findViewById(R.id.forgot_pass);
 
 		//forgot pass on clickListener
 		forgot_pass.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
-				signup_layout.setVisibility(View.VISIBLE);
+				sign_up_layout.setVisibility(View.VISIBLE);
 				login_layout.setVisibility(View.INVISIBLE);
 				resendOtp();
 				isResetPass = true;
@@ -121,8 +113,7 @@ public class PasswordOtpActivity extends BaseActivity {
 		//default userActivity is login hence show signUp form if signUp
 		if (UserActivity.equals(Signup)) {
 			login_layout.setVisibility(View.INVISIBLE);
-			signup_layout.setVisibility(View.VISIBLE);
-			rewardId = prefs.getString("reference", "");
+			sign_up_layout.setVisibility(View.VISIBLE);
 		}
 		//back button
 		back.setOnClickListener(new View.OnClickListener() {
@@ -232,13 +223,13 @@ public class PasswordOtpActivity extends BaseActivity {
 		//show or hide pass in signup form
 		show_hide_password.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
-				if (!isSignupPasswordShown) {
-					isSignupPasswordShown = true;
+				if (!isSignUpPasswordShown) {
+					isSignUpPasswordShown = true;
 					password.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 					password.setSelection(password.getText().length());
 					show_hide_password.setImageResource(R.drawable.visible_new);
-				} else if (isSignupPasswordShown) {
-					isSignupPasswordShown = false;
+				} else if (isSignUpPasswordShown) {
+					isSignUpPasswordShown = false;
 					password.setInputType(
 						InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 					password.setSelection(password.getText().length());
@@ -381,7 +372,7 @@ public class PasswordOtpActivity extends BaseActivity {
 	@Override public void onBackPressed() {
 		if (isResetPass) {
 			login_layout.setVisibility(View.VISIBLE);
-			signup_layout.setVisibility(View.INVISIBLE);
+			sign_up_layout.setVisibility(View.INVISIBLE);
 			isResetPass = false;
 			name.setVisibility(View.VISIBLE);
 			back.setVisibility(View.INVISIBLE);

@@ -1,56 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/login_layout"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/login_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_below="@+id/back"
     android:visibility="visible"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- error message during login-->
-    <TextView
-        android:id="@+id/error_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/password_login_frame"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="25dp"
-        android:text="Incorrect password"
-        android:textColor="#f44336"
-        android:textSize="17dp"
-        android:textStyle="bold"
-        android:visibility="invisible" />
+    >
 
     <FrameLayout
         android:id="@+id/password_login_frame"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
+        android:layout_height="48dp"
         android:layout_centerVertical="true"
-        android:layout_margin="15dp">
+        android:layout_margin="16dp"
+        >
 
 
         <!--password field-->
         <EditText
             android:id="@+id/password_login"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:backgroundTint="#000000"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/edit_text_background"
+            android:backgroundTint="#ffffff"
             android:hint="Password"
             android:imeOptions="actionNext"
             android:inputType="textPassword"
             android:maxLines="1"
-            android:paddingLeft="10dp"
-            android:paddingRight="40dp"
+            android:paddingEnd="40dp"
+            android:paddingStart="10dp"
             android:singleLine="true"
-            android:textColor="#000000"
-            android:textColorHint="#000000"
-            android:textSize="18dp"
-            android:textStyle="bold" />
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:textCursorDrawable="@drawable/cursor_white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            />
         <!-- show password image show password when clicked-->
         <ImageView
             android:id="@+id/show_hide_password_login"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="right|center_vertical"
-            android:layout_margin="10dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="end|center_vertical"
+            android:layout_margin="8dp"
+            android:src="@drawable/invisible_new"
             />
     </FrameLayout>
     <!--forgot pass Text-->
@@ -58,15 +51,16 @@
         android:id="@+id/forgot_pass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_below="@+id/password_login_frame"
-        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginTop="0dp"
         android:text="Forgot Password"
-        android:textColor="#000000"
-        android:textSize="15dp"
+        android:textColor="#ffffff"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:visibility="visible" />
+        android:visibility="visible"
+        />
     <!-- proceed text-->
     <TextView
         android:id="@+id/proceed_login"
@@ -75,13 +69,15 @@
         android:layout_below="@+id/forgot_pass"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:paddingBottom="10dp"
-        android:paddingLeft="35dp"
-        android:paddingRight="35dp"
-        android:paddingTop="10dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/login_button_back"
+        android:paddingBottom="12dp"
+        android:paddingLeft="36dp"
+        android:paddingRight="36dp"
+        android:paddingTop="12dp"
         android:text="Proceed"
-        android:textColor="#000000"
-        android:textSize="18dp"
-        android:textStyle="bold" />
+        android:textColor="#ffffff"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        />
 </RelativeLayout>

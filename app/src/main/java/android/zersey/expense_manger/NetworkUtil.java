@@ -82,7 +82,7 @@ public class NetworkUtil {
 			.addInterceptor(logging);
 
 		Retrofit retrofit = new Retrofit.Builder()
-			.baseUrl(RestAdapterAPI.END_POINT_CEREBRO)
+			.baseUrl(RestAdapterAPI.END_POINT_ZERSEY)
 			.addConverterFactory(GsonConverterFactory.create())
 			.client(enableTls12OnPreLollipop(httpClient).build())
 			.build();
