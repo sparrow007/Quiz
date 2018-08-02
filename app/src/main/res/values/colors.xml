@@ -5,4 +5,11 @@
     <color name="colorAccent">#000000</color>
     <color name="newlightblue">#E1F5FE</color>
     <color name="newdarkblue">#0091EA</color>
+    <color name="Green">#64DD17</color>
+    <color name="Black">#000000</color>
+    <color name="Blue">#039BE5</color>
+    <color name="Pink">#FFAB91</color>
+    <color name="Yellow">#FFD600</color>
+    <color name="Orange">#E65100</color>
+    <color name="Red">#DD2C00</color>
 </resources>

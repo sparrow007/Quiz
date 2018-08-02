@@ -6,10 +6,9 @@
     tools:context=".Graphs">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:gravity="center_horizontal|center_vertical"
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/Expense_Chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Graphs" />
+        android:layout_height="match_parent"></com.github.mikephil.charting.charts.PieChart>
 
 </LinearLayout>

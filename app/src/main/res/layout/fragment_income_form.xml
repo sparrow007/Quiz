@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Income_form"
+    android:orientation="vertical">
+
+    <!-- TODO: Update blank fragment layout -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="10dp"
+            >
+
+
+
+
+            <com.github.florent37.materialtextfield.MaterialTextField
+                android:id="@+id/Material_Title_Income"
+                app:mtf_hasFocus="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:mtf_labelColor="#666"
+                >
+                <EditText
+                    android:inputType="text"
+                    android:id="@+id/Title_Income_Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Title"
+                    android:backgroundTint="#000000"/>
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+            <com.github.florent37.materialtextfield.MaterialTextField
+                app:mtf_hasFocus="true"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Material_Date_Income"
+                app:mtf_labelColor="#666"
+                >
+                <EditText
+                    android:id="@+id/Date_Income_Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Date"
+                    android:backgroundTint="#000000"/>
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+            <com.github.florent37.materialtextfield.MaterialTextField
+                app:mtf_hasFocus="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/Material_Income_Amount"
+                app:mtf_labelColor="#666"
+                android:layout_marginTop="10dp"
+                app:mtf_openKeyboardOnFocus="true">
+
+                <EditText
+                    android:inputType="number"
+                    android:id="@+id/Amount_Income_Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#3F51B5"
+                    android:hint="Amount" />
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/Contact_Income_Layout"
+                android:orientation="horizontal">
+
+
+                <com.github.florent37.materialtextfield.MaterialTextField
+                    app:mtf_hasFocus="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:id="@+id/Material_Contact_Income"
+                    app:mtf_labelColor="#666"
+                    android:layout_marginTop="10dp"
+                    app:mtf_openKeyboardOnFocus="true">
+                    <AutoCompleteTextView
+                        android:layout_gravity="center_vertical"
+                        android:gravity="center_vertical"
+                        android:layout_margin="5dp"
+                        android:id="@+id/Contact_Income_Edit"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:layout_marginTop="7dp"
+                        android:background="#FFFFFF"
+                        android:dropDownHeight="wrap_content"
+                        android:scrollbars="vertical"
+                        android:hint="Add Person (optional)" />
+
+                </com.github.florent37.materialtextfield.MaterialTextField>
+
+
+
+
+
+
+
+                <ImageButton
+                    android:id="@+id/Contact_Income_Button"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:background="#ffffff"
+                    android:layout_marginTop="10dp"
+                    android:foregroundGravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/phone_book"
+                    android:scaleType="centerCrop"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+
+                    android:text="Button"/>
+
+            </LinearLayout>
+
+
+            <com.github.florent37.materialtextfield.MaterialTextField
+                app:mtf_hasFocus="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:id="@+id/Material_Amount_Due_Income"
+                app:mtf_labelColor="#666"
+                android:layout_marginTop="10dp"
+                app:mtf_openKeyboardOnFocus="true">
+
+                <EditText
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    android:inputType="number"
+                    android:id="@+id/Amount_Due_Income_Edit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#3F51B5"
+                    android:hint="Amount Due" />
+            </com.github.florent37.materialtextfield.MaterialTextField>
+
+
+
+            <ImageView
+                android:layout_margin="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:scaleType="fitXY"
+                android:id="@+id/Img_Income_file" />
+            <ImageButton
+                android:layout_marginRight="5dp"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:foregroundGravity="center"
+                android:src="@drawable/camera"
+                android:id="@+id/Camera_Income_Button"
+                android:layout_width="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_height="30dp"
+                android:text="Button"
+                android:layout_gravity="center_vertical|right"/>
+            <ImageButton
+                android:layout_margin="20dp"
+                android:id="@+id/Delete_Income_Button"
+                android:layout_gravity="center_vertical|right"
+                android:background="@android:color/transparent"
+                android:scaleType="centerCrop"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/delete"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+    <TextView
+        android:padding="5dp"
+        android:textColor="#000000"
+        android:textSize="12sp"
+        android:text="More"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|center_vertical"
+        android:gravity="center_horizontal|center_vertical"
+        android:background="@android:color/transparent"
+        android:id="@+id/More_Income_Button"
+        />
+    <Button
+        android:backgroundTint="#0091EA"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:elevation="2dp"
+        android:textColor="#ffffff"
+        android:id="@+id/Submit_Income_Button"
+        android:text="Submit"
+        android:background="@drawable/layout_bg"/>
+
+</LinearLayout>

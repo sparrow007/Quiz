@@ -35,11 +35,6 @@
             android:label="Expense Manager"
             android:theme="@style/NoActionBar">
         </activity>
-        <activity
-            android:name=".LauncherActivity"
-            android:label="@string/title_activity_launcher"
-            android:theme="@style/NoActionBar">
-        </activity>
         <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

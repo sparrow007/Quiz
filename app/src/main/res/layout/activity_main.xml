@@ -20,38 +20,29 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
+
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
+<android.support.design.widget.TabLayout
+    android:id="@+id/form_tabLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="?attr/actionBarSize"
+    app:popupTheme="@style/AppTheme.PopupOverlay"
+    android:layout_marginRight="16dp"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    />
 
 
-        <ImageButton
-            android:layout_marginRight="5dp"
-            android:background="?attr/colorPrimary"
-            android:scaleType="centerCrop"
-            android:onClick="Onclick_Image_button"
-            android:foregroundGravity="center"
-            android:src="@drawable/camera"
-            android:id="@+id/toolbarbtn"
-            android:layout_width="30dp"
-            android:layout_marginLeft="20dp"
-            android:layout_height="30dp"
-            android:text="Button"
-            android:layout_gravity="center_vertical|right"/>
-        <ImageButton
-            android:onClick="Delete_Button"
-            android:id="@+id/Delete_Button"
-            android:layout_gravity="center_vertical|right"
-            android:background="?attr/colorPrimary"
-            android:scaleType="centerCrop"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/delete"/>
 
     </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main" />
+    <android.support.v4.view.ViewPager
+        android:id="@+id/form_viewPager"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 </android.support.design.widget.CoordinatorLayout>
