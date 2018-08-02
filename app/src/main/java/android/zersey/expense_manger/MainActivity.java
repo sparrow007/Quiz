@@ -24,8 +24,13 @@ import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.app.AlertDialog;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -69,27 +74,39 @@ import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 
-public class MainActivity extends AppCompatActivity {
-ImageView Img_File;
-private TextView More_Button;
-private ImageButton Delete_Button;
-private AutoCompleteTextView AutoCompleteContacts;
-private ArrayAdapter<String> ContactAdapter;
-private MaterialTextField Material_Title,Material_Amount,Material_Date,Material_Notes,Material_Amount_Due;
-public View layout_view=null;
-private List<Custom_items> customlist;
-private ArrayList<String> Contact_list;
-private TextView Category_text_view;
-private int year_x,month_x,day_x,Selected_date=0,Updated_Id;
-private String Category_text,Notes_text,Amount_text,Title_text;
-private Uri Image_uri=null;
-private static int DIALOG_ID=0;
-private EditText dateEdit,AmountEdit,TitleEdit,Amount_Due_Edit;
-private String CardClicked,Updated_Category,Updated_Title,Updated_Amount,Updated_Date;
-private Calendar cal;
-private String[] Months={"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"},Contact_Names;
-private LinearLayout Clothing,Entertainment,Food,Fuel,Health,Salary,More,Notes_Layout;
-private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_checkbox,Health_checkbox,Salary_checkbox,More_checkbox;
+public class MainActivity extends AppCompatActivity implements Expense_Form.OnFragmentInteractionListener,Income_form.OnFragmentInteractionListener {
+
+    /**
+     * The {@link android.support.v4.view.PagerAdapter} that will provide
+     * fragments for each of the sections. We use a
+     * {@link FragmentPagerAdapter} derivative, which will keep every
+     * loaded fragment in memory. If this becomes too memory intensive, it
+     * may be best to switch to a
+     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+     */
+
+    /*ImageView Img_File;
+    private TextView More_Button;
+    private ImageButton Delete_Button;
+    private AutoCompleteTextView AutoCompleteContacts;
+    private ArrayAdapter<String> ContactAdapter;
+    private MaterialTextField Material_Title, Material_Amount, Material_Date, Material_Notes, Material_Amount_Due;
+    public View layout_view = null;
+    private List<Custom_items> customlist;
+    private ArrayList<String> Contact_list;
+    private TextView Category_text_view;*/
+    private int year_x, month_x, day_x, Selected_date = 0, Updated_Id;
+    private String Category_text, Notes_text, Amount_text, Title_text;
+    private Uri Image_uri = null;
+    private static int DIALOG_ID = 0;
+    private EditText dateEdit, AmountEdit, TitleEdit, Amount_Due_Edit;
+    private String CardClicked, Updated_Category, Updated_Title, Updated_Amount, Updated_Date;
+    private Calendar cal;
+    private String[] Months = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"}, Contact_Names;
+    private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
+    private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox, Health_checkbox, Salary_checkbox, More_checkbox;
+    private ViewPager mViewPager;
+    private pageradapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,10 +115,6 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-//        setSupportActionBar(toolbar);
-        //getSupportActionBar().setTitle("Add Expense");
-        //toolbar.setSubtitle("Android-er.blogspot.com");
-        //toolbar.setLogo(android.R.drawable.ic_menu_info_details);
 
 
         Dexter.withActivity(this)
@@ -110,13 +123,15 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_CONTACTS
                 ).withListener(new MultiplePermissionsListener() {
-            @Override public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
-            @Override public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
+            @Override
+            public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+
+            @Override
+            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
         }).check();
-        //checkRunTimePermission();
-        //showContacts();
-        //askForContactPermission();
-        Contact_list=new ArrayList<String>();
+
+
+        /*Contact_list=new ArrayList<String>();
 
         //customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
         Material_Title=(MaterialTextField)findViewById(R.id.Material_Title);
@@ -169,44 +184,83 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
         Fuel_checkbox.setOnCheckedChangeListener(checkedChangeListener);
         Health_checkbox.setOnCheckedChangeListener(checkedChangeListener);
         Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-        More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-        CardClicked=getIntent().getStringExtra("CardClicked");
-        if (!TextUtils.isEmpty(CardClicked)){
-            Delete_Button.setVisibility(View.VISIBLE);
+        More_checkbox.setOnCheckedChangeListener(checkedChangeListener);*/
+
+
+
+
+        TabLayout tab_layout=(TabLayout)findViewById(R.id.form_tabLayout);
+        tab_layout.addTab(tab_layout.newTab().setText("Expense"));
+        tab_layout.addTab(tab_layout.newTab().setText("Income"));
+        tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
+
+        mViewPager = (ViewPager) findViewById(R.id.form_viewPager);
+
+
+
+        CardClicked = getIntent().getStringExtra("CardClicked");
+        if (!TextUtils.isEmpty(CardClicked)) {
+          /*  Delete_Button.setVisibility(View.VISIBLE);
             Material_Title.setHasFocus(true);
             Material_Amount.setHasFocus(true);
-            Material_Date.setHasFocus(true);
-            Updated_Category=getIntent().getStringExtra("Category");
-            Updated_Amount=getIntent().getStringExtra("Amount");
-            Updated_Title=getIntent().getStringExtra("Title");
-            Updated_Date=getIntent().getStringExtra("DateCreated");
-            Updated_Id=getIntent().getIntExtra("_ID",0);
-            if ("Clothing".equals(Updated_Category)){
+            Material_Date.setHasFocus(true);*/
+            Updated_Category = getIntent().getStringExtra("Category");
+            Updated_Amount = getIntent().getStringExtra("Amount");
+            Updated_Title = getIntent().getStringExtra("Title");
+            Updated_Date = getIntent().getStringExtra("DateCreated");
+            Updated_Id = getIntent().getIntExtra("_ID", 0);
+            /*if ("Clothing".equals(Updated_Category)) {
                 Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                Category_text="Clothing";
-            }else if ("Entertainment".equals(Updated_Category)){
+                Category_text = "Clothing";
+            } else if ("Entertainment".equals(Updated_Category)) {
                 Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                Category_text="Entertainment";
-            }else if ("Food".equals(Updated_Category)){
+                Category_text = "Entertainment";
+            } else if ("Food".equals(Updated_Category)) {
                 Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                Category_text="Food";
-            }else if ("Fuel".equals(Updated_Category)){
+                Category_text = "Food";
+            } else if ("Fuel".equals(Updated_Category)) {
                 Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                Category_text="Fuel";
-            }else if ("Health".equals(Updated_Category)){
+                Category_text = "Fuel";
+            } else if ("Health".equals(Updated_Category)) {
                 Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                Category_text="Health";
-            }else if ("Salary".equals(Updated_Category)){
+                Category_text = "Health";
+            } else if ("Salary".equals(Updated_Category)) {
                 Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                Category_text="Salary";
-            }
-            Updated_Amount=Updated_Amount.replace("Rs ","");
-            Log.d("Rs replaced",Updated_Amount);
-            AmountEdit.setText(Updated_Amount);
+                Category_text = "Salary";
+            }*/
+            Updated_Amount = Updated_Amount.replace("Rs ", "");
+            Log.d("Rs replaced", Updated_Amount);
+            /*AmountEdit.setText(Updated_Amount);
             TitleEdit.setText(Updated_Title);
-            dateEdit.setText(Updated_Date);
+            dateEdit.setText(Updated_Date);*/
+            adapter=new pageradapter(getSupportFragmentManager(),tab_layout.getTabCount(),
+                    CardClicked,Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
+        }else{
+            adapter=new pageradapter(getSupportFragmentManager(),tab_layout.getTabCount());
         }
 
+
+
+
+        mViewPager.setAdapter(adapter);
+        mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
+
+        tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                mViewPager.setCurrentItem(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
         //Fetch_Contacts();
         //Toast.makeText(this, Contact_list.size()+" Contact Names", Toast.LENGTH_SHORT).show();
 
@@ -215,6 +269,11 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
 
     }
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
+/*
     Thread th= new Thread(){
         @Override
         public void run() {
@@ -313,8 +372,8 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
-                        if(buttonView.getParent().equals(Entertainment)){
+
+                      /*  if(buttonView.getParent().equals(Entertainment)){
                             Category_text="";
                             Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
                       /* Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
@@ -323,7 +382,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
+                       /* }
                         if(buttonView.getParent().equals(Food)){
                             Category_text="";
                             Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
@@ -333,7 +392,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
+                       /* }
                         if(buttonView.getParent().equals(Fuel)){
                             Category_text="";
                             Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
@@ -343,7 +402,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
+                       /* }
                         if(buttonView.getParent().equals(Health)){
                             Category_text="";
                             Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
@@ -353,7 +412,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
+                      /*  }
                         if(buttonView.getParent().equals(Salary)){
                             Category_text="";
                             Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
@@ -363,7 +422,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
+                      /*  }
                         if(buttonView.getParent().equals(More)){
                             Category_text="";
                             More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
@@ -373,7 +432,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                        }
+                     /*   }
                     }
 
 
@@ -491,9 +550,16 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                      }else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)-1 ){
                          dateEdit.setText("Yesterday");
                      }else{ dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);}*/
-                     dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);
+                    /* dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);
                      }
              };
+
+
+
+
+
+
+
 
 
 
@@ -608,7 +674,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                     .duration(1000)
                     .repeat(0)
                     .playOn(Notes_Layout);*/
-            Material_Notes.setHasFocus(true);
+           /* Material_Notes.setHasFocus(true);
             Material_Amount_Due.setHasFocus(true);
            // More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
 
@@ -632,7 +698,7 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
                 }
             }, 500);*/
 
-        }
+       /* }
  }
 
 
@@ -641,13 +707,6 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
 
      startActivityForResult(intent, 3);
  }
-
-
-
-
-
-
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
@@ -701,7 +760,47 @@ private CheckBox Clothing_checkbox,Entertainment_checkbox,Food_checkbox,Fuel_che
  }
 
 
+*/
+       private class pageradapter extends FragmentPagerAdapter {
+           int mnooftabes;
 
+           public pageradapter(FragmentManager fm, int Numberoftabes) {
+               super(fm);
+               mnooftabes=Numberoftabes;
+           }
+           public pageradapter(FragmentManager fm, int Numberoftabes,String cardClicked,String updated_Title,String updated_Amount,
+                               String updated_Date,String updated_Category,int id) {
+               super(fm);
+               mnooftabes=Numberoftabes;
+           }
 
+           @Override
+           public Fragment getItem(int position) {
+               // getItem is called to instantiate the fragment for the given page.
+               // Return a PlaceholderFragment (defined as a static inner class below).
+               switch(position){
+
+                   case 0:
+                       Expense_Form expense_form=new Expense_Form();
+                       if (!TextUtils.isEmpty(CardClicked)){
+                           expense_form.setString(CardClicked,Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
+                           return expense_form;
+                       }else{ return expense_form;}
+                   case 1:
+                      Income_form income_form=new Income_form();
+                      return income_form;
+                   default: return null;
+
+               }
+
+               //return PlaceholderFragment.newInstance(position + 1);
+           }
+
+           @Override
+           public int getCount() {
+               // Show 3 total pages.
+               return mnooftabes;
+           }
+       }
 
 }

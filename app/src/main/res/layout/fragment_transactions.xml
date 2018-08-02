@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:id="@+id/Transaction_linearLayout"
     android:orientation="vertical"
-    tools:context=".LauncherActivity">
+    >
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
