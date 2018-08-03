@@ -19,7 +19,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior" />
         <android.support.design.widget.TabLayout
             android:id="@+id/Tab_layout"
-            android:background="#0091EA"
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:layout_marginBottom="?attr/actionBarSize"/>
