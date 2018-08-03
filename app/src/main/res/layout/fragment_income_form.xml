@@ -201,7 +201,7 @@
         android:id="@+id/More_Income_Button"
         />
     <Button
-        android:background="#0091EA"
+        android:background="?attr/colorPrimary"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:elevation="2dp"
@@ -212,7 +212,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_Income_Camera_Button"
-        android:backgroundTint="#0091EA"
+        android:background="?attr/colorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"

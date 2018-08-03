@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,6 +9,10 @@
     tools:context=".MainActivity"
     tools:showIn="@layout/activity_main"
     android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -380,19 +385,7 @@
                     android:layout_height="180dp"
                     android:scaleType="fitXY"
                     android:id="@+id/Img_file" />
-                <ImageButton
-                    android:layout_marginRight="5dp"
-                    android:background="@android:color/transparent"
-                    android:scaleType="centerCrop"
-                    android:onClick="Onclick_Image_button"
-                    android:foregroundGravity="center"
-                    android:src="@drawable/camera"
-                    android:id="@+id/Camera_Button"
-                    android:layout_width="30dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_height="30dp"
-                    android:text="Button"
-                    android:layout_gravity="center_vertical|right"/>
+
                 <ImageButton
                     android:layout_margin="20dp"
                     android:onClick="Delete_Button"
@@ -423,18 +416,26 @@
         android:id="@+id/MoreButton"
         />
         <Button
-            android:onClick="Submit"
-            android:backgroundTint="#0091EA"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:background="?attr/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:elevation="2dp"
             android:textColor="#ffffff"
             android:id="@+id/Submit_Button"
-            android:text="Submit"
-            android:background="@drawable/layout_bg"/>
+            android:text="Submit" />
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/Fab_Camera_Button"
+        android:background="?attr/colorPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginBottom="60dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        app:srcCompat="@drawable/camera" />
+
+</android.support.design.widget.CoordinatorLayout>
