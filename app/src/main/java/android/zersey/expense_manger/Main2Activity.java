@@ -2,64 +2,55 @@ package android.zersey.expense_manger;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import android.widget.LinearLayout;
-import android.widget.Switch;
-import android.widget.TextView;
+public class Main2Activity extends AppCompatActivity
+	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener {
 
-public class Main2Activity extends AppCompatActivity implements Transactions.OnFragmentInteractionListener,Graphs.OnFragmentInteractionListener {
-
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    //private SectionsPagerAdapter mSectionsPagerAdapter;
-    private PagerAdapter adapter;
-    //private String Category_text,Notes_text,Amount_text,Date_text;
-    //private Uri Image_uri;
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewGroup Transaction_linearLayout;
-    private boolean Added=false;
-    private ViewPager mViewPager;
-    private DrawerLayout mDrawerLayout;
+	/**
+	 * The {@link android.support.v4.view.PagerAdapter} that will provide
+	 * fragments for each of the sections. We use a
+	 * {@link FragmentPagerAdapter} derivative, which will keep every
+	 * loaded fragment in memory. If this becomes too memory intensive, it
+	 * may be best to switch to a
+	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 */
+	//private SectionsPagerAdapter mSectionsPagerAdapter;
+	private PagerAdapter adapter;
+	//private String Category_text,Notes_text,Amount_text,Date_text;
+	//private Uri Image_uri;
+	/**
+	 * The {@link ViewPager} that will host the section contents.
+	 */
+	private ViewGroup Transaction_linearLayout;
+	private boolean Added = false;
+	private ViewPager mViewPager;
+	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
 
-	@Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+	@Override protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_main2);
 
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		ActionBar actionbar = getSupportActionBar();
 		if (actionbar != null) {
@@ -67,15 +58,13 @@ public class Main2Activity extends AppCompatActivity implements Transactions.OnF
 			actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 		}
 
-
 		mDrawerLayout = findViewById(R.id.drawer_layout);
 		mDrawerToggle =
 			new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
 				R.string.navigation_drawer_close);
 		mDrawerLayout.addDrawerListener(mDrawerToggle);
 		mDrawerLayout.post(new Runnable() {
-			@Override
-			public void run() {
+			@Override public void run() {
 				mDrawerToggle.syncState();
 			}
 		});
@@ -83,8 +72,7 @@ public class Main2Activity extends AppCompatActivity implements Transactions.OnF
 		NavigationView navigationView = findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(
 			new NavigationView.OnNavigationItemSelectedListener() {
-				@Override
-				public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+				@Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 					// set item as selected to persist highlight
 					menuItem.setChecked(true);
 					// close drawer when item is tapped
@@ -97,65 +85,58 @@ public class Main2Activity extends AppCompatActivity implements Transactions.OnF
 				}
 			});
 
+		// Create the adapter that will return a fragment for each of the three
+		// primary sections of the activity.
+		/*      mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-  /*      mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-      */  // Set up the ViewPager with the sections adapter.
+		 */  // Set up the ViewPager with the sections adapter.
         /*Category_text=getIntent().getStringExtra("Category");
         Date_text=getIntent().getStringExtra("Date");
         Amount_text=getIntent().getStringExtra("Amount");
         Notes_text=getIntent().getStringExtra("Notes");*/
-//        Image_uri=Uri.parse(getIntent().getStringExtra("Image"));
+		//        Image_uri=Uri.parse(getIntent().getStringExtra("Image"));
 
-        TabLayout tab_layout=(TabLayout)findViewById(R.id.Tab_layout);
-        tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
-        tab_layout.addTab(tab_layout.newTab().setText("Graphs"));
-        tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
+		TabLayout tab_layout = findViewById(R.id.Tab_layout);
+		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
+		tab_layout.addTab(tab_layout.newTab().setText("Graphs"));
+		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        adapter=new PagerAdapter(getSupportFragmentManager(),tab_layout.getTabCount());
-        mViewPager.setAdapter(adapter);
-        mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
+		mViewPager = findViewById(R.id.container);
+		adapter = new PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount());
+		mViewPager.setAdapter(adapter);
+		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
 
-        tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-            }
+		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+			@Override public void onTabSelected(TabLayout.Tab tab) {
+				mViewPager.setCurrentItem(tab.getPosition());
+			}
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+			@Override public void onTabUnselected(TabLayout.Tab tab) {
 
-            }
+			}
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+			@Override public void onTabReselected(TabLayout.Tab tab) {
 
-            }
-        });
+			}
+		});
 
-        Transaction_linearLayout=(ViewGroup) mViewPager.findViewById(R.id.Transaction_linearLayout);
+		Transaction_linearLayout = mViewPager.findViewById(R.id.Transaction_linearLayout);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+		FloatingActionButton fab = findViewById(R.id.fab);
+		fab.setOnClickListener(new View.OnClickListener() {
+			@Override public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
-                Intent intent=new Intent(Main2Activity.this,MainActivity.class);
-                startActivity(intent);
-            }
-        });
-        //if(!TextUtils.isEmpty(Category_text)){ addTransaction();}
-    }
+				Intent intent = new Intent(Main2Activity.this, MainActivity.class);
+				startActivity(intent);
+			}
+		});
+		//if(!TextUtils.isEmpty(Category_text)){ addTransaction();}
+	}
 
-    @Override
-    public void onBackPressed(){
+	@Override public void onBackPressed() {
 
-    }
+	}
 
     /*public void addTransaction(){
         TextView Transaction_Category_text_view,Transaction_Notes_text_view,
@@ -177,15 +158,13 @@ public class Main2Activity extends AppCompatActivity implements Transactions.OnF
         Transaction_linearLayout.addView(layout2);
     }*/
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main2, menu);
-        return true;
-    }
+	@Override public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.menu_main2, menu);
+		return true;
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+	@Override public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.action_settings:
 				return true;
@@ -195,30 +174,29 @@ public class Main2Activity extends AppCompatActivity implements Transactions.OnF
 				return true;
 		}
 		return super.onOptionsItemSelected(item);
-    }
+	}
 
-    @Override
-    public void onFragmentInteraction(Uri uri) {
+	@Override public void onFragmentInteraction(Uri uri) {
 
-    }
+	}
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
+	/**
+	 * A placeholder fragment containing a simple view.
+	 */
     /*public static class PlaceholderFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
-        //private static final String ARG_SECTION_NUMBER = "section_number";
+	//private static final String ARG_SECTION_NUMBER = "section_number";
 
-       // public PlaceholderFragment() {
-       // }
+	// public PlaceholderFragment() {
+	// }
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
+	/**
+	 * Returns a new instance of this fragment for the given section
+	 * number.
+	 */
        /* public static PlaceholderFragment newInstance(int sectionNumber) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -237,40 +215,36 @@ public class Main2Activity extends AppCompatActivity implements Transactions.OnF
         }
     }*/
 
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
-    public class PagerAdapter extends FragmentPagerAdapter {
-        int mnooftabes;
+	/**
+	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
+	 * one of the sections/tabs/pages.
+	 */
+	public class PagerAdapter extends FragmentPagerAdapter {
+		int mnooftabes;
 
-        public PagerAdapter(FragmentManager fm,int Numberoftabes) {
-            super(fm);
-            mnooftabes=Numberoftabes;
-        }
+		PagerAdapter(FragmentManager fm, int Numberoftabes) {
+			super(fm);
+			mnooftabes = Numberoftabes;
+		}
 
-        @Override
-        public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            switch(position){
-                case 0:
-                    Transactions transactions=new Transactions();
-                    return transactions;
-                case 1:
-                    Graphs graphs=new Graphs();
-                    return graphs;
-                default: return null;
+		@Override public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a PlaceholderFragment (defined as a static inner class below).
+			switch (position) {
+				case 0:
+					return new Transactions();
+				case 1:
+					return new Graphs();
+				default:
+					return null;
+			}
 
-            }
+			//return PlaceholderFragment.newInstance(position + 1);
+		}
 
-            //return PlaceholderFragment.newInstance(position + 1);
-        }
-
-        @Override
-        public int getCount() {
-            // Show 3 total pages.
-            return mnooftabes;
-        }
-    }
+		@Override public int getCount() {
+			// Show 3 total pages.
+			return mnooftabes;
+		}
+	}
 }
