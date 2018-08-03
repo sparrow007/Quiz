@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -62,6 +63,7 @@ public class Expense_Form extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private FloatingActionButton fab;
     private DatePickerDialog datePicker;
     private View fragmentLayout;
     ImageView Img_File;
@@ -166,7 +168,7 @@ public class Expense_Form extends Fragment {
         Delete_Button=(ImageButton)fragmentLayout.findViewById(R.id.Delete_Button);
         Delete_Button.setVisibility(View.GONE);
         Contact_Button=(ImageButton)fragmentLayout.findViewById(R.id.Contact_Button);
-        Camera_Button=(ImageButton)fragmentLayout.findViewById(R.id.Camera_Button);
+        //Camera_Button=(ImageButton)fragmentLayout.findViewById(R.id.Camera_Button);
         //requestPermissions(Manifest.permission.CAMERA,1111);
         Img_File=(ImageView)fragmentLayout.findViewById(R.id.Img_file);
         Img_File.setVisibility(View.GONE);
@@ -221,12 +223,12 @@ public class Expense_Form extends Fragment {
             }
         });
 
-        Camera_Button.setOnClickListener(new View.OnClickListener() {
+        /*Camera_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Onclick_Image_button();
             }
-        });
+        });*/
         More_TextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -248,6 +250,16 @@ public class Expense_Form extends Fragment {
                 cal.get(Calendar.DAY_OF_MONTH));
         datePicker.setCancelable(true);
         datePicker.setTitle("Select Date");
+        fab = (FloatingActionButton) fragmentLayout.findViewById(R.id.Fab_Camera_Button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();*/
+
+                Onclick_Image_button();
+            }
+        });
         
         
         
@@ -341,8 +353,7 @@ public class Expense_Form extends Fragment {
     Thread th= new Thread(){
         @Override
         public void run() {
-            final String[] COUNTRIES = new String[]{
-                    "balanced", "high-protein", "high-fiber", "low-fat", "low-carb", "low-sodium"};
+
             ArrayAdapter<String> contactAdapter=new ArrayAdapter<String>(getContext(),android.R.layout.simple_dropdown_item_1line,Contact_Names);
             AutoCompleteTextView autoCompleteContacts=(AutoCompleteTextView)fragmentLayout.findViewById(R.id.Notes_Edit);
 

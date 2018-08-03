@@ -190,8 +190,8 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
 
 
         TabLayout tab_layout=(TabLayout)findViewById(R.id.form_tabLayout);
-        tab_layout.addTab(tab_layout.newTab().setText("Expense"));
         tab_layout.addTab(tab_layout.newTab().setText("Income"));
+        tab_layout.addTab(tab_layout.newTab().setText("Expense"));
         tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         mViewPager = (ViewPager) findViewById(R.id.form_viewPager);
@@ -233,6 +233,7 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
             /*AmountEdit.setText(Updated_Amount);
             TitleEdit.setText(Updated_Title);
             dateEdit.setText(Updated_Date);*/
+
             adapter=new pageradapter(getSupportFragmentManager(),tab_layout.getTabCount(),
                     CardClicked,Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
         }else{
@@ -265,7 +266,13 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
         //Toast.makeText(this, Contact_list.size()+" Contact Names", Toast.LENGTH_SHORT).show();
 
         //th.run();
-
+        if (!TextUtils.isEmpty(CardClicked)) {
+            if(TextUtils.equals(Updated_Category,"Income")){
+             mViewPager.setCurrentItem(0);
+            }else{
+                mViewPager.setCurrentItem(1);
+            }
+        }
 
     }
 
@@ -780,15 +787,18 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
                // Return a PlaceholderFragment (defined as a static inner class below).
                switch(position){
 
-                   case 0:
+                   case 1:
                        Expense_Form expense_form=new Expense_Form();
                        if (!TextUtils.isEmpty(CardClicked)){
                            expense_form.setString(CardClicked,Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
                            return expense_form;
                        }else{ return expense_form;}
-                   case 1:
-                      Income_form income_form=new Income_form();
-                      return income_form;
+                   case 0:
+                       Income_form income_form=new Income_form();
+                       if (TextUtils.equals(Updated_Category,"Income")){
+                           income_form.setString(Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
+                           return income_form;
+                       }else{return income_form;}
                    default: return null;
 
                }

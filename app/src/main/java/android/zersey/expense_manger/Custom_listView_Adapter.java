@@ -56,7 +56,7 @@ public class Custom_listView_Adapter extends ArrayAdapter<Custom_items> {
                     category_logo.setImageResource(R.drawable.fuel);
                 }else if (customitems.getCategory().equals("Health")){
                     category_logo.setImageResource(R.drawable.health);
-                }else if (customitems.getCategory().equals("Clothing")){
+                }else if (customitems.getCategory().equals("Income")){
                     category_logo.setImageResource(R.drawable.salary);
                 }
 
