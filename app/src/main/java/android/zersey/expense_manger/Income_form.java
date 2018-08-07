@@ -9,6 +9,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,8 +20,13 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,12 +39,17 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.zersey.expense_manger.Data.Transaction_contract;
 import android.zersey.expense_manger.Data.Transactiondbhelper;
+import android.zersey.expense_manger.Data.Contactsdbhelper;
+import android.zersey.expense_manger.Data.Contacts_contract.Contacts_Entry;
 
 import com.github.florent37.materialtextfield.MaterialTextField;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -55,6 +68,8 @@ import static android.app.Activity.RESULT_OK;
 public class Income_form extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private boolean person_added=false;
+    private String Contact_Person_Name,Contact_Person_Number;
     private ImageView Img_File;
     private FloatingActionButton fab;
     private LinearLayout Contact_LinearLayout;
@@ -177,9 +192,420 @@ public class Income_form extends Fragment {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
 
-                Onclick_Image_button();
+                if(TextUtils.isEmpty(AutoCompleteContacts.getText().toString())){
+                    Onclick_Image_button();
+                }else {
+                    if (person_added == false) {
+                    final EditText Image_Link, Contact_number;
+                    LayoutInflater LI = LayoutInflater.from(getContext());
+                    View PromptsView = LI.inflate(R.layout.image_dialog, null);
+                    Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
+                    //Conact_number.setText(cNumber);
+                    Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+                    //Image_Link.setText(name);
+                    android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                    alertDialogBuilder.setView(PromptsView);
+                    final String Name = AutoCompleteContacts.getText().toString();
+                    if (extractNumber(Name).length() == 10) {
+                        Contact_number.setText(Name);
+                    } else {
+                        if (extractNumber(Name).length() == 0) {
+                            if (!TextUtils.isEmpty(Name)) {
+                                Image_Link.setText(Name);
+                            }
+                        }
+                    }
+                    alertDialogBuilder.setCancelable(true)
+                            .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Boolean cancel = false;
+                                    View focus_View = Image_Link;
+                                    String name = Image_Link.getText().toString();
+                                    String finalCNumber = Contact_number.getText().toString();
+                                    if (TextUtils.isEmpty(name)) {
+                                        Image_Link.setError("Required field");
+                                        focus_View = Image_Link;
+                                        cancel = true;
+                                    }
+                                    if (extractNumber(finalCNumber).length() >=10  &&  extractNumber(finalCNumber).length() <=10) {
+                                        Contact_number.setError("Required field");
+                                        focus_View = Contact_number;
+                                        cancel = true;
+                                    }
+                                    if (cancel) {
+                                        focus_View.requestFocus();
+
+                                    } else {
+
+                                        final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                        TextView tv = createContactTextView(name);
+                                        BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                        bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
+
+                                        sb.append(name);
+                                        sb.setSpan(new ImageSpan(bd), sb.length() - (name.length()), sb.length() - 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                        AutoCompleteContacts.setText(sb);
+
+
+                                        //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                        person_added = true;
+                                        Contact_Person_Name=name;
+                                        Contact_Person_Number=finalCNumber;
+                                        Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+
+                    android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                    alertDialog.show();
+                }else {Onclick_Image_button();}
+                }
             }
         });
+        TitleEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus==true) {
+                    if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
+
+                    } else {
+                        if (person_added == false) {
+                            final EditText Image_Link, Contact_number;
+                            LayoutInflater LI = LayoutInflater.from(getContext());
+                            View PromptsView = LI.inflate(R.layout.image_dialog, null);
+                            Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
+                            //Conact_number.setText(cNumber);
+                            Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+                            //Image_Link.setText(name);
+                            android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                            alertDialogBuilder.setView(PromptsView);
+                            final String Name = AutoCompleteContacts.getText().toString();
+                            if(extractNumber(Name).length()==10){Contact_number.setText(Name);
+                            }else{
+                                if (extractNumber(Name).length()==0){
+                                    if(!TextUtils.isEmpty(Name)){Image_Link.setText(Name);}
+                                }
+                            }
+                            alertDialogBuilder.setCancelable(true)
+                                    .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Boolean cancel=false;
+                                            View focus_View=Image_Link;
+                                            String name=Image_Link.getText().toString();
+                                            String finalCNumber= Contact_number.getText().toString();
+                                            if(TextUtils.isEmpty(name)){
+                                                Image_Link.setError("Required field");
+                                                focus_View=Image_Link;
+                                                cancel=true;
+                                            }
+                                            if(extractNumber(finalCNumber).length()==10){
+                                                Contact_number.setError("Required field");
+                                                focus_View=Contact_number;
+                                                cancel=true;
+                                            }
+                                            if(cancel){
+                                                focus_View.requestFocus();
+
+                                            }else {
+                                                final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                                TextView tv = createContactTextView(name);
+                                                BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                                bd.setBounds(0, 0, bd.getIntrinsicWidth(),bd.getIntrinsicHeight());
+
+                                                sb.append(name);
+                                                sb.setSpan(new ImageSpan(bd), sb.length()-(name.length()), sb.length()-1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                                AutoCompleteContacts.setText(sb);
+
+
+
+                                                //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                                person_added = true;
+                                                Contact_Person_Name=name;
+                                                Contact_Person_Number=finalCNumber;
+                                                Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }
+                    }
+                }
+            }
+        });
+
+
+        AutoCompleteContacts.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if(person_added){
+                    person_added=false;
+                    Contact_Person_Name="";
+                    Contact_Person_Number="";
+                }
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        AutoCompleteContacts.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+
+                }else {
+
+                }
+            }
+        });
+
+
+        AmountEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus==true) {
+                    if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
+
+                    } else {
+                        if (person_added == false) {
+                            final EditText Image_Link, Contact_number;
+                            LayoutInflater LI = LayoutInflater.from(getContext());
+                            View PromptsView = LI.inflate(R.layout.image_dialog, null);
+                            Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
+                            //Conact_number.setText(cNumber);
+                            Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+                            //Image_Link.setText(name);
+                            android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                            alertDialogBuilder.setView(PromptsView);
+                            String Name = AutoCompleteContacts.getText().toString();
+                            Name=Name.replace(",","");
+                            if(extractNumber(Name).length()==10){Contact_number.setText(Name);
+                            }else{
+                                if (extractNumber(Name).length()==0){
+                                    if(!TextUtils.isEmpty(Name)){Image_Link.setText(Name);}
+                                }
+                            }
+                            alertDialogBuilder.setCancelable(true)
+                                    .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Boolean cancel=false;
+                                            View focus_View=Image_Link;
+                                            String name=Image_Link.getText().toString();
+                                            String finalCNumber= Contact_number.getText().toString();
+                                            if(TextUtils.isEmpty(name)){
+                                                Image_Link.setError("Required field");
+                                                focus_View=Image_Link;
+                                                cancel=true;
+                                            }
+                                            if(extractNumber(finalCNumber).length()<10){
+                                                Contact_number.setError("Required field");
+                                                focus_View=Contact_number;
+                                                cancel=true;
+                                            }
+                                            if(cancel){
+                                                focus_View.requestFocus();
+
+                                            }else {
+                                                final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                                TextView tv = createContactTextView(name);
+                                                BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                                bd.setBounds(0, 0, bd.getIntrinsicWidth(),bd.getIntrinsicHeight());
+
+                                                sb.append(name);
+                                                sb.setSpan(new ImageSpan(bd), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                                AutoCompleteContacts.setText("");
+                                                AutoCompleteContacts.setText(sb);
+
+
+
+                                                //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                                person_added = true;
+                                                Contact_Person_Name=name;
+                                                Contact_Person_Number=finalCNumber;
+                                                Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+
+                                            }
+                                        }
+                                    });
+
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }else {Toast.makeText(getContext(),"Person was added"+AutoCompleteContacts.getText(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        });
+
+        dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus==true) {
+                    if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
+
+                    } else {
+                        if (person_added == false) {
+                            final EditText Image_Link, Contact_number;
+                            LayoutInflater LI = LayoutInflater.from(getContext());
+                            View PromptsView = LI.inflate(R.layout.image_dialog, null);
+                            Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
+                            //Conact_number.setText(cNumber);
+                            Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+                            //Image_Link.setText(name);
+                            android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                            alertDialogBuilder.setView(PromptsView);
+                            final String Name = AutoCompleteContacts.getText().toString();
+                            if(extractNumber(Name).length()==10){Contact_number.setText(Name);
+                            }else{
+                                if (extractNumber(Name).length()==0){
+                                    if(!TextUtils.isEmpty(Name)){Image_Link.setText(Name);}
+                                }
+                            }
+                            alertDialogBuilder.setCancelable(true)
+                                    .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Boolean cancel=false;
+                                            View focus_View=Image_Link;
+                                            String name=Image_Link.getText().toString();
+                                            String finalCNumber= Contact_number.getText().toString();
+                                            if(TextUtils.isEmpty(name)){
+                                                Image_Link.setError("Required field");
+                                                focus_View=Image_Link;
+                                                cancel=true;
+                                            }
+                                            if(extractNumber(finalCNumber).length()<10){
+                                                Contact_number.setError("Required field");
+                                                focus_View=Contact_number;
+                                                cancel=true;
+                                            }
+                                            if(cancel){
+                                                focus_View.requestFocus();
+
+                                            }else {
+                                                final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                                TextView tv = createContactTextView(name);
+                                                BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                                bd.setBounds(0, 0, bd.getIntrinsicWidth(),bd.getIntrinsicHeight());
+
+                                                sb.append(name);
+                                                sb.setSpan(new ImageSpan(bd), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                                AutoCompleteContacts.setText(sb);
+
+
+
+                                                //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                                person_added = true;
+                                                Contact_Person_Name=name;
+                                                Contact_Person_Number=finalCNumber;
+                                                Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }
+                    }
+                }
+            }
+        });
+
+        Amount_Due_Edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus==true) {
+                    if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
+
+                    } else {
+                        if (person_added == false) {
+                            final EditText Image_Link, Contact_number;
+                            LayoutInflater LI = LayoutInflater.from(getContext());
+                            View PromptsView = LI.inflate(R.layout.image_dialog, null);
+                            Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
+                            //Conact_number.setText(cNumber);
+                            Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+                            //Image_Link.setText(name);
+                            android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                            alertDialogBuilder.setView(PromptsView);
+                            final String Name = AutoCompleteContacts.getText().toString();
+                            if(extractNumber(Name).length()==10){Contact_number.setText(Name);
+                            }else{
+                                if (extractNumber(Name).length()==0){
+                                    if(!TextUtils.isEmpty(Name)){Image_Link.setText(Name);}
+                                }
+                            }
+                            alertDialogBuilder.setCancelable(true)
+                                    .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Boolean cancel=false;
+                                            View focus_View=Image_Link;
+                                            String name=Image_Link.getText().toString();
+                                            String finalCNumber= Contact_number.getText().toString();
+                                            if(TextUtils.isEmpty(name)){
+                                                Image_Link.setError("Required field");
+                                                focus_View=Image_Link;
+                                                cancel=true;
+                                            }
+                                            if(extractNumber(finalCNumber).length()<10){
+                                                Contact_number.setError("Required field");
+                                                focus_View=Contact_number;
+                                                cancel=true;
+                                            }
+                                            if(cancel){
+                                                focus_View.requestFocus();
+
+                                            }else {
+                                                final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                                TextView tv = createContactTextView(name);
+                                                BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                                bd.setBounds(0, 0, bd.getIntrinsicWidth(),bd.getIntrinsicHeight());
+
+                                                sb.append(name);
+                                                sb.setSpan(new ImageSpan(bd), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                                AutoCompleteContacts.setText(sb);
+
+
+
+                                                //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                                person_added = true;
+                                                Contact_Person_Name=name;
+                                                Contact_Person_Number=finalCNumber;
+                                                Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+                                    });
+
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }
+                    }
+                }
+            }
+        });
+
+
+
+
         datePicker = new DatePickerDialog(getContext(),
                 R.style.Theme_AppCompat_DayNight_Dialog, dateSetListener,
                 cal.get(Calendar.YEAR),
@@ -197,7 +623,78 @@ public class Income_form extends Fragment {
         Submit_Income.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Submit();
+
+                    if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
+                        Submit();
+                    } else {
+                        if (person_added == false) {
+                            final EditText Image_Link, Contact_number;
+                            LayoutInflater LI = LayoutInflater.from(getContext());
+                            View PromptsView = LI.inflate(R.layout.image_dialog, null);
+                            Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
+                            //Conact_number.setText(cNumber);
+                            Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
+                            //Image_Link.setText(name);
+                            android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                            alertDialogBuilder.setView(PromptsView);
+                            final String Name = AutoCompleteContacts.getText().toString();
+                            if(extractNumber(Name).length()==10){Contact_number.setText(Name);
+                            }else{
+                                if (extractNumber(Name).length()==0){
+                                    if(!TextUtils.isEmpty(Name)){Image_Link.setText(Name);}
+                                }
+                            }
+                            alertDialogBuilder.setCancelable(true)
+                                    .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            Boolean cancel=false;
+                                            View focus_View=Image_Link;
+                                            String name=Image_Link.getText().toString();
+                                           String finalCNumber= Contact_number.getText().toString();
+                                            if(TextUtils.isEmpty(name)){
+                                                Image_Link.setError("Required field");
+                                                focus_View=Image_Link;
+                                                cancel=true;
+                                            }
+                                            if(extractNumber(finalCNumber).length()<10){
+                                                Contact_number.setError("Required field");
+                                                focus_View=Contact_number;
+                                                cancel=true;
+                                            }
+                                            if(cancel){
+                                                focus_View.requestFocus();
+
+                                            }else {
+                                                final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                                TextView tv = createContactTextView(name);
+                                                BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                                bd.setBounds(0, 0, bd.getIntrinsicWidth(),bd.getIntrinsicHeight());
+
+                                                sb.append(name);
+                                                sb.setSpan(new ImageSpan(bd), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                                AutoCompleteContacts.setText(sb);
+
+
+
+                                                //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                                person_added = true;
+                                                Contact_Person_Name=name;
+                                                Contact_Person_Number=finalCNumber;
+                                                Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+                                            }
+                                        }
+
+                                    });
+
+                            android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                            alertDialog.show();
+                        }else {Submit();}
+                    }
+
+
+
             }
         });
         Delete_Button.setOnClickListener(new View.OnClickListener() {
@@ -261,8 +758,9 @@ public class Income_form extends Fragment {
             ArrayAdapter<String> contactAdapter=new ArrayAdapter<String>(getContext(),android.R.layout.simple_dropdown_item_1line,Contact_Names);
             AutoCompleteTextView autoCompleteContacts=(AutoCompleteTextView)fragmentLayout.findViewById(R.id.Contact_Income_AutoComplete);
 
-            autoCompleteContacts.setThreshold(1);
+
             autoCompleteContacts.setAdapter(contactAdapter);
+            //autoCompleteContacts.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         }
     };
 
@@ -326,6 +824,31 @@ public class Income_form extends Fragment {
                 focus.requestFocus();
 
             } else {
+                if(person_added){
+                    if(Check_Contacts(Contact_Person_Name,Contact_Person_Number)){
+                        Toast.makeText(getContext(), "Contact is already present in the database", Toast.LENGTH_LONG).show();
+                    }else{
+                        Contactsdbhelper mdbhelper = new Contactsdbhelper(getContext());
+                        SQLiteDatabase db = mdbhelper.getWritableDatabase();
+                        ContentValues values = new ContentValues();
+
+                        values.put(Contacts_Entry.Column_Contact_Name, Contact_Person_Name);
+                        values.put(Contacts_Entry.Column_Contact_Number,Contact_Person_Number);
+                        //values.put(Transaction_contract.Transaction_Entry.Column_Amount, "Rs " + Amount_text);
+                        //Log.d("Date created", DateEdit_text);
+                        //values.put(Transaction_contract.Transaction_Entry.Column_Date_Created, DateEdit_text);
+
+                        long newRowId = db.insert(Contacts_Entry.Table_name, null, values);
+                        if (newRowId == -1) {
+                            // If the row ID is -1, then there was an error with insertion.
+                            Toast.makeText(getContext(), "Error with saving Contact", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Otherwise, the insertion was successful and we can display a toast with the row ID.
+                            Toast.makeText(getContext(), "Contact saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }
                 if (!TextUtils.equals(Updated_Category,"Income")) {
                     String DateEdit_text = dateEdit.getText().toString();
                     //Custom_items items = new Custom_items(Category_text,
@@ -334,14 +857,13 @@ public class Income_form extends Fragment {
                     Transactiondbhelper mdbhelper = new Transactiondbhelper(getContext());
                     SQLiteDatabase db = mdbhelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
-                    //values.put(recipe_entry.Column_Recipe_Image,byteimage);
+
                     values.put(Transaction_contract.Transaction_Entry.Column_Title, Title_text);
                     values.put(Transaction_contract.Transaction_Entry.Column_Category, "Income");
                     values.put(Transaction_contract.Transaction_Entry.Column_Amount, "Rs " + Amount_text);
                     Log.d("Date created", DateEdit_text);
                     values.put(Transaction_contract.Transaction_Entry.Column_Date_Created, DateEdit_text);
-                    //values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
-                    //values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
+
                     long newRowId = db.insert(Transaction_contract.Transaction_Entry.Table_name, null, values);
                     if (newRowId == -1) {
                         // If the row ID is -1, then there was an error with insertion.
@@ -453,14 +975,85 @@ public class Income_form extends Fragment {
             Uri contactData = data.getData();
             Cursor c = getActivity().managedQuery(contactData, null, null, null, null);
             if (c.moveToFirst()) {
-                String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                if(TextUtils.isEmpty(AutoCompleteContacts.getText().toString())){
-                    AutoCompleteContacts.setText(name);
-                    //Material_Notes.setHasFocus(true);
-                }else {
-                    AutoCompleteContacts.append(" , " + name);
-                    //Material_Notes.setHasFocus(true);}
+                String cNumber=null;
+                final String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                String id =c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+                String hasPhone =c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+                if (hasPhone.equalsIgnoreCase("1")) {
+                    Cursor phones = getActivity().getContentResolver().query(
+                            ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null,
+                            ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ id,
+                            null, null);
+                    phones.moveToFirst();
+                    cNumber = phones.getString(phones.getColumnIndex("data1"));
+                    //System.out.println("number is:"+cNumber);
                 }
+                Log.d( "onActivityResult: ",cNumber);
+
+
+                AutoCompleteContacts.setText(name);
+                final EditText Image_Link,Contact_number;
+                LayoutInflater LI=LayoutInflater.from(getContext());
+                View PromptsView=LI.inflate(R.layout.image_dialog,null);
+                Contact_number=(EditText)PromptsView.findViewById(R.id.Contact_Number);
+                cNumber=cNumber.replace("+","");
+                cNumber=cNumber.replace(" ","");
+                Contact_number.setText(cNumber);
+                Image_Link=(EditText)PromptsView.findViewById(R.id.Image_Link);
+                Image_Link.setText(name);
+                android.support.v7.app.AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(getContext());
+
+                alertDialogBuilder.setView(PromptsView);
+                final String finalCNumber = cNumber;
+                alertDialogBuilder.setCancelable(true)
+                        .setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                Boolean cancel=false;
+                                View focus_View=Image_Link;
+                                String name=Image_Link.getText().toString();
+                                String finalCNumber= Contact_number.getText().toString();
+                                if(TextUtils.isEmpty(name)){
+                                    Image_Link.setError("Required field");
+                                    focus_View=Image_Link;
+                                    cancel=true;
+                                }
+                                if(extractNumber(finalCNumber).length()>13){
+                                    Contact_number.setError("Required field");
+                                    focus_View=Contact_number;
+                                    cancel=true;
+                                }
+                                if(cancel){
+                                    Log.d( "onClick: ",extractNumber(finalCNumber).length()+"");
+                                    focus_View.requestFocus();
+
+                                }else {
+                                    Log.d( "onClick: ",name);
+                                    final SpannableStringBuilder sb = new SpannableStringBuilder();
+                                    TextView tv = createContactTextView(name);
+                                    BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
+                                    bd.setBounds(0, 0, bd.getIntrinsicWidth(),bd.getIntrinsicHeight());
+
+                                    sb.append(name);
+                                    sb.setSpan(new ImageSpan(bd), 0, sb.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    AutoCompleteContacts.setText(sb);
+
+
+
+                                    //AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
+                                    person_added = true;
+                                    Contact_Person_Name=name;
+                                    Contact_Person_Number=finalCNumber;
+                                    Toast.makeText(getContext(), name + "\n" + extractNumber(finalCNumber) + "\nwas added", Toast.LENGTH_LONG).show();
+
+                                }
+                            }
+                        });
+
+                android.support.v7.app.AlertDialog alertDialog=alertDialogBuilder.create();
+                alertDialog.show();
             }
         }
     }
@@ -534,6 +1127,111 @@ public class Income_form extends Fragment {
         }
         // Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
         //Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
+
+    }
+
+
+    public static String extractNumber(final String str) {
+
+        if(str == null || str.isEmpty()) return "";
+
+        StringBuilder sb = new StringBuilder();
+        boolean found = false;
+        for(char c : str.toCharArray()){
+            if(Character.isDigit(c)){
+                sb.append(c);
+                found = true;
+            } else if(found){
+                // If we already found a digit before and this char is not a digit, stop looping
+                break;
+            }
+        }
+
+        return sb.toString();
+    }
+
+
+    public TextView createContactTextView(String text){
+        //creating textview dynamically
+        TextView tv = new TextView(getContext());
+        tv.setText(text);
+        tv.setTextSize(20);
+        tv.setBackgroundResource(R.color.newdarkblue);
+        //tv.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_search_api_holo_light, 0);
+        return tv;
+    }
+
+    public static Object convertViewToDrawable(View view) {
+        int spec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+        view.measure(spec, spec);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+        Bitmap b = Bitmap.createBitmap(view.getMeasuredWidth(), view.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        c.translate(-view.getScrollX(), -view.getScrollY());
+        view.draw(c);
+        view.setDrawingCacheEnabled(true);
+        Bitmap cacheBmp = view.getDrawingCache();
+        Bitmap viewBmp = cacheBmp.copy(Bitmap.Config.ARGB_8888, true);
+        view.destroyDrawingCache();
+        return new BitmapDrawable(viewBmp);
+
+    }
+
+    public Boolean Check_Contacts(String contactname,String contactnumber){
+        ArrayList<Custom_Contact_items> Item_list=new ArrayList<>();
+        Contactsdbhelper mDbHelper=new Contactsdbhelper(getContext());
+        SQLiteDatabase db1 = mDbHelper.getReadableDatabase();
+        //final  ArrayList<String> labellist=new ArrayList<>();
+        // Define a projection that specifies which columns from the database
+        // you will actually use after this query.
+        String[] projection = {
+                Contacts_Entry._ID,
+                Contacts_Entry.Column_Contact_Name,
+                Contacts_Entry.Column_Contact_Number
+                };
+
+        //Cursor cursor=db1.rawQuery("SELECT * FROM "+recipe_entry.Table_name,null);
+        // Perform a query on the pets table
+        Cursor cursor = db1.query(
+                Contacts_Entry.Table_name,   // The table to query
+                projection,            // The columns to return
+                null,                  // The columns for the WHERE clause
+                null,                  // The values for the WHERE clause
+                null,                  // Don't group the rows
+                null,                  // Don't filter by row groups
+                null);                   // The sort order
+
+
+        try {
+
+
+            cursor.moveToFirst();
+            // Iterate through all the returned rows in the cursor
+            while (!cursor.isAfterLast()) {
+                // Use that index to extract the String or Int value of the word
+                // at the current row the cursor is on.
+                int currentID = cursor.getInt(cursor.getColumnIndex(Contacts_Entry._id));
+                String Name = cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Name));
+                //Log.d( "current label ",currentName);
+                String Number = cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Number));
+                if(TextUtils.equals(Number,contactnumber)){
+                    return true;
+                }
+                Custom_Contact_items CCItem = new Custom_Contact_items(Name,Number);
+                Item_list.add(CCItem);
+
+                cursor.moveToNext();
+
+            }
+
+                for(int i=0;i<Item_list.size();i++){
+
+                }
+
+            }catch (Exception e){e.printStackTrace();}
+
+return false;
 
     }
 

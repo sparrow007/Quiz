@@ -22,8 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.github.mikephil.charting.charts.BarChart;
+
 public class Main2Activity extends AppCompatActivity
-	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener {
+	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener{
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -75,6 +77,10 @@ public class Main2Activity extends AppCompatActivity
 				@Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 					// set item as selected to persist highlight
 					menuItem.setChecked(true);
+					if (menuItem.getItemId()==R.id.nav_gallery){
+						Intent i =new Intent(Main2Activity.this,Contact_List_Activity.class);
+						startActivity(i);
+					}
 					// close drawer when item is tapped
 					mDrawerLayout.closeDrawers();
 
@@ -105,13 +111,32 @@ public class Main2Activity extends AppCompatActivity
 		adapter = new PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount());
 		mViewPager.setAdapter(adapter);
 		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                Fragment fragment=((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(position);
+                if(position==1){
+                    fragment.onResume();
+                }
+            }
 
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
 			}
 
 			@Override public void onTabUnselected(TabLayout.Tab tab) {
+
 
 			}
 
@@ -180,6 +205,8 @@ public class Main2Activity extends AppCompatActivity
 
 	}
 
+
+
 	/**
 	 * A placeholder fragment containing a simple view.
 	 */
@@ -242,9 +269,14 @@ public class Main2Activity extends AppCompatActivity
 			//return PlaceholderFragment.newInstance(position + 1);
 		}
 
+
 		@Override public int getCount() {
 			// Show 3 total pages.
 			return mnooftabes;
 		}
 	}
+
+
+
 }
+

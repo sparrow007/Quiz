@@ -19,6 +19,8 @@ public class Transaction_contract {
         public final static String Column_Date_Created="DateCreated";
         public final static String Column_Notes="Notes";
         public final static String Column_Date_Updated="DateUpdated";
-        public final static String Column_Image="Image";      }
+        public final static String Column_Image="Image";}
+
+
 
 }
