@@ -98,7 +98,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		while (cursor.moveToNext()) {
 			int currentID =
 				cursor.getInt(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.ID));
-			Log.d("hueh", "getAllEntries: " + currentID);
 			String title = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
 			//Log.d( "current label ",currentName);
@@ -120,7 +119,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 		cursor.close();
-		Log.d("hueh", "getAllEntries: " + list.size());
 		return list;
 	}
 }

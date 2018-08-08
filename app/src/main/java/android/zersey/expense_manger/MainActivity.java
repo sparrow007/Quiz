@@ -742,7 +742,6 @@ public void Contact_Button(View view){
 					}
 				case 0:
 					Income_form income_form = new Income_form();
-					Log.d("hueh", "getItem: " + Updated_Title);
 					if (Updated_Type.equalsIgnoreCase("income")) {
 						income_form.setString(Updated_Title, Updated_Amount, Updated_Date,
 							Updated_Category, Updated_Id);

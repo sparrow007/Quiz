@@ -74,7 +74,6 @@ public class Transactions extends Fragment {
 		mDbHelper = new TransactionDbHelper(getContext());
 		Item_list = new ArrayList<>();
 		Item_list.addAll(mDbHelper.getAllEntries());
-		Log.d("hueh", "onCreate: " + "Itemlist size: " + Item_list.size());
 		// Required empty public constructor
 	}
 

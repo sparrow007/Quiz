@@ -67,7 +67,6 @@ public class Util {
 					IncomeModel model = JsonHandler.handleSingleReminder(context, obj);
 					list.add(model);
 					rb.createEntry(model);
-					Log.d("hueh", "doInBackground: " + list.size());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
