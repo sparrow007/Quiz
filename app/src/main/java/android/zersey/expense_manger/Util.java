@@ -64,7 +64,7 @@ public class Util {
 				JsonArray array = response.body().get("entries").getAsJsonArray();
 				for (int i = 0; i < array.size(); i++) {
 					JsonObject obj = array.get(i).getAsJsonObject();
-					IncomeModel model = JsonHandler.handleSingleReminder(context, obj);
+					IncomeModel model = JsonHandler.handleSingleReminder(obj);
 					list.add(model);
 					rb.createEntry(model);
 				}

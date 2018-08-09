@@ -103,19 +103,22 @@ public class Expense_Form extends Fragment {
 	private String mParam2;
 
 	private OnFragmentInteractionListener mListener;
+	private int pos;
 
 	public Expense_Form() {
 		// Required empty public constructor
 	}
 
 	public void setString(String cardClicked, String updated_Title, String updated_Amount,
-		String updated_Date, String updated_Category, int id) {
+		String updated_Date, String updated_Category, int id, int pos) {
 		CardClicked = cardClicked;
 		Updated_Title = updated_Title;
 		Updated_Amount = updated_Amount;
 		Updated_Date = updated_Date;
 		Updated_Category = updated_Category;
 		Updated_Id = id;
+		this.pos = pos;
+
 		// Required empty public constructor
 	}
 
@@ -178,7 +181,7 @@ public class Expense_Form extends Fragment {
 		Img_File = (ImageView) fragmentLayout.findViewById(R.id.Img_file);
 		Img_File.setVisibility(View.GONE);
 		dateEdit = (EditText) fragmentLayout.findViewById(R.id.Date_Edit);
-		dateEdit.setText(day_x + " " + Months[month_x] + " " + year_x);
+		dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
 		TitleEdit = (EditText) fragmentLayout.findViewById(R.id.Title_Edit);
 		AmountEdit = (EditText) fragmentLayout.findViewById(R.id.Amount_Edit);
 		Amount_Due_Edit = (EditText) fragmentLayout.findViewById(R.id.Amount_Due_Edit);
@@ -1555,7 +1558,7 @@ public class Expense_Form extends Fragment {
                      }else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)-1 ){
                          dateEdit.setText("Yesterday");
                      }else{ dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);}*/
-				dateEdit.setText(dayOfMonth + " " + Months[month] + " " + year);
+				dateEdit.setText(year_x + "-" + month_x + "-" + day_x);
 			}
 		};
 
@@ -1677,7 +1680,7 @@ public class Expense_Form extends Fragment {
 					expenseModel.setCatId(Updated_Category);
 					expenseModel.setId(Updated_Id);
 
-					new ServerUtil(getContext()).updateEntry(expenseModel);
+					new ServerUtil(getContext()).updateEntry(pos, expenseModel);
 					//
 					//
 					//TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
@@ -1702,11 +1705,7 @@ public class Expense_Form extends Fragment {
 	}
 
 	public void Delete_Button() {
-		TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
-		SQLiteDatabase db = mdbhelper.getWritableDatabase();
-		// ContentValues values = new ContentValues();
-		db.delete(TransactionDbContract.Transaction_Entry.TABLE_NAME,
-			TransactionDbContract.Transaction_Entry.ID + " = ?", new String[] { "" + Updated_Id });
+		new ServerUtil(getContext()).deleteEntry(pos, Updated_Id);
 		Intent intent = new Intent(getContext(), Main2Activity.class);
 		startActivity(intent);
 	}

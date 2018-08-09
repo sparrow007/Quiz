@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
 	private ViewPager mViewPager;
 	private pageradapter adapter;
 	private String Updated_Type = "";
+	private int pos;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity
 		mViewPager = (ViewPager) findViewById(R.id.form_viewPager);
 
 		CardClicked = getIntent().getStringExtra("CardClicked");
+		pos = getIntent().getIntExtra("pos", -1);
 		if (!TextUtils.isEmpty(CardClicked)) {
           /*  Delete_Button.setVisibility(View.VISIBLE);
             Material_Title.setHasFocus(true);
@@ -735,7 +737,7 @@ public void Contact_Button(View view){
 					Expense_Form expense_form = new Expense_Form();
 					if (Updated_Type.equalsIgnoreCase("expense")) {
 						expense_form.setString(CardClicked, Updated_Title, Updated_Amount,
-							Updated_Date, Updated_Category, Updated_Id);
+							Updated_Date, Updated_Category, Updated_Id, pos);
 						return expense_form;
 					} else {
 						return expense_form;
@@ -744,7 +746,7 @@ public void Contact_Button(View view){
 					Income_form income_form = new Income_form();
 					if (Updated_Type.equalsIgnoreCase("income")) {
 						income_form.setString(Updated_Title, Updated_Amount, Updated_Date,
-							Updated_Category, Updated_Id);
+							Updated_Category, Updated_Id, pos);
 						return income_form;
 					} else {
 						return income_form;

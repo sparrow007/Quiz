@@ -83,18 +83,20 @@ public class Income_form extends Fragment {
 	private String mParam2;
 
 	private OnFragmentInteractionListener mListener;
+	private int pos;
 
 	public Income_form() {
 		// Required empty public constructor
 	}
 
 	public void setString(String updated_Title, String updated_Amount, String updated_Date,
-		String updated_Category, int id) {
+		String updated_Category, int id, int pos) {
 		Updated_Title = updated_Title;
 		Updated_Amount = updated_Amount;
 		Updated_Date = updated_Date;
 		Updated_Category = updated_Category;
 		Updated_Id = id;
+		this.pos = pos;
 		// Required empty public constructor
 	}
 
@@ -147,7 +149,8 @@ public class Income_form extends Fragment {
 			(MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount_Due_Income);
 		Material_Amount_Due.setVisibility(View.GONE);
 		dateEdit = (EditText) fragmentLayout.findViewById(R.id.Date_Income_Edit);
-		dateEdit.setText(day_x + " " + Months[month_x] + " " + year_x);
+		//dateEdit.setText(day_x + " " + Months[month_x] + " " + year_x);
+		dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
 		Delete_Button = (ImageButton) fragmentLayout.findViewById(R.id.Delete_Income_Button);
 		Delete_Button.setVisibility(View.GONE);
 		//Camera_Button=(ImageButton)fragmentLayout.findViewById(R.id.Camera_Income_Button);
@@ -777,7 +780,9 @@ public class Income_form extends Fragment {
                      }else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)-1 ){
                          dateEdit.setText("Yesterday");
                      }else{ dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);}*/
-				dateEdit.setText(dayOfMonth + " " + Months[month] + " " + year);
+				//dateEdit.setText(dayOfMonth + " " + Months[month] + " " + year);
+				dateEdit.setText(year_x + "-" + month_x + "-" + day_x);
+
 			}
 		};
 
@@ -846,7 +851,7 @@ public class Income_form extends Fragment {
 			cancel = true;
 		}
 
-		if (cancel == true) {
+		if (cancel) {
 			focus.requestFocus();
 		} else {
 			if (person_added) {
@@ -914,7 +919,7 @@ public class Income_form extends Fragment {
 				incomeModel.setPaidAtDate(Updated_Date);
 				incomeModel.setId(Updated_Id);
 
-				new ServerUtil(getContext()).updateEntry(incomeModel);
+				new ServerUtil(getContext()).updateEntry(pos, incomeModel);
 
 				//	TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
 				//	SQLiteDatabase db = mdbhelper.getWritableDatabase();
@@ -976,11 +981,7 @@ public class Income_form extends Fragment {
 	}
 
 	public void Delete_Button() {
-		TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
-		SQLiteDatabase db = mdbhelper.getWritableDatabase();
-		// ContentValues values = new ContentValues();
-		db.delete(TransactionDbContract.Transaction_Entry.TABLE_NAME,
-			TransactionDbContract.Transaction_Entry.ID + " = ?", new String[] { "" + Updated_Id });
+		new ServerUtil(getContext()).deleteEntry(pos, Updated_Id);
 		Intent intent = new Intent(getContext(), Main2Activity.class);
 		startActivity(intent);
 	}

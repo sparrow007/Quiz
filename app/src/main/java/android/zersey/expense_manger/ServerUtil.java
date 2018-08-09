@@ -37,13 +37,28 @@ public class ServerUtil {
 		});
 	}
 
-	public void updateEntry(final IncomeModel incomeModel) {
+	public void updateEntry(final int pos, final IncomeModel incomeModel) {
 		Call<JsonObject> result = JsonHandler.updateEntry(context, incomeModel);
 		result.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
-				mDbHelper.updateEntry(incomeModel);
+				mDbHelper.updateEntry(pos, incomeModel);
+			}
+
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+				t.printStackTrace();
+			}
+		});
+	}
+
+	public void deleteEntry(final int pos, final int id){
+		Call<JsonObject> result = JsonHandler.deleteEntry(context, id);
+		result.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+				JsonObject object = response.body();
+				mDbHelper.deleteEntry(pos, id);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {

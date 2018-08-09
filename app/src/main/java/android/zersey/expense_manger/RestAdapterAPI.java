@@ -63,10 +63,10 @@ public interface RestAdapterAPI {
 	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
 
 	@GET("/Split_bills/fetch_income_expense/{id}") Call<JsonObject> fetchSpecificUserEntry(
-		@Path("id") String id);
+		@Path("id") int id);
 
 	@GET("/Split_bills/delete_income_expense/{id}") Call<JsonObject> deleteSpecificUserEntry(
-		@Path("id") String id);
+		@Path("id") int id);
 
 	@FormUrlEncoded @POST("/Split_bills/report_income_expense_by_filter")
 	Call<JsonObject> reportIncomeExpense(@Field("payer_id") String payerId);

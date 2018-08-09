@@ -45,13 +45,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				// code goes here
 				Transactions.adapter.addItem(model);
 			}
 		});
 	}
 
-	public void updateEntry(IncomeModel model) {
+	public void updateEntry(final int pos, final IncomeModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
@@ -62,6 +61,23 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
 			TransactionDbContract.Transaction_Entry.ID + "=" + model.getId(), null);
+		new Handler(Looper.getMainLooper()).post(new Runnable() {
+			public void run() {
+				Transactions.adapter.updateItem(pos, model);
+			}
+		});
+	}
+
+	public void deleteEntry(final int pos, int id){
+		SQLiteDatabase db = getWritableDatabase();
+		db.delete(TransactionDbContract.Transaction_Entry.TABLE_NAME,
+			TransactionDbContract.Transaction_Entry.ID + " = ?", new String[] { "" + id });
+
+		new Handler(Looper.getMainLooper()).post(new Runnable() {
+			public void run() {
+				Transactions.adapter.deleteItem(pos);
+			}
+		});
 	}
 
 	public int getEntriesCount() {

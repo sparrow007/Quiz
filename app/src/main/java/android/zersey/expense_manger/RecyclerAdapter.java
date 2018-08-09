@@ -3,7 +3,6 @@ package android.zersey.expense_manger;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,9 +72,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		return list.size();
 	}
 
-	public void addItem(IncomeModel model){
+	public void addItem(IncomeModel model) {
 		list.add(model);
-notifyDataSetChanged();	}
+		notifyDataSetChanged();
+	}
+
+	public void updateItem(int pos, IncomeModel model) {
+		if (pos != -1) {
+			list.set(pos, model);
+			notifyItemChanged(pos);
+		}
+	}
+
+	public void deleteItem(int pos) {
+		if (pos != -1) {
+			list.remove(pos);
+			notifyItemRemoved(pos);
+		}
+	}
 
 	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 		TextView customcategory, customamount, customdate, customtitle;
@@ -93,6 +107,7 @@ notifyDataSetChanged();	}
 
 		@Override public void onClick(View view) {
 			Intent i = new Intent(view.getContext(), MainActivity.class);
+			i.putExtra("pos", getAdapterPosition());
 			i.putExtra("_ID", list.get(getAdapterPosition()).getId());
 			i.putExtra("CardClicked", "Yes");
 			i.putExtra("Title", list.get(getAdapterPosition()).getTitle());
