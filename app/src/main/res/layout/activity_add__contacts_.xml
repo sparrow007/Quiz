@@ -7,7 +7,57 @@
     android:layout_height="match_parent"
     tools:context=".Add_Contacts_Activity"
     >
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?android:attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" >
+            <ImageButton
+                android:layout_marginRight="10dp"
+                android:id="@+id/back"
+                android:layout_gravity="center_vertical|left"
+                android:background="@android:color/transparent"
+                android:onClick="backpress"
+                android:scaleType="centerCrop"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/back"/>
+            <TextView
+                android:textColor="#ffffff"
+                android:textStyle="bold"
+                android:textSize="20dp"
+                android:layout_marginLeft="5dp"
+                android:gravity="center_vertical"
+                android:layout_gravity="center_vertical|left"
+                android:text="Add Contacts"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <ImageButton
+                android:visibility="gone"
+                android:layout_marginRight="10dp"
+                android:id="@+id/Delete_Contact_Button"
+                android:layout_gravity="center_vertical|right"
+                android:background="@android:color/transparent"
+                android:onClick="Delete_Button"
+                android:scaleType="centerCrop"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/delete"/>
+
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
     <LinearLayout
+        android:layout_marginTop="?android:attr/actionBarSize"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -62,7 +112,19 @@
                 android:hint="Number" />
         </com.github.florent37.materialtextfield.MaterialTextField>
 
+            <TextView
+                android:textColor="#000000"
+                android:padding="5dp"
+                android:layout_margin="10dp"
+                android:textSize="15sp"
+                android:onClick="Add_Address"
+                android:background="@android:color/transparent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add Address"/>
+
         <com.github.florent37.materialtextfield.MaterialTextField
+            android:visibility="gone"
             app:mtf_hasFocus="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,7 +144,19 @@
                 android:hint="Address" />
         </com.github.florent37.materialtextfield.MaterialTextField>
 
+        <TextView
+            android:textColor="#000000"
+            android:padding="5dp"
+            android:layout_margin="10dp"
+            android:textSize="15sp"
+            android:onClick="Add_Email"
+            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Email"/>
+
         <com.github.florent37.materialtextfield.MaterialTextField
+            android:visibility="gone"
             app:mtf_hasFocus="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -102,7 +176,19 @@
                 android:hint="Email Id" />
         </com.github.florent37.materialtextfield.MaterialTextField>
 
+        <TextView
+            android:textColor="#000000"
+            android:padding="5dp"
+            android:layout_margin="10dp"
+            android:textSize="15sp"
+            android:onClick="Add_Company"
+            android:background="@android:color/transparent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Company"/>
+
         <com.github.florent37.materialtextfield.MaterialTextField
+            android:visibility="gone"
             app:mtf_hasFocus="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,7 +215,7 @@
     </LinearLayout>
         </ScrollView>
         <Button
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:elevation="2dp"

@@ -49,11 +49,12 @@
         <activity
             android:name=".Add_Contacts_Activity"
             android:label="Add Contacts"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".Contact_List_Activity"
             android:label="Contacts"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

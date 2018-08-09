@@ -103,8 +103,9 @@ public class Main2Activity extends AppCompatActivity
 		//        Image_uri=Uri.parse(getIntent().getStringExtra("Image"));
 
 		TabLayout tab_layout = findViewById(R.id.Tab_layout);
+
+		tab_layout.addTab(tab_layout.newTab().setText("Dashboard"));
 		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
-		tab_layout.addTab(tab_layout.newTab().setText("Graphs"));
 		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 		mViewPager = findViewById(R.id.container);
@@ -115,9 +116,9 @@ public class Main2Activity extends AppCompatActivity
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 Fragment fragment=((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(position);
-                if(position==1){
+               /* if(position==0){
                     fragment.onResume();
-                }
+                }*/
             }
 
             @Override
@@ -258,9 +259,9 @@ public class Main2Activity extends AppCompatActivity
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
 			switch (position) {
-				case 0:
-					return new Transactions();
 				case 1:
+					return new Transactions();
+				case 0:
 					return new Graphs();
 				default:
 					return null;

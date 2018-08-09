@@ -272,7 +272,6 @@
                     app:mtf_labelColor="#666"
                     >
                     <EditText
-                        android:onClick="onclick_date"
                         android:id="@+id/Date_Edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -338,7 +337,6 @@
 
 
     <ImageButton
-        android:onClick="Contact_Button"
         android:id="@+id/Contact_Button"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -388,7 +386,6 @@
 
                 <ImageButton
                     android:layout_margin="20dp"
-                    android:onClick="Delete_Button"
                     android:id="@+id/Delete_Button"
                     android:layout_gravity="center_vertical|right"
                     android:background="@android:color/transparent"
@@ -396,27 +393,27 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/delete"/>
+                <TextView
+                    android:padding="5dp"
+                    android:textColor="#000000"
+                    android:textSize="12sp"
+                    android:text="More"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:background="@android:color/transparent"
+                    android:id="@+id/MoreButton"
+                    />
 
             </LinearLayout>
 
         </ScrollView>
-    <TextView
-        android:padding="5dp"
-        android:textColor="#000000"
-        android:textSize="12sp"
-        android:text="More"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal|center_vertical"
-        android:gravity="center_horizontal|center_vertical"
-        android:onClick="MoreButton"
-        android:background="@android:color/transparent"
-        android:id="@+id/MoreButton"
-        />
+
         <Button
-            android:background="?attr/colorPrimary"
+            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:elevation="2dp"
@@ -428,7 +425,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/Fab_Camera_Button"
-        android:background="?attr/colorPrimary"
+        android:background="@color/colorPrimary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"

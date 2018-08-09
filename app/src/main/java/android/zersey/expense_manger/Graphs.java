@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,24 +14,45 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 import android.zersey.expense_manger.Data.Transaction_contract;
 import android.zersey.expense_manger.Data.Transactiondbhelper;
 
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.WindowManager;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+import android.widget.Toast;
 import com.daimajia.androidanimations.library.Techniques;
 import com.daimajia.androidanimations.library.YoYo;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.Legend.LegendPosition;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -39,6 +61,8 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.github.mikephil.charting.interfaces.datasets.IDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.github.mikephil.charting.utils.MPPointF;
@@ -84,14 +108,19 @@ import java.util.List;
  * Use the {@link Graphs#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Graphs extends Fragment implements OnChartValueSelectedListener {
+public class Graphs extends Fragment implements OnChartValueSelectedListener,OnChartGestureListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    //private Float Entertainment_Expense,Clothing_Expense,Food_Expense,Fuel_Expense,Health_expense;
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private LineChart mlineChart;
     private PieChart pieChart;
+    private ArrayList<Entry> Line_Entries;
     private List<BarEntry> BarChart_Entries ;
     private ArrayList<PieEntry> Item_list;
+    private ArrayList<Expense_Info> Expense_List;
+    private ArrayList<Income_Info> Income_List;
     private Transactiondbhelper mDbHelper ;
     private Calendar cal;
     private ArrayList<Integer> colors ;
@@ -100,6 +129,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
     private String mParam1;
     private BarChart mChart;
     private String mParam2;
+    //private ArrayList<Float> saving_amount;
     private String[] Months={"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"};
     private OnFragmentInteractionListener mListener;
 
@@ -136,7 +166,10 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
         Item_list=new ArrayList<>();
         colors = new ArrayList<>();
         cal=Calendar.getInstance();
-
+        Line_Entries=new ArrayList<>();
+        Expense_List=new ArrayList<>();
+        Income_List=new ArrayList<>();
+        //saving_amount=new ArrayList<>();
         //pieDataSet=new PieDataSet()
     }
 
@@ -145,6 +178,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragmentLayout=inflater.inflate(R.layout.fragment_graphs, container, false);
+        mlineChart=(LineChart)fragmentLayout.findViewById(R.id.Savings_Chart);
         pieChart=(PieChart)fragmentLayout.findViewById(R.id.Expense_Chart);
         mChart = fragmentLayout.findViewById(R.id.Income_Chart);
         BarChart_Entries = new ArrayList<>();
@@ -154,18 +188,57 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
         day_x=cal.get(Calendar.DAY_OF_MONTH);
         mChart.setDrawBarShadow(false);
         mChart.setDrawValueAboveBar(true);
-
         mChart.getDescription().setEnabled(false);
-
-        // if more than 60 entries are displayed in the chart, no values will be
-        // drawn
         mChart.setMaxVisibleValueCount(60);
-
-        // scaling can now only be done on x- and y-axis separately
         mChart.setPinchZoom(false);
-
         mChart.setDrawGridBackground(false);
         // mChart.setDrawYLabels(false);
+
+
+
+
+        mlineChart.setOnChartGestureListener(this);
+        mlineChart.setOnChartValueSelectedListener(this);
+        mlineChart.setDrawGridBackground(false);
+        mlineChart.getDescription().setEnabled(false);
+        mlineChart.setTouchEnabled(true);
+        mlineChart.setDragEnabled(true);
+        mlineChart.setScaleEnabled(true);
+        mlineChart.setPinchZoom(true);
+
+
+        MyMarkerView mv1 = new MyMarkerView(getContext(), R.layout.custom_marker_view);
+        mv1.setChartView(mlineChart); // For bounds control
+        mlineChart.setMarker(mv1); // Set the marker to the chart
+
+        // x-axis limit line
+        LimitLine llXAxis = new LimitLine(10f, "Index 10");
+        llXAxis.setLineWidth(4f);
+        llXAxis.enableDashedLine(10f, 10f, 0f);
+        llXAxis.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+        llXAxis.setTextSize(10f);
+
+        XAxis xAxis1 = mlineChart.getXAxis();
+        xAxis1.enableGridDashedLine(10f, 10f, 0f);
+        xAxis1.setDrawGridLines(false);
+        //xAxis.setValueFormatter(new MyCustomXAxisValueFormatter());
+        //xAxis.addLimitLine(llXAxis); // add x-axis limit line
+
+
+        //Typeface tf = Typeface.createFromAsset(getr.getAssets(), "OpenSans-Regular.ttf");
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(mChart);
 
@@ -250,9 +323,9 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
 
 
         try {
-
-
-
+            Line_Entries.add(new Entry(0, 0f));
+            int Income_date=0,Total_Expense_PM=0,Total_Income_PM=0;
+            Float Entertainment_Expense=0f,Clothing_Expense=0f,Food_Expense=0f,Fuel_Expense=0f,Health_expense=0f,Income=0f;
             cursor.moveToFirst();
             // Iterate through all the returned rows in the cursor
             while (!cursor.isAfterLast()) {
@@ -267,39 +340,13 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                 String dateCreated = cursor.getString(cursor.getColumnIndex(Transaction_contract.Transaction_Entry.Column_Date_Created));
                 //Character temp=dateCreated.substring(0,1);
                 //if(temp.){}
-                int Income_date= Integer.parseInt(extractNumber(dateCreated));
-                    Current_day=Income_date;
-                Log.d("Income Date",Income_date+"");
-                if(dateCreated.contains(Months[1])){ Income_date=Income_date+31;
-                    Current_month=2;
-                }else if(dateCreated.contains(Months[2])){
-                    Income_date=Income_date+60;
-                    Current_month=3;
-                }else if(dateCreated.contains(Months[3])){ Income_date=Income_date+91;
-                    Current_month=4;
-                }else if(dateCreated.contains(Months[4])){ Income_date=Income_date+121;
-                    Current_month=5;
-                }else if(dateCreated.contains(Months[5])){ Income_date=Income_date+152;
-                    Current_month=6;
-                }else if(dateCreated.contains(Months[6])){ Income_date=Income_date+182;
-                    Current_month=7;
-                }else if(dateCreated.contains(Months[7])){ Income_date=Income_date+213;
-                    Current_month=8;
-                }else if(dateCreated.contains(Months[8])){ Income_date=Income_date+243;
-                    Current_month=9;
-                }else if(dateCreated.contains(Months[9])){ Income_date=Income_date+274;
-                    Current_month=10;
-                }else if(dateCreated.contains(Months[10])){ Income_date=Income_date+304;
-                    Current_month=11;
-                }else if(dateCreated.contains(Months[11])){ Income_date=Income_date+335;
-                    Current_month=2;}else{
-                    Current_month=1;
-                }
 
+                Current_day=Integer.parseInt(extractNumber(dateCreated));
                 Custom_items csitem=new Custom_items(category,title,amount,dateCreated);
                 //Item_list.add(new PieEntry());
                 amount=amount.replace("Rs ","");
                Float number = Float.parseFloat(amount);
+
                if("Entertainment".equals(category)){
                   /*boolean flag=false;
                    for(int i=0;i<Item_list.size();i++)
@@ -309,8 +356,14 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                    }
                    }
                    if(flag==false){*/
-                   Item_list.add(new PieEntry(number, "Entertainment"));
-                   colors.add(getResources().getColor(R.color.Pink));
+                  Entertainment_Expense=Entertainment_Expense+number;
+                   Log.d( "Savings",dateCreated+" = "+Months[month_x-1]);
+
+                  if(dateCreated.contains(Months[month_x-1])){
+                      Total_Expense_PM=Total_Expense_PM+Integer.parseInt(amount);
+                  }
+                  Expense_Info expense_info=new Expense_Info(amount,dateCreated,title);
+                  Expense_List.add(expense_info);
 
                   /* PieDataSet pieDataSet = new PieDataSet(Item_list, "Entertainment");
                    pieDataSet.setColor(getResources().getColor(R.color.Green));
@@ -327,9 +380,12 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                    }
                    }
                    if(flag==false) {*/
-                       Item_list.add(new PieEntry(number, "Clothing"));
-                       colors.add(getResources().getColor(R.color.Blue));
-
+                   Clothing_Expense=Clothing_Expense+number;
+                   if(dateCreated.contains(Months[month_x-1])){
+                       Total_Expense_PM=Total_Expense_PM+Integer.parseInt(amount);
+                   }
+                   Expense_Info expense_info=new Expense_Info(amount,dateCreated,title);
+                   Expense_List.add(expense_info);
                    /* PieDataSet pieDataSet = new PieDataSet(Item_list, "Clothing");
                    pieDataSet.setColor(getResources().getColor(R.color.Yellow));
                    PieData data = new PieData(pieDataSet);
@@ -344,9 +400,12 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                    }
                    }
                    if(flag==false) {*/
-                       Item_list.add(new PieEntry(number, "Health"));
-                       colors.add(getResources().getColor(R.color.Yellow));
-
+                   Health_expense=Health_expense+number;
+                   if(dateCreated.contains(Months[month_x-1])){
+                       Total_Expense_PM=Total_Expense_PM+Integer.parseInt(amount);
+                   }
+                   Expense_Info expense_info=new Expense_Info(amount,dateCreated,title);
+                   Expense_List.add(expense_info);
                    /*PieDataSet pieDataSet = new PieDataSet(Item_list, "Health");
                    pieDataSet.setColor(getResources().getColor(R.color.Red));
                    PieData data = new PieData(pieDataSet);
@@ -362,9 +421,12 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                    }
                    }
                    if(flag==false) {*/
-                       Item_list.add(new PieEntry(number, "Food"));
-                       colors.add(getResources().getColor(R.color.Orange));
-
+                  Food_Expense=Food_Expense+number;
+                   if(dateCreated.contains(Months[month_x-1])){
+                       Total_Expense_PM=Total_Expense_PM+Integer.parseInt(amount);
+                   }
+                   Expense_Info expense_info=new Expense_Info(amount,dateCreated,title);
+                   Expense_List.add(expense_info);
                    /*PieDataSet pieDataSet = new PieDataSet(Item_list, "Food");
                    pieDataSet.setColor(getResources().getColor(R.color.Blue));
                    PieData data = new PieData(pieDataSet);
@@ -379,8 +441,12 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                    }
                    }
                    if(flag==false) {*/
-                       Item_list.add(new PieEntry(number, "Fuel"));
-                       colors.add(getResources().getColor(R.color.Green));
+                   Fuel_Expense=Fuel_Expense+number;
+                   if(dateCreated.contains(Months[month_x-1])){
+                       Total_Expense_PM=Total_Expense_PM+Integer.parseInt(amount);
+                   }
+                   Expense_Info expense_info=new Expense_Info(amount,dateCreated,title);
+                   Expense_List.add(expense_info);
                    //}
                    /*PieDataSet pieDataSet = new PieDataSet(Item_list, "Fuel");
                    pieDataSet.setColors(getResources().getColor(R.color.Orange));
@@ -388,7 +454,39 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                    pieChart.setData(data);
                    pieChart.invalidate();*/
                }else if("Income".equals(category)) {
-
+                      //Income=Income+number;
+                   Income_date= Integer.parseInt(extractNumber(dateCreated));
+                   Income_Info expense_info=new Income_Info(amount,dateCreated,title);
+                   Income_List.add(expense_info);
+                   if(dateCreated.contains(Months[month_x-1])){
+                       Total_Income_PM=Total_Income_PM+Integer.parseInt(amount);
+                   }
+                   Log.d("Income Date",Income_date+"");
+                   if(dateCreated.contains(Months[1])){ Income_date=Income_date+31;
+                       Current_month=2;
+                   }else if(dateCreated.contains(Months[2])){
+                       Income_date=Income_date+60;
+                       Current_month=3;
+                   }else if(dateCreated.contains(Months[3])){ Income_date=Income_date+91;
+                       Current_month=4;
+                   }else if(dateCreated.contains(Months[4])){ Income_date=Income_date+121;
+                       Current_month=5;
+                   }else if(dateCreated.contains(Months[5])){ Income_date=Income_date+152;
+                       Current_month=6;
+                   }else if(dateCreated.contains(Months[6])){ Income_date=Income_date+182;
+                       Current_month=7;
+                   }else if(dateCreated.contains(Months[7])){ Income_date=Income_date+213;
+                       Current_month=8;
+                   }else if(dateCreated.contains(Months[8])){ Income_date=Income_date+243;
+                       Current_month=9;
+                   }else if(dateCreated.contains(Months[9])){ Income_date=Income_date+274;
+                       Current_month=10;
+                   }else if(dateCreated.contains(Months[10])){ Income_date=Income_date+304;
+                       Current_month=11;
+                   }else if(dateCreated.contains(Months[11])){ Income_date=Income_date+335;
+                       Current_month=2;}else{
+                       Current_month=1;
+                   }
                    if(Current_month==month_x){
                        if(Current_day==day_x){
                            BarChart_Entries.add(new BarEntry(Income_date,number));
@@ -403,6 +501,8 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                        }else if(Current_day==(day_x-5)){
                            BarChart_Entries.add(new BarEntry(Income_date,number));
                        }else if(Current_day==(day_x-6)){
+                           BarChart_Entries.add(new BarEntry(Income_date,number));
+                       }else if(Current_day==(day_x-7)){
                            BarChart_Entries.add(new BarEntry(Income_date,number));
                        }
                    }
@@ -427,57 +527,163 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                 cursor.moveToNext();
 
             }
+            Float Total_Savings_PM=(float) (Total_Income_PM-Total_Expense_PM);
+            Log.d( "Savings",Total_Savings_PM+"");
 
-            //BarChart_Entries.add(new BarEntry(80,50000));
-            /*BarChart_Entries.add(new BarEntry(0f, 30f));
-            BarChart_Entries.add(new BarEntry(1f, 80f));
-            BarChart_Entries.add(new BarEntry(2f, 60f));
-            BarChart_Entries.add(new BarEntry(3f, 50f));
-            // gap of 2f
-            BarChart_Entries.add(new BarEntry(5f, 70f));
-            BarChart_Entries.add(new BarEntry(6f, 60f));*/
-            BarDataSet set = new BarDataSet(BarChart_Entries, "year of 2018");
-            BarData data = new BarData(set);
-           // data.setBarWidth(0.9f); // set custom bar width
-            mChart.setData(data);
-            mChart.setFitBars(true); // make the x-axis fit exactly all bars
-            mChart.invalidate(); // refresh
+            float saving_amount=0.0f,Amount2=0f;
+            for(int j=1;j<=day_x;j++) {
+
+                //saving_amount.set(0,0f);
+                for (int i = 0; i < Expense_List.size(); i++)
+                { if (Expense_List.get(i).getExpense_day() ==j){
+                    saving_amount=(saving_amount-Expense_List.get(i).getExpense_amount());
+                    //Amount2=saving_amount;
+                    //saving_amount.set(0,saving_amount.get(0)-Expense_List.get(i).getExpense_amount());
+                    }
+                }
+                for (int k=0;k<Income_List.size();k++){
+                    if (Income_List.get(k).getIncome_day() ==j){
+                        Float temp=saving_amount+Income_List.get(k).getIncome_amount();
+                        saving_amount=temp;
+                        //Amount2=saving_amount;
+                        //saving_amount.set(0,saving_amount.get(0)+temp);
+                        //saving_amount[0]=saving_amount[0]+temp;
+
+                        Log.d("onCreateView: ",saving_amount+" "+Amount2);
+                    }
+                }
+                //saving_amount=saving_amount+0f;
+
+                if(saving_amount!=Amount2){
+                    Line_Entries.add(new Entry(j, saving_amount));
+                    Amount2=saving_amount;
+                }
+                Log.d("on",saving_amount+" "+Amount2);
+            }
+            Log.d("on",saving_amount+" "+Amount2);
+            LimitLine ll1 = new LimitLine(Total_Savings_PM, "Upper Limit");
+            ll1.setLineWidth(4f);
+            ll1.enableDashedLine(10f, 10f, 0f);
+            ll1.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+            ll1.setTextSize(10f);
+            //ll1.setTypeface(tf);
+
+            LimitLine ll2 = new LimitLine(-10000, "Lower Limit");
+            ll2.setLineWidth(4f);
+            ll2.enableDashedLine(10f, 10f, 0f);
+            ll2.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+            ll2.setTextSize(10f);
+            //ll2.setTypeface(tf);
+
+            YAxis leftAxis1 = mlineChart.getAxisLeft();
+            leftAxis1.removeAllLimitLines(); // reset all limit lines to avoid overlapping lines
+            leftAxis1.addLimitLine(ll1);
+            leftAxis1.addLimitLine(ll2);
+            //leftAxis1.setAxisMaximum(200f);
+            //leftAxis1.setAxisMinimum(-20000f);
+            //leftAxis.setYOffset(20f);
+            leftAxis1.enableGridDashedLine(10f, 10f, 0f);
+            leftAxis1.setDrawZeroLine(false);
+
+            // limit lines are drawn behind data (and not on top)
+            leftAxis1.setDrawLimitLinesBehindData(true);
+
+            mlineChart.getAxisRight().setEnabled(false);
 
 
-           PieDataSet pieDataSet = new PieDataSet(Item_list,"");
-            pieDataSet.setLabel("Expenses");
-            pieDataSet.setSliceSpace(3f);
+            //Line_Entries.add(new Entry(1, Total_Savings_PM));
+
+            LineDataSet set1;
+            set1 = new LineDataSet(Line_Entries, "Total Savings of current month");
+
+            set1.setDrawIcons(false);
+
+            // set the line to be drawn like this "- - - - - -"
+            set1.enableDashedLine(10f, 5f, 0f);
+            set1.enableDashedHighlightLine(10f, 5f, 0f);
+            set1.setColor(Color.BLACK);
+            set1.setCircleColor(Color.BLACK);
+            set1.setLineWidth(1f);
+            set1.setCircleRadius(3f);
+            set1.setDrawCircleHole(false);
+            set1.setValueTextSize(9f);
+            set1.setDrawFilled(true);
+            set1.setFormLineWidth(1f);
+            set1.setFormLineDashEffect(new DashPathEffect(new float[]{10f, 5f}, 0f));
+            set1.setFormSize(15.f);
+            set1.setDrawFilled(true);
+            //set1.setFillDrawable(gradientDrawable);
+            LineData data2 = new LineData(set1);
+
+            mlineChart.setData(data2);
+            mlineChart.animateXY(3000, 3000);
+            mlineChart.invalidate();
+            if (Entertainment_Expense>0f){
+                Item_list.add(new PieEntry(Entertainment_Expense, "Entertainment"));
+                colors.add(getResources().getColor(R.color.Pink));
+            }
+            if (Clothing_Expense>0f) {
+                Item_list.add(new PieEntry(Clothing_Expense, "Clothing"));
+                colors.add(getResources().getColor(R.color.Blue));
+            }if (Health_expense>0f) {
+                Item_list.add(new PieEntry(Health_expense, "Health"));
+                colors.add(getResources().getColor(R.color.Yellow));
+            }
+            if (Food_Expense>0f) {
+                Item_list.add(new PieEntry(Food_Expense, "Food"));
+                colors.add(getResources().getColor(R.color.Orange));
+            }
+            if (Fuel_Expense>0f) {
+                Item_list.add(new PieEntry(Fuel_Expense, "Fuel"));
+                colors.add(getResources().getColor(R.color.Green));
+            }
+           if(BarChart_Entries.size()>0) {
+               BarDataSet set = new BarDataSet(BarChart_Entries, "year of 2018");
+               BarData data = new BarData(set);
+               // data.setBarWidth(0.9f); // set custom bar width
+               mChart.setData(data);
+               mChart.setFitBars(true); // make the x-axis fit exactly all bars
+               mChart.invalidate(); // refresh
+               mChart.animateXY(2000, 1400);
+           }
+           else {
+               Toast.makeText(getContext(),"No Data to be displayed in BarChart",Toast.LENGTH_LONG).show();
+           }
 
 
+           if(Item_list.size()>0) {
+               PieDataSet pieDataSet = new PieDataSet(Item_list, "");
+               pieDataSet.setLabel("Expenses");
+               pieDataSet.setSliceSpace(3f);
+               //colors.add(getResources().getColor(R.color.Red));
+               pieDataSet.setColors(colors);
+               Legend l1 = pieChart.getLegend();
+               l1.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+               l1.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+               l1.setOrientation(Legend.LegendOrientation.VERTICAL);
+               l1.setDrawInside(false);
+               l1.setXEntrySpace(7f);
+               l1.setYEntrySpace(0f);
+               l1.setYOffset(0f);
 
-            //colors.add(getResources().getColor(R.color.Red));
+               // entry label styling
+               pieChart.setEntryLabelColor(Color.WHITE);
+               //pieChart.setEntryLabelTypeface(mTfRegular);
+               pieChart.setEntryLabelTextSize(12f);
 
+               PieData data1 = new PieData(pieDataSet);
+               pieChart.setData(data1);
+               pieChart.setTransparentCircleColor(Color.WHITE);
+               pieChart.setTransparentCircleAlpha(110);
+               pieChart.invalidate();
+               pieChart.animateXY(2000, 1400);
+               pieChart.invalidate();
+               //pieChart.animateXY(2000, 1400);
+           }else {
+               Toast.makeText(getContext(),"No Data to be displayed in PieChart",Toast.LENGTH_LONG).show();
+           }
 
-
-            pieDataSet.setColors(colors);
-            Legend l1 = pieChart.getLegend();
-            l1.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-            l1.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-            l1.setOrientation(Legend.LegendOrientation.VERTICAL);
-            l1.setDrawInside(false);
-            l1.setXEntrySpace(7f);
-            l1.setYEntrySpace(0f);
-            l1.setYOffset(0f);
-
-            // entry label styling
-            pieChart.setEntryLabelColor(Color.WHITE);
-            //pieChart.setEntryLabelTypeface(mTfRegular);
-            pieChart.setEntryLabelTextSize(12f);
-
-            PieData data1 = new PieData(pieDataSet);
-            pieChart.setData(data1);
-            pieChart.setTransparentCircleColor(Color.WHITE);
-            pieChart.setTransparentCircleAlpha(110);
-            pieChart.invalidate();
-            pieChart.animateXY(2000, 1400);
-            pieChart.invalidate();
-
-            final Handler handler23 = new Handler();
+  /*          final Handler handler23 = new Handler();
             handler23.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -487,7 +693,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
                 }
             }, 2000);
 
-
+*/
 
         }catch (Exception e){e.printStackTrace();}
         finally {
@@ -581,13 +787,12 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
         }
     }
 
-    @Override
+    /*@Override
     public void onResume() {
         super.onResume();
         //mChart.animateXY(2000, 1400);
         //pieChart.animateXY(2000, 1400);
-
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {
@@ -615,6 +820,46 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
 
     @Override
     public void onNothingSelected() {
+
+    }
+
+    @Override
+    public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+    }
+
+    @Override
+    public void onChartLongPressed(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartDoubleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartSingleTapped(MotionEvent me) {
+
+    }
+
+    @Override
+    public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+
+    }
+
+    @Override
+    public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+    }
+
+    @Override
+    public void onChartTranslate(MotionEvent me, float dX, float dY) {
 
     }
 
