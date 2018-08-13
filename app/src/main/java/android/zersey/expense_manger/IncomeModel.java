@@ -1,13 +1,15 @@
 package android.zersey.expense_manger;
 
-public class IncomeModel {
+import java.io.Serializable;
 
-	private int id;
+public class IncomeModel implements Serializable{
+
+	private long id, onlineId;
 	private String type, title, description, totalAmount, paidAtDate, amountDue, payerId, invoiceId, catId;
 
 	public IncomeModel(){}
 
-	public IncomeModel(int id, String type, String title, String description, String totalAmount,
+	public IncomeModel(long id, String type, String title, String description, String totalAmount,
 		String paidAtDate, String amountDue, String payerId, String invoiceId, String catId) {
 		this.id = id;
 		this.type = type;
@@ -19,6 +21,14 @@ public class IncomeModel {
 		this.payerId = payerId;
 		this.invoiceId = invoiceId;
 		this.catId = catId;
+	}
+
+	public long getOnlineId() {
+		return onlineId;
+	}
+
+	public void setOnlineId(long onlineId) {
+		this.onlineId = onlineId;
 	}
 
 	public String getType() {
@@ -94,11 +104,11 @@ public class IncomeModel {
 		this.catId = catId;
 	}
 
-	public int getId() {
+	public long getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -106,6 +116,8 @@ public class IncomeModel {
 		return "IncomeModel{"
 			+ "id="
 			+ id
+			+ ", onlineId="
+			+ onlineId
 			+ ", type='"
 			+ type
 			+ '\''

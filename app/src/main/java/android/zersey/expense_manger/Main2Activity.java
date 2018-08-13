@@ -1,6 +1,9 @@
 package android.zersey.expense_manger;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -185,11 +188,14 @@ public class Main2Activity extends BaseActivity
 				}
 			});
 		}
+
+		NetworkChangeReceiver br = new NetworkChangeReceiver();
+		IntentFilter netFilter = new IntentFilter();
+		netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+		registerReceiver(br, netFilter);
+
 	}
 
-	@Override public void onBackPressed() {
-
-	}
 
 
     /*public void addTransaction(){

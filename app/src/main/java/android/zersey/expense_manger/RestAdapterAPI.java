@@ -54,7 +54,7 @@ public interface RestAdapterAPI {
 		@Field("catid") String catId);
 
 	@FormUrlEncoded @POST("/Split_bills/edit_income_expense/{id}") Call<JsonObject> updateEntry(
-		@Path("id") int id, @Field("type") String type, @Field("title") String title,
+		@Path("id") long id, @Field("type") String type, @Field("title") String title,
 		@Field("description") String description, @Field("total_amount") String totalAmount,
 		@Field("amount__due") String amountDue, @Field("payer_id") String payerId,
 		@Field("paid_at") String paidAt, @Field("invoice_id") String invoiceId,
@@ -63,10 +63,10 @@ public interface RestAdapterAPI {
 	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
 
 	@GET("/Split_bills/fetch_income_expense/{id}") Call<JsonObject> fetchSpecificUserEntry(
-		@Path("id") int id);
+		@Path("id") long id);
 
 	@GET("/Split_bills/delete_income_expense/{id}") Call<JsonObject> deleteSpecificUserEntry(
-		@Path("id") int id);
+		@Path("id") long id);
 
 	@FormUrlEncoded @POST("/Split_bills/report_income_expense_by_filter")
 	Call<JsonObject> reportIncomeExpense(@Field("payer_id") String payerId);

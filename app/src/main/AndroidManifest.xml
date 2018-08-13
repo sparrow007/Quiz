@@ -54,7 +54,9 @@
         <activity
             android:name=".Contact_List_Activity"
             android:label="Contacts"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <receiver android:name=".NetworkChangeReceiver" >
+        </receiver>
     </application>
 
 </manifest>

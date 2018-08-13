@@ -184,7 +184,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
 		// Define a projection that specifies which columns from the database
 		// you will actually use after this query.
 		String[] projection = {
-			TransactionDbContract.Transaction_Entry.ID,
+			TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID,
 			TransactionDbContract.Transaction_Entry.COLUMN_TITLE,
 			TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY,
 			TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
@@ -214,7 +214,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener {
 				// Use that index to extract the String or Int value of the word
 				// at the current row the cursor is on.
 				int currentID = cursor.getInt(
-					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.ID));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID));
 				String title = cursor.getString(
 					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
 				//Log.d( "current label ",currentName);

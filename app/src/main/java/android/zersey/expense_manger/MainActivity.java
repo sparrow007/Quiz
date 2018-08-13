@@ -64,6 +64,7 @@ public class MainActivity extends AppCompatActivity
 	private pageradapter adapter;
 	private String Updated_Type = "";
 	private int pos;
+	private IncomeModel model;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity
             Material_Title.setHasFocus(true);
             Material_Amount.setHasFocus(true);
             Material_Date.setHasFocus(true);*/
+          model = (IncomeModel) getIntent().getSerializableExtra("model");
 			Updated_Category = getIntent().getStringExtra("Category");
 			Updated_Amount = getIntent().getStringExtra("Amount");
 			Updated_Title = getIntent().getStringExtra("Title");
@@ -565,10 +567,10 @@ public class MainActivity extends AppCompatActivity
                     //values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
                     long newRowId = db.insert(Transaction_Entry.TABLE_NAME, null, values);
                     if (newRowId == -1) {
-                        // If the row ID is -1, then there was an error with insertion.
+                        // If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
                         Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
                     } else {
-                        // Otherwise, the insertion was successful and we can display a toast with the row ID.
+                        // Otherwise, the insertion was successful and we can display a toast with the row COLUMN_ONLINE_ID.
                         Toast.makeText(this, "Recipe saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
                     }
                     Bundle args = new Bundle();
@@ -736,7 +738,7 @@ public void Contact_Button(View view){
 				case 1:
 					Expense_Form expense_form = new Expense_Form();
 					if (Updated_Type.equalsIgnoreCase("expense")) {
-						expense_form.setString(CardClicked, Updated_Title, Updated_Amount,
+						expense_form.setString(model, CardClicked, Updated_Title, Updated_Amount,
 							Updated_Date, Updated_Category, Updated_Id, pos);
 						return expense_form;
 					} else {
@@ -745,7 +747,7 @@ public void Contact_Button(View view){
 				case 0:
 					Income_form income_form = new Income_form();
 					if (Updated_Type.equalsIgnoreCase("income")) {
-						income_form.setString(Updated_Title, Updated_Amount, Updated_Date,
+						income_form.setString(model, Updated_Title, Updated_Amount, Updated_Date,
 							Updated_Category, Updated_Id, pos);
 						return income_form;
 					} else {

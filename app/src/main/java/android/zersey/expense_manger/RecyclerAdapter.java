@@ -3,6 +3,7 @@ package android.zersey.expense_manger;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	@Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
 		IncomeModel customitems = list.get(position);
+		Log.d("hueh", "onBindViewHolder: " + customitems.toString());
 		if (customitems != null) {
 
 			if (holder.customcategory != null) {
@@ -115,6 +117,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			i.putExtra("Category", list.get(getAdapterPosition()).getCatId());
 			i.putExtra("Amount", list.get(getAdapterPosition()).getTotalAmount());
 			i.putExtra("DateCreated", list.get(getAdapterPosition()).getPaidAtDate());
+			i.putExtra("model", list.get(getAdapterPosition()));
 			view.getContext().startActivity(i);
 		}
 	}

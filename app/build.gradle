@@ -37,5 +37,8 @@ dependencies {
     implementation 'com.android.support:cardview-v7:27.1.1'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 //    debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
+//    compile 'com.facebook.stetho:stetho:1.5.0'
+//    //If you want to add a network helper
+//    compile 'com.facebook.stetho:stetho-okhttp:1.5.0'
 
 }
