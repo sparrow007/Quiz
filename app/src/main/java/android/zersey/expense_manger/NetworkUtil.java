@@ -1,10 +1,14 @@
 package android.zersey.expense_manger;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -112,5 +116,30 @@ public class NetworkUtil {
 		}
 
 		return client;
+	}
+
+	private static boolean isNetworkAvailable(Context context) {
+		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo acNetworkInfo = connectivityManager.getActiveNetworkInfo();
+		return acNetworkInfo != null;
+	}
+
+
+	public static boolean hasInternetConnection(Context context) {
+		if (isNetworkAvailable(context)) {
+			try {
+				HttpURLConnection urlc = (HttpURLConnection) (new URL("http://client3.google.com/generate_204").openConnection());
+				urlc.setRequestProperty("User-Agent", "Test");
+				urlc.setRequestProperty("Connection", "close");
+				urlc.setReadTimeout(1500);
+				urlc.connect();
+				return (urlc.getResponseCode() == 204 && urlc.getContentLength() == 0);
+			} catch (Exception e) {
+
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
 }

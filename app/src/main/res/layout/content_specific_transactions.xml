@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    app:layout_scrollFlags="scroll"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".SpecificTransactions"
+    android:orientation="vertical"
+    tools:showIn="@layout/activity_specific_transactions">
+
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:foregroundGravity="center_vertical"
+        android:id="@+id/Specific_Amount"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Amount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"/>
+    <LinearLayout
+        android:background="#000000"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:foregroundGravity="center_vertical"
+        android:id="@+id/Specific_Date"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"/>
+
+</LinearLayout>

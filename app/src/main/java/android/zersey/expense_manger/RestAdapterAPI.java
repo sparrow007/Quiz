@@ -6,6 +6,7 @@ import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RestAdapterAPI {
@@ -44,4 +45,29 @@ public interface RestAdapterAPI {
 
 	//logout
 	@GET("/logout") Call<Void> logout();
+
+	@FormUrlEncoded @POST("/Split_bills/create_income_expense") Call<JsonObject> createEntry(
+		@Field("type") String type, @Field("title") String title,
+		@Field("description") String description, @Field("total_amount") String totalAmount,
+		@Field("amount__due") String amountDue, @Field("payer_id") String payerId,
+		@Field("paid_at") String paidAt, @Field("invoice_id") String invoiceId,
+		@Field("catid") String catId);
+
+	@FormUrlEncoded @POST("/Split_bills/edit_income_expense/{id}") Call<JsonObject> updateEntry(
+		@Path("id") int id, @Field("type") String type, @Field("title") String title,
+		@Field("description") String description, @Field("total_amount") String totalAmount,
+		@Field("amount__due") String amountDue, @Field("payer_id") String payerId,
+		@Field("paid_at") String paidAt, @Field("invoice_id") String invoiceId,
+		@Field("catid") String catId);
+
+	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
+
+	@GET("/Split_bills/fetch_income_expense/{id}") Call<JsonObject> fetchSpecificUserEntry(
+		@Path("id") int id);
+
+	@GET("/Split_bills/delete_income_expense/{id}") Call<JsonObject> deleteSpecificUserEntry(
+		@Path("id") int id);
+
+	@FormUrlEncoded @POST("/Split_bills/report_income_expense_by_filter")
+	Call<JsonObject> reportIncomeExpense(@Field("payer_id") String payerId);
 }

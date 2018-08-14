@@ -1,12 +1,15 @@
 package android.zersey.expense_manger;
 
 public class Income_Info {
-    private String Income_amount,Income_date,Income_title,Income_month,Income_year;
-    private int Income_day;
+    private String Income_amount,Income_date,Income_title;
+    private int Income_day,Income_month,Income_year;
     private String[] Months={"Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"};
     Income_Info(String amount,String date,String title){
 Income_amount=amount;
-Income_date=date;
+String[] temp=date.split("-");
+Income_day=Integer.parseInt(temp[2]);
+Income_month=Integer.parseInt(temp[1]);
+Income_year=Integer.parseInt(temp[0]);
 Income_title=title;
     }
 
@@ -24,20 +27,14 @@ Income_title=title;
     }
 
     public int getIncome_day() {
-        Income_day=Integer.parseInt(extractNumber(Income_date));
         return Income_day;
     }
 
-    public String getIncome_month() {
-        for(int i=0;i<12;i++)
-        { if(Income_date.contains(Months[i]))
-        { Income_month=Months[i];
-        }
-        }
+    public int getIncome_month() {
         return Income_month;
     }
 
-    public String getIncome_year() {
+    public int getIncome_year() {
         return Income_year;
     }
 
