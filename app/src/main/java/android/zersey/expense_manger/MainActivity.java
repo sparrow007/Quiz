@@ -1,89 +1,41 @@
 package android.zersey.expense_manger;
 
 import android.Manifest;
-import android.annotation.TargetApi;
-import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Parcelable;
-import android.provider.ContactsContract;
-import android.provider.MediaStore;
-import android.app.AlertDialog;
-import android.support.design.widget.Snackbar;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.text.Html;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Timer;
-
-
-import android.support.v7.widget.Toolbar;
-import android.zersey.expense_manger.Data.Transaction_contract.Transaction_Entry;
-import android.zersey.expense_manger.Data.Transactiondbhelper;
-
-import com.daimajia.androidanimations.library.Techniques;
-import com.daimajia.androidanimations.library.YoYo;
-import com.github.florent37.materialtextfield.MaterialTextField;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
+import java.util.Calendar;
+import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements Expense_Form.OnFragmentInteractionListener,Income_form.OnFragmentInteractionListener {
+public class MainActivity extends AppCompatActivity
+	implements Expense_Form.OnFragmentInteractionListener,
+	Income_form.OnFragmentInteractionListener {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
+	/**
+	 * The {@link android.support.v4.view.PagerAdapter} that will provide
+	 * fragments for each of the sections. We use a
+	 * {@link FragmentPagerAdapter} derivative, which will keep every
+	 * loaded fragment in memory. If this becomes too memory intensive, it
+	 * may be best to switch to a
+	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
+	 */
 
     /*ImageView Img_File;
     private TextView More_Button;
@@ -92,43 +44,46 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
     private ArrayAdapter<String> ContactAdapter;
     private MaterialTextField Material_Title, Material_Amount, Material_Date, Material_Notes, Material_Amount_Due;
     public View layout_view = null;
-    private List<Custom_items> customlist;
+    private List<IncomeModel> customlist;
     private ArrayList<String> Contact_list;
     private TextView Category_text_view;*/
-    private int year_x, month_x, day_x, Selected_date = 0, Updated_Id;
-    private String Category_text, Notes_text, Amount_text, Title_text;
-    private Uri Image_uri = null;
-    private static int DIALOG_ID = 0;
-    private EditText dateEdit, AmountEdit, TitleEdit, Amount_Due_Edit;
-    private String CardClicked, Updated_Category, Updated_Title, Updated_Amount, Updated_Date;
-    private Calendar cal;
-    private String[] Months = {"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"}, Contact_Names;
-    private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
-    private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox, Health_checkbox, Salary_checkbox, More_checkbox;
-    private ViewPager mViewPager;
-    private pageradapter adapter;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        //getSupportActionBar().setTitle("Expense Manager");
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+	private int year_x, month_x, day_x, Selected_date = 0, Updated_Id;
+	private String Category_text, Notes_text, Amount_text, Title_text;
+	private Uri Image_uri = null;
+	private static int DIALOG_ID = 0;
+	private EditText dateEdit, AmountEdit, TitleEdit, Amount_Due_Edit;
+	private String CardClicked, Updated_Category, Updated_Title, Updated_Amount, Updated_Date;
+	private Calendar cal;
+	private String[] Months = {
+		"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+	}, Contact_Names;
+	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
+	private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
+		Health_checkbox, Salary_checkbox, More_checkbox;
+	private ViewPager mViewPager;
+	private pageradapter adapter;
+	private String Updated_Type = "";
+	private int pos;
 
+	@Override protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		//getSupportActionBar().setTitle("Expense Manager");
+		setContentView(R.layout.activity_main);
+		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        Dexter.withActivity(this)
-                .withPermissions(
-                        Manifest.permission.CAMERA,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_CONTACTS
-                ).withListener(new MultiplePermissionsListener() {
-            @Override
-            public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
+		Dexter.withActivity(this)
+			.withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+				Manifest.permission.READ_CONTACTS)
+			.withListener(new MultiplePermissionsListener() {
+				@Override
+				public void onPermissionsChecked(MultiplePermissionsReport report) {/* ... */}
 
-            @Override
-            public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions, PermissionToken token) {/* ... */}
-        }).check();
+				@Override
+				public void onPermissionRationaleShouldBeShown(List<PermissionRequest> permissions,
+					PermissionToken token) {/* ... */}
+			})
+			.check();
 
 
         /*Contact_list=new ArrayList<String>();
@@ -186,29 +141,26 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
         Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
         More_checkbox.setOnCheckedChangeListener(checkedChangeListener);*/
 
+		TabLayout tab_layout = (TabLayout) findViewById(R.id.form_tabLayout);
+		tab_layout.addTab(tab_layout.newTab().setText("Income"));
+		tab_layout.addTab(tab_layout.newTab().setText("Expense"));
+		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
+		mViewPager = (ViewPager) findViewById(R.id.form_viewPager);
 
-
-        TabLayout tab_layout=(TabLayout)findViewById(R.id.form_tabLayout);
-        tab_layout.addTab(tab_layout.newTab().setText("Income"));
-        tab_layout.addTab(tab_layout.newTab().setText("Expense"));
-        tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-        mViewPager = (ViewPager) findViewById(R.id.form_viewPager);
-
-
-
-        CardClicked = getIntent().getStringExtra("CardClicked");
-        if (!TextUtils.isEmpty(CardClicked)) {
+		CardClicked = getIntent().getStringExtra("CardClicked");
+		pos = getIntent().getIntExtra("pos", -1);
+		if (!TextUtils.isEmpty(CardClicked)) {
           /*  Delete_Button.setVisibility(View.VISIBLE);
             Material_Title.setHasFocus(true);
             Material_Amount.setHasFocus(true);
             Material_Date.setHasFocus(true);*/
-            Updated_Category = getIntent().getStringExtra("Category");
-            Updated_Amount = getIntent().getStringExtra("Amount");
-            Updated_Title = getIntent().getStringExtra("Title");
-            Updated_Date = getIntent().getStringExtra("DateCreated");
-            Updated_Id = getIntent().getIntExtra("_ID", 0);
+			Updated_Category = getIntent().getStringExtra("Category");
+			Updated_Amount = getIntent().getStringExtra("Amount");
+			Updated_Title = getIntent().getStringExtra("Title");
+			Updated_Date = getIntent().getStringExtra("DateCreated");
+			Updated_Type = getIntent().getStringExtra("Type");
+			Updated_Id = getIntent().getIntExtra("_ID", 0);
             /*if ("Clothing".equals(Updated_Category)) {
                 Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                 Category_text = "Clothing";
@@ -228,58 +180,51 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
                 Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                 Category_text = "Salary";
             }*/
-            Updated_Amount = Updated_Amount.replace("Rs ", "");
-            Log.d("Rs replaced", Updated_Amount);
+			Updated_Amount = Updated_Amount.replace("Rs ", "");
+			Log.d("Rs replaced", Updated_Amount);
             /*AmountEdit.setText(Updated_Amount);
             TitleEdit.setText(Updated_Title);
             dateEdit.setText(Updated_Date);*/
 
-            adapter=new pageradapter(getSupportFragmentManager(),tab_layout.getTabCount(),
-                    CardClicked,Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
-        }else{
-            adapter=new pageradapter(getSupportFragmentManager(),tab_layout.getTabCount());
-        }
+			adapter =
+				new pageradapter(getSupportFragmentManager(), tab_layout.getTabCount(), CardClicked,
+					Updated_Title, Updated_Amount, Updated_Date, Updated_Category, Updated_Id);
+		} else {
+			adapter = new pageradapter(getSupportFragmentManager(), tab_layout.getTabCount());
+		}
 
+		mViewPager.setAdapter(adapter);
+		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
 
+		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+			@Override public void onTabSelected(TabLayout.Tab tab) {
+				mViewPager.setCurrentItem(tab.getPosition());
+			}
 
+			@Override public void onTabUnselected(TabLayout.Tab tab) {
 
-        mViewPager.setAdapter(adapter);
-        mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
+			}
 
-        tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                mViewPager.setCurrentItem(tab.getPosition());
-            }
+			@Override public void onTabReselected(TabLayout.Tab tab) {
 
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
+			}
+		});
+		//Fetch_Contacts();
+		//Toast.makeText(this, Contact_list.size()+" Contact Names", Toast.LENGTH_SHORT).show();
 
-            }
+		//th.run();
+		if (!TextUtils.isEmpty(CardClicked)) {
+			if (Util.isEmpty(Updated_Category)) {
+				mViewPager.setCurrentItem(0);
+			} else {
+				mViewPager.setCurrentItem(1);
+			}
+		}
+	}
 
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
+	@Override public void onFragmentInteraction(Uri uri) {
 
-            }
-        });
-        //Fetch_Contacts();
-        //Toast.makeText(this, Contact_list.size()+" Contact Names", Toast.LENGTH_SHORT).show();
-
-        //th.run();
-        if (!TextUtils.isEmpty(CardClicked)) {
-            if(TextUtils.equals(Updated_Category,"Income")){
-             mViewPager.setCurrentItem(0);
-            }else{
-                mViewPager.setCurrentItem(1);
-            }
-        }
-
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
-    }
+	}
 /*
     Thread th= new Thread(){
         @Override
@@ -607,18 +552,18 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
                     //Custom_items items = new Custom_items(Category_text,
                       //      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
                     //customlist.add(items);
-                    Transactiondbhelper mdbhelper = new Transactiondbhelper(this);
+                    TransactionDbHelper mdbhelper = new TransactionDbHelper(this);
                     SQLiteDatabase db = mdbhelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
                     //values.put(recipe_entry.Column_Recipe_Image,byteimage);
-                    values.put(Transaction_Entry.Column_Title, Title_text);
-                    values.put(Transaction_Entry.Column_Category, Category_text);
-                    values.put(Transaction_Entry.Column_Amount, "Rs " + Amount_text);
+                    values.put(Transaction_Entry.COLUMN_TITLE, Title_text);
+                    values.put(Transaction_Entry.COLUMN_CATEGORY, Category_text);
+                    values.put(Transaction_Entry.COLUMN_AMOUNT, "Rs " + Amount_text);
                     Log.d("Date created", DateEdit_text);
-                    values.put(Transaction_Entry.Column_Date_Created, DateEdit_text);
+                    values.put(Transaction_Entry.COLUMN_DATE_CREATED, DateEdit_text);
                     //values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
                     //values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
-                    long newRowId = db.insert(Transaction_Entry.Table_name, null, values);
+                    long newRowId = db.insert(Transaction_Entry.TABLE_NAME, null, values);
                     if (newRowId == -1) {
                         // If the row ID is -1, then there was an error with insertion.
                         Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
@@ -636,15 +581,15 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
                     Updated_Amount=AmountEdit.getText().toString();
                     Updated_Date=dateEdit.getText().toString();
 
-                    Transactiondbhelper mdbhelper = new Transactiondbhelper(this);
+                    TransactionDbHelper mdbhelper = new TransactionDbHelper(this);
                     SQLiteDatabase db = mdbhelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
                     //values.put(recipe_entry.Column_Recipe_Image,byteimage);
-                    values.put(Transaction_Entry.Column_Title, Updated_Title);
-                    values.put(Transaction_Entry.Column_Category, Updated_Category);
-                    values.put(Transaction_Entry.Column_Amount, "Rs " + Updated_Amount);
-                    values.put(Transaction_Entry.Column_Date_Created, Updated_Date);
-                    db.update(Transaction_Entry.Table_name,values,Transaction_Entry._id+"="+Updated_Id,null);
+                    values.put(Transaction_Entry.COLUMN_TITLE, Updated_Title);
+                    values.put(Transaction_Entry.COLUMN_CATEGORY, Updated_Category);
+                    values.put(Transaction_Entry.COLUMN_AMOUNT, "Rs " + Updated_Amount);
+                    values.put(Transaction_Entry.COLUMN_DATE_CREATED, Updated_Date);
+                    db.update(Transaction_Entry.TABLE_NAME,values,Transaction_Entry._id+"="+Updated_Id,null);
 
                 }
 
@@ -657,10 +602,10 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
 
 
     public void Delete_Button(View view){
-        Transactiondbhelper mdbhelper = new Transactiondbhelper(this);
+        TransactionDbHelper mdbhelper = new TransactionDbHelper(this);
         SQLiteDatabase db = mdbhelper.getWritableDatabase();
        // ContentValues values = new ContentValues();
-        db.delete(Transaction_Entry.Table_name, Transaction_Entry._id + " = ?", new String[]{""+Updated_Id});
+        db.delete(Transaction_Entry.TABLE_NAME, Transaction_Entry._id + " = ?", new String[]{""+Updated_Id});
         Intent intent = new Intent(MainActivity.this, Main2Activity.class);
         startActivity(intent);
 
@@ -705,112 +650,117 @@ public class MainActivity extends AppCompatActivity implements Expense_Form.OnFr
                 }
             }, 500);*/
 
-       /* }
+	/* }
+}
+
+
+public void Contact_Button(View view){
+  Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
+
+  startActivityForResult(intent, 3);
+}
+
+ @Override
+ public void onRequestPermissionsResult(int requestCode,
+										String permissions[], int[] grantResults) {
+	 switch (requestCode) {
+		 case 100: {
+
+			 // If request is cancelled, the result arrays are empty.
+			 if (grantResults.length > 0
+					 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+				 // permission was granted, yay! Do the
+				 // contacts-related task you need to do.
+			 } else {
+
+				 // permission denied, boo! Disable the
+				 // functionality that depends on this permission.
+				 Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+			 }
+			 return;
+		 }
+
+		 // other 'case' lines to check for other
+		 // permissions this app might request
+	 }
  }
 
 
- public void Contact_Button(View view){
-     Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
 
-     startActivityForResult(intent, 3);
- }
+ public void Fetch_Contacts(){
+	 ContentResolver cr = getContentResolver();
+  Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
+  //phones.moveToFirst();
+  while (phones.moveToNext())
+  {
+	  String name=phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+	  //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+	  //Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
+	  Contact_list.add(name);
+	  phones.moveToNext();
+  }
+  phones.close();
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 100: {
+  Contact_Names=new String[200];
+  for(int i=0;i<200;i++){
+	  Contact_Names[i]=Contact_list.get(i);
+  }
+	// Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
+  //Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
 
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-                }
-                return;
-            }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
-        }
-    }
-
-
-
-    public void Fetch_Contacts(){
-        ContentResolver cr = getContentResolver();
-     Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
-     //phones.moveToFirst();
-     while (phones.moveToNext())
-     {
-         String name=phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-         //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-         //Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
-         Contact_list.add(name);
-         phones.moveToNext();
-     }
-     phones.close();
-
-     Contact_Names=new String[200];
-     for(int i=0;i<200;i++){
-         Contact_Names[i]=Contact_list.get(i);
-     }
-       // Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
-     //Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
-
- }
+}
 
 
 */
-       private class pageradapter extends FragmentPagerAdapter {
-           int mnooftabes;
+	private class pageradapter extends FragmentPagerAdapter {
+		int mnooftabes;
 
-           public pageradapter(FragmentManager fm, int Numberoftabes) {
-               super(fm);
-               mnooftabes=Numberoftabes;
-           }
-           public pageradapter(FragmentManager fm, int Numberoftabes,String cardClicked,String updated_Title,String updated_Amount,
-                               String updated_Date,String updated_Category,int id) {
-               super(fm);
-               mnooftabes=Numberoftabes;
-           }
+		public pageradapter(FragmentManager fm, int Numberoftabes) {
+			super(fm);
+			mnooftabes = Numberoftabes;
+		}
 
-           @Override
-           public Fragment getItem(int position) {
-               // getItem is called to instantiate the fragment for the given page.
-               // Return a PlaceholderFragment (defined as a static inner class below).
-               switch(position){
+		public pageradapter(FragmentManager fm, int Numberoftabes, String cardClicked,
+			String updated_Title, String updated_Amount, String updated_Date,
+			String updated_Category, int id) {
+			super(fm);
+			mnooftabes = Numberoftabes;
+		}
 
-                   case 1:
-                       Expense_Form expense_form=new Expense_Form();
-                       if (!TextUtils.isEmpty(CardClicked)){
-                           expense_form.setString(CardClicked,Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
-                           return expense_form;
-                       }else{ return expense_form;}
-                   case 0:
-                       Income_form income_form=new Income_form();
-                       if (TextUtils.equals(Updated_Category,"Income")){
-                           income_form.setString(Updated_Title,Updated_Amount,Updated_Date,Updated_Category,Updated_Id);
-                           return income_form;
-                       }else{return income_form;}
-                   default: return null;
+		@Override public Fragment getItem(int position) {
+			// getItem is called to instantiate the fragment for the given page.
+			// Return a PlaceholderFragment (defined as a static inner class below).
+			switch (position) {
 
-               }
+				case 1:
+					Expense_Form expense_form = new Expense_Form();
+					if (Updated_Type.equalsIgnoreCase("expense")) {
+						expense_form.setString(CardClicked, Updated_Title, Updated_Amount,
+							Updated_Date, Updated_Category, Updated_Id, pos);
+						return expense_form;
+					} else {
+						return expense_form;
+					}
+				case 0:
+					Income_form income_form = new Income_form();
+					if (Updated_Type.equalsIgnoreCase("income")) {
+						income_form.setString(Updated_Title, Updated_Amount, Updated_Date,
+							Updated_Category, Updated_Id, pos);
+						return income_form;
+					} else {
+						return income_form;
+					}
+				default:
+					return null;
+			}
 
-               //return PlaceholderFragment.newInstance(position + 1);
-           }
+			//return PlaceholderFragment.newInstance(position + 1);
+		}
 
-           @Override
-           public int getCount() {
-               // Show 3 total pages.
-               return mnooftabes;
-           }
-       }
-
+		@Override public int getCount() {
+			// Show 3 total pages.
+			return mnooftabes;
+		}
+	}
 }

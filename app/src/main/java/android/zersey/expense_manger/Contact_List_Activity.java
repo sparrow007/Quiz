@@ -8,13 +8,11 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.zersey.expense_manger.Data.Contacts_contract.Contacts_Entry;
 import android.zersey.expense_manger.Data.Contactsdbhelper;
-import android.zersey.expense_manger.Data.Transaction_contract;
 
 import java.util.ArrayList;
 
