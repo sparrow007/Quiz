@@ -408,7 +408,6 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
             mChart.setFitBars(true); // make the x-axis fit exactly all bars
             mChart.invalidate(); // refresh
             mChart.animateXY(1400, 1400);
-            mChart.invalidate();
         }
         else {
             Toast.makeText(getContext(),"No Data to be displayed in BarChart",Toast.LENGTH_LONG).show();
@@ -434,10 +433,11 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
         handler23.postDelayed(new Runnable() {
             @Override public void run() {
                 //Do something after 100ms
+
                 mChart.invalidate();
                 mlineChart.invalidate();
                 pieChart.invalidate();
-                Log.d("onCreateView: ",  Income_List.size()+"  "+BarChart_Entries.size());
+                Log.d("onCreateView: ",  Income_List.size()+"  "+BarChart_Entries.size()+"  "+mChart.getBarData().toString());
                 mChart.animateXY(1400, 1400);
                 pieChart.animateXY(1400, 1400);
                 mlineChart.animateXY(1400, 1400);
@@ -650,12 +650,15 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
         }
     }
 
-    @Override
+   /* @Override
     public void onResume() {
         super.onResume();
+        mChart.invalidate();
+        mlineChart.invalidate();
+        pieChart.invalidate();
         //mChart.animateXY(2000, 1400);
         //pieChart.animateXY(2000, 1400);
-    }
+    }*/
 
     @Override
     public void onAttach(Context context) {
@@ -742,7 +745,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
     }
 
 
-    public static String extractNumber(final String str) {
+    /*public static String extractNumber(final String str) {
 
         if(str == null || str.isEmpty()) return "";
 
@@ -759,7 +762,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
         }
 
         return sb.toString();
-    }
+    }*/
 
 
 }

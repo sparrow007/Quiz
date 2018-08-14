@@ -114,12 +114,12 @@ public class Main2Activity extends AppCompatActivity
 		adapter = new PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount());
 		mViewPager.setAdapter(adapter);
 		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        /*mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 Fragment fragment=((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(position);
                 if(position==1){
-                    fragment.onResume();
+                    //fragment.onResume();
                 }
             }
 
@@ -132,7 +132,7 @@ public class Main2Activity extends AppCompatActivity
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        });*/
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
