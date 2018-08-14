@@ -7,10 +7,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Main2Activity"
     tools:showIn="@layout/activity_main2"
-
+    android:layout_marginTop="?attr/actionBarSize"
     android:orientation="vertical">
 
         <android.support.v4.view.ViewPager
+            android:layout_marginTop="10dp"
             android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_weight="1"
