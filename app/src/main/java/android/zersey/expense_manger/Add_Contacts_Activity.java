@@ -104,5 +104,8 @@ public class Add_Contacts_Activity extends AppCompatActivity {
 
 
 
-
+    public void OnBackPressed(View view){
+        Intent intent=new Intent(Add_Contacts_Activity.this, Main2Activity.class);
+        startActivity(intent);
+    }
 }

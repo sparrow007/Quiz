@@ -316,5 +316,11 @@ public class Main2Activity extends BaseActivity
 			return POSITION_NONE;
 		}
 	}
+
+
+	@Override public void onBackPressed() {
+		//Intent intent=new Intent(Contact_List_Activity.this,Main2Activity.class);
+		//startActivity(intent);
+	}
 }
 

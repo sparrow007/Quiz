@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
 	private DatePickerDialog datePicker;
 	//private View fragmentLayout;
 	ImageView Img_File;
-	private Button Submit_button;
+	private TextView Submit_button;
 	private TextView More_TextButton;
 	private ImageButton Delete_Button, Camera_Button, Contact_Button;
 	private AutoCompleteTextView AutoCompleteContacts;
@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
 				(MaterialTextField) findViewById(R.id.Material_Amount_Due);
 		Material_Amount_Due.setVisibility(View.GONE);
 		More_TextButton = (TextView) findViewById(R.id.MoreButton);
-		Notes_Layout.setVisibility(View.GONE);
+		//Notes_Layout.setVisibility(View.G);
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
@@ -213,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
 		Salary_checkbox = (CheckBox) findViewById(R.id.Salary_checkbox);
 		More_checkbox = (CheckBox) findViewById(R.id.More_checkbox);
 		Category_text_view = (TextView) findViewById(R.id.Category_text_view);
-		Submit_button = (Button) findViewById(R.id.Submit_Button);
+		Submit_button = (TextView) findViewById(R.id.Submit_Button);
 		Clothing_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Entertainment_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Food_checkbox.setOnCheckedChangeListener(checkedChangeListener);
@@ -1739,6 +1739,11 @@ public class MainActivity extends AppCompatActivity {
             }, 500);*/
 
 		}
+	}
+
+	public void OnBackPressed(View view){
+		Intent intent=new Intent(MainActivity.this, Main2Activity.class);
+		startActivity(intent);
 	}
 
 	public void Contact_Button() {

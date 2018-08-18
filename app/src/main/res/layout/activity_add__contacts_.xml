@@ -24,7 +24,7 @@
                 android:id="@+id/back"
                 android:layout_gravity="center_vertical|left"
                 android:background="@android:color/transparent"
-                android:onClick="backpress"
+                android:onClick="OnBackPressed"
                 android:scaleType="centerCrop"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
