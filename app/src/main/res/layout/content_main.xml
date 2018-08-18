@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.design.widget.CoordinatorLayout
+<LinearLayout
+    android:layout_marginTop="?android:attr/actionBarSize"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -42,6 +43,7 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:paddingEnd="10dp"
                         android:orientation="horizontal">
                         <LinearLayout
                             style="@style/Widget.AppCompat.Button.Colored"
@@ -68,7 +70,7 @@
                                 android:textColor="#000000"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="Clothing"
+                                android:text="Expense"
                                 android:id="@+id/Clothing_checkbox"/>
                         </LinearLayout>
 
@@ -97,7 +99,7 @@
                                 android:layout_marginRight="5dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="Entertainment"
+                                android:text="Income"
                                 android:id="@+id/Entertainment_checkbox"/>
                         </LinearLayout>
 
@@ -124,11 +126,12 @@
                                 android:layout_marginLeft="5dp"
                                 android:layout_width="wrap_content"
                                 android:layout_height="match_parent"
-                                android:text="Food"
+                                android:text="Group Expense"
                                 android:id="@+id/Food_checkbox"/>
                         </LinearLayout>
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/fuel_layout"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:backgroundTint="#E1F5FE"
@@ -157,6 +160,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/Health_layout"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:backgroundTint="#E1F5FE"
@@ -186,6 +190,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/Salary_layout"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:backgroundTint="#E1F5FE"
@@ -215,6 +220,7 @@
                         </LinearLayout>
 
                         <LinearLayout
+                            android:visibility="gone"
                             android:id="@+id/More_layout"
                             style="@style/Widget.AppCompat.Button.Colored"
                             android:backgroundTint="#E1F5FE"
@@ -262,22 +268,6 @@
                         android:backgroundTint="#000000"/>
                 </com.github.florent37.materialtextfield.MaterialTextField>
 
-                <com.github.florent37.materialtextfield.MaterialTextField
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/Material_Date"
-                    app:mtf_labelColor="#666"
-                    >
-                    <EditText
-                        android:id="@+id/Date_Edit"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Date"
-                        android:backgroundTint="#000000"/>
-                </com.github.florent37.materialtextfield.MaterialTextField>
 
                 <com.github.florent37.materialtextfield.MaterialTextField
                     android:layout_width="match_parent"
@@ -411,21 +401,84 @@
             </LinearLayout>
 
         </ScrollView>
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B0BEC5"/>
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
+    <ImageView
+        android:padding="5dp"
+        android:src="@drawable/calendar"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+    <EditText
+        android:background="@android:color/transparent"
+        android:layout_weight="1"
+        android:layout_gravity="center_vertical"
+        android:padding="5dp"
+        android:id="@+id/Date_Edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Date"
+        android:backgroundTint="#000000"/>
+    <LinearLayout
+        android:padding="5dp"
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="#B0BEC5"/>
+    <ImageView
+        android:layout_gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/grouptwo"
+        android:layout_width="40dp"
+        android:layout_height="40dp" />
+    <TextView
+        android:layout_marginRight="10dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No group"/>
+    <LinearLayout
+        android:padding="5dp"
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="#B0BEC5"/>
+    <ImageButton
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitXY"
+        android:id="@+id/Fab_Camera_Button"
+        android:paddingLeft="10dp"
+        android:background="@android:color/transparent"
+        android:layout_marginRight="10dp"
+        android:src="@drawable/cameragreen"
+        android:layout_width="40dp"
+        android:layout_height="30dp" />
+    <LinearLayout
+        android:padding="5dp"
+        android:layout_width="1dp"
+        android:layout_height="40dp"
+        android:background="#B0BEC5"/>
+    <ImageButton
+        android:layout_gravity="center_vertical"
+        android:scaleType="fitXY"
+        android:background="@android:color/transparent"
+        android:paddingLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:padding="5dp"
+        android:src="@drawable/writing"
+        android:layout_width="40dp"
+        android:layout_height="35dp" />
+</LinearLayout>
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/Fab_Camera_Button"
-        android:background="@color/colorPrimary"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_marginBottom="60dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"
-        app:srcCompat="@drawable/camera" />
 
-</android.support.design.widget.CoordinatorLayout>
+
+</LinearLayout>

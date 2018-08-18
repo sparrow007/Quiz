@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:focusable="true"
+    android:id="@+id/myCoordinaterLayout"
     android:focusableInTouchMode="true"
     tools:context=".MainActivity">
 
@@ -16,31 +17,27 @@
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
-        app:title="Add Expense"
         android:layout_width="match_parent"
         android:layout_height="?android:attr/actionBarSize"
         android:background="@color/colorPrimary"
 
         app:popupTheme="@style/AppTheme.PopupOverlay">
 
-    <android.support.design.widget.TabLayout
-        android:visibility="gone"
-        android:id="@+id/form_tabLayout"
-        android:layout_width="fill_parent"
-        android:background="@color/colorPrimary"
-        android:layout_height="?android:attr/actionBarSize"
-        app:popupTheme="@style/AppTheme.PopupOverlay"
-        android:layout_marginRight="16dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    />
+
+<ImageButton
+    android:layout_gravity="center_vertical|left"
+    android:src="@drawable/back"
+    android:background="@android:color/transparent"
+    android:scaleType="fitXY"
+    android:layout_width="30dp"
+    android:layout_height="30dp" />
 
 
         <Button
-            android:foregroundGravity="right"
+            android:layout_gravity="center_vertical|right"
             android:background="@color/colorPrimary"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:elevation="2dp"
             android:textColor="#ffffff"
             android:id="@+id/Submit_Button"
             android:text="Submit" />
@@ -48,11 +45,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/form_viewPager"
-        android:layout_marginTop="?android:attr/actionBarSize"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+    <include layout="@layout/content_main"/>
 
 </android.support.design.widget.CoordinatorLayout>

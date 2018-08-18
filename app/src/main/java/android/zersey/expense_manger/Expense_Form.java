@@ -56,7 +56,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Expense_Form.OnFragmentInteractionListener} interface
+  interface
  * to handle interaction events.
  * Use the {@link Expense_Form#newInstance} factory method to
  * create an instance of this fragment.
@@ -68,7 +68,7 @@ public class Expense_Form extends Fragment {
 	private String Contact_Person_Name, Contact_Person_Number;
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-	private FloatingActionButton fab;
+	private ImageButton fab;
 	private DatePickerDialog datePicker;
 	private View fragmentLayout;
 	ImageView Img_File;
@@ -77,7 +77,7 @@ public class Expense_Form extends Fragment {
 	private ImageButton Delete_Button, Camera_Button, Contact_Button;
 	private AutoCompleteTextView AutoCompleteContacts;
 	private ArrayAdapter<String> ContactAdapter;
-	private MaterialTextField Material_Title, Material_Amount, Material_Date, Material_Notes,
+	private MaterialTextField Material_Title, Material_Amount, Material_Notes,
 		Material_Amount_Due;
 	public View layout_view = null;
 	private List<IncomeModel> customlist;
@@ -102,7 +102,7 @@ public class Expense_Form extends Fragment {
 	private String mParam1;
 	private String mParam2;
 
-	private OnFragmentInteractionListener mListener;
+	//private OnFragmentInteractionListener mListener;
 	private int pos;
 	private TransactionDbHelper mDbHelper;
 	private IncomeModel model;
@@ -163,8 +163,8 @@ public class Expense_Form extends Fragment {
 		Material_Title.setHasFocus(true);
 		Material_Amount = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount);
 		Material_Amount.setHasFocus(true);
-		Material_Date = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Date);
-		Material_Date.setHasFocus(true);
+		//Material_Date = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Date);
+		//Material_Date.setHasFocus(true);
 		Material_Notes = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Notes);
 		Notes_Layout = (LinearLayout) fragmentLayout.findViewById(R.id.Notes_Layout);
 		Material_Amount_Due =
@@ -1005,7 +1005,7 @@ public class Expense_Form extends Fragment {
 			cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
 		datePicker.setTitle("Select Date");
-		fab = (FloatingActionButton) fragmentLayout.findViewById(R.id.Fab_Camera_Button);
+		fab = (ImageButton) fragmentLayout.findViewById(R.id.Fab_Camera_Button);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -1095,7 +1095,7 @@ public class Expense_Form extends Fragment {
 			Delete_Button.setVisibility(View.VISIBLE);
 			Material_Title.setHasFocus(true);
 			Material_Amount.setHasFocus(true);
-			Material_Date.setHasFocus(true);
+			//Material_Date.setHasFocus(true);
 
             /*
             Updated_Category = getIntent().getStringExtra("Category");
@@ -1138,42 +1138,13 @@ public class Expense_Form extends Fragment {
 		return fragmentLayout;
 	}
 
-	// TODO: Rename method, update argument and hook method into UI event
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
-		}
-	}
 
-	@Override public void onAttach(Context context) {
-		super.onAttach(context);
-		if (context instanceof OnFragmentInteractionListener) {
-			mListener = (OnFragmentInteractionListener) context;
-		} else {
-			throw new RuntimeException(
-				context.toString() + " must implement OnFragmentInteractionListener");
-		}
-	}
 
-	@Override public void onDetach() {
-		super.onDetach();
-		mListener = null;
-	}
 
-	/**
-	 * This interface must be implemented by activities that contain this
-	 * fragment to allow an interaction in this fragment to be communicated
-	 * to the activity and potentially other fragments contained in that
-	 * activity.
-	 * <p>
-	 * See the Android Training lesson <a href=
-	 * "http://developer.android.com/training/basics/fragments/communicating.html"
-	 * >Communicating with Other Fragments</a> for more information.
-	 */
-	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
-		void onFragmentInteraction(Uri uri);
-	}
+
+
+
+
 
 	Thread th = new Thread() {
 		@Override public void run() {
@@ -1482,19 +1453,13 @@ public class Expense_Form extends Fragment {
 
 				android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
 				alertDialog.show();
-				//Material_Notes.setHasFocus(true);
-				//}
-                /*else {
-                    AutoCompleteContacts.append(" , " + name);
-                    //Material_Notes.setHasFocus(true);}
-                }*/
+
 			}
 		}
 	}
 
 	public void onclick_date() {
 		datePicker.show();
-		//getActivity().showDialog(DIALOG_ID);
 	}
 
 	public void Onclick_Image_button() {
