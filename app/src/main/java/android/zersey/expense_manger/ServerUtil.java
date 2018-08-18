@@ -2,7 +2,6 @@ package android.zersey.expense_manger;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.zersey.expense_manger.Data.TransactionDbHelper;
 import com.google.gson.JsonObject;
 import retrofit2.Call;
@@ -25,10 +24,9 @@ public class ServerUtil {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
-
-				int id = object.get("uid").getAsInt();
-				incomeModel.setId(id);
-				mDbHelper.createEntry(incomeModel);
+				long id = object.get("uid").getAsLong();
+				incomeModel.setOnlineId(id);
+				mDbHelper.addOnlineId(incomeModel);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
@@ -37,13 +35,12 @@ public class ServerUtil {
 		});
 	}
 
-	public void updateEntry(final int pos, final IncomeModel incomeModel) {
+	public void updateEntry(final IncomeModel incomeModel) {
 		Call<JsonObject> result = JsonHandler.updateEntry(context, incomeModel);
 		result.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
-				mDbHelper.updateEntry(pos, incomeModel);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
@@ -52,13 +49,12 @@ public class ServerUtil {
 		});
 	}
 
-	public void deleteEntry(final int pos, final int id){
+	public void deleteEntry(final long id) {
 		Call<JsonObject> result = JsonHandler.deleteEntry(context, id);
 		result.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
-				mDbHelper.deleteEntry(pos, id);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {

@@ -16,15 +16,14 @@ public class JsonHandler {
 
 	public static Call<JsonObject> updateEntry(Context context, IncomeModel incomeModel) {
 		return NetworkUtil.getRestAdapter(context)
-			.updateEntry(incomeModel.getId(), incomeModel.getType(), incomeModel.getTitle(),
+			.updateEntry(incomeModel.getOnlineId(), incomeModel.getType(), incomeModel.getTitle(),
 				incomeModel.getDescription(), incomeModel.getTotalAmount(),
 				incomeModel.getAmountDue(), incomeModel.getPayerId(), incomeModel.getPaidAtDate(),
 				incomeModel.getInvoiceId(), incomeModel.getCatId());
 	}
 
-	public static Call<JsonObject> deleteEntry(Context context, int id){
-		return NetworkUtil.getRestAdapter(context)
-			.deleteSpecificUserEntry(id);
+	public static Call<JsonObject> deleteEntry(Context context, long id) {
+		return NetworkUtil.getRestAdapter(context).deleteSpecificUserEntry(id);
 	}
 
 	public static IncomeModel handleSingleReminder(JsonObject obj) {
@@ -32,7 +31,7 @@ public class JsonHandler {
 		IncomeModel model = new IncomeModel();
 
 		try {
-			model.setId(obj.get("id").getAsInt());
+			model.setOnlineId(obj.get("id").getAsLong());
 			model.setType(obj.get("type").getAsString());
 			if (!obj.get("title").isJsonNull()) {
 				model.setTitle(obj.get("title").getAsString());

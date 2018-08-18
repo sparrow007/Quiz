@@ -46,7 +46,7 @@ public class Util {
 
 		@Override protected void onPreExecute() {
 			super.onPreExecute();
-			//((Main2Activity) context).showProgress("Updating notes...");
+			((Main2Activity) context).showProgress("Updating notes...");
 		}
 
 		@Override protected Object doInBackground(Object[] objects) {
@@ -76,7 +76,7 @@ public class Util {
 
 		@Override protected void onPostExecute(Object o) {
 			super.onPostExecute(o);
-			//((Main2Activity) context).dismissProgress();
+			((Main2Activity) context).dismissProgress();
 			//Fragment frg = null;
 			//frg = ((Main2Activity) context).getSupportFragmentManager().findFragmentByTag("Your_Fragment_TAG");
 			//final FragmentTransaction ft = ((Main2Activity) context).getSupportFragmentManager().beginTransaction();

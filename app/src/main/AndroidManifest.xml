@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="android.zersey.expense_manger">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -49,16 +50,22 @@
         <activity
             android:name=".Add_Contacts_Activity"
             android:label="Add Contacts"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Contact_List_Activity"
             android:label="Contacts"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <receiver android:name=".NetworkChangeReceiver" />
+
         <activity
             android:name=".SpecificTransactions"
-            android:label="@string/title_activity_specific_transactions"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".More_Activity" />
+        <activity
+            android:name=".Specific_Group"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Group_Form"></activity>
     </application>
 
 </manifest>

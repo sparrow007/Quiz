@@ -45,7 +45,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.zersey.expense_manger.Data.Contacts_contract;
 import android.zersey.expense_manger.Data.Contactsdbhelper;
-import android.zersey.expense_manger.Data.TransactionDbContract;
 import android.zersey.expense_manger.Data.TransactionDbHelper;
 import com.github.florent37.materialtextfield.MaterialTextField;
 import java.util.ArrayList;
@@ -84,7 +83,8 @@ public class Expense_Form extends Fragment {
 	private List<IncomeModel> customlist;
 	private ArrayList<String> Contact_list;
 	private TextView Category_text_view;
-	private int year_x, month_x, day_x, Selected_date = 0, Updated_Id;
+	private int year_x, month_x, day_x, Selected_date = 0;
+	private long Updated_Id;
 	private String Category_text, Notes_text, Amount_text, Title_text;
 	private Uri Image_uri = null;
 	private static int DIALOG_ID = 0;
@@ -104,20 +104,23 @@ public class Expense_Form extends Fragment {
 
 	private OnFragmentInteractionListener mListener;
 	private int pos;
+	private TransactionDbHelper mDbHelper;
+	private IncomeModel model;
 
 	public Expense_Form() {
 		// Required empty public constructor
 	}
 
-	public void setString(String cardClicked, String updated_Title, String updated_Amount,
-		String updated_Date, String updated_Category, int id, int pos) {
+	public void setString(IncomeModel model, String cardClicked, String updated_Title,
+		String updated_Amount, String updated_Date, String updated_Category, int id, int pos) {
 		CardClicked = cardClicked;
-		Updated_Title = updated_Title;
-		Updated_Amount = updated_Amount;
-		Updated_Date = updated_Date;
-		Updated_Category = updated_Category;
-		Updated_Id = id;
+		Updated_Title = model.getTitle();
+		Updated_Amount = model.getTotalAmount();
+		Updated_Date = model.getPaidAtDate();
+		Updated_Category = model.getCatId();
+		Updated_Id = model.getId();
 		this.pos = pos;
+		this.model = model;
 
 		// Required empty public constructor
 	}
@@ -146,6 +149,7 @@ public class Expense_Form extends Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
+		mDbHelper = new TransactionDbHelper(getContext());
 	}
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -1612,11 +1616,11 @@ public class Expense_Form extends Fragment {
 						long newRowId =
 							db.insert(Contacts_contract.Contacts_Entry.Table_name, null, values);
 						if (newRowId == -1) {
-							// If the row ID is -1, then there was an error with insertion.
+							// If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
 							Toast.makeText(getContext(), "Error with saving Contact",
 								Toast.LENGTH_SHORT).show();
 						} else {
-							// Otherwise, the insertion was successful and we can display a toast with the row ID.
+							// Otherwise, the insertion was successful and we can display a toast with the row COLUMN_ONLINE_ID.
 							Toast.makeText(getContext(), "Contact saved with row id: " + newRowId,
 								Toast.LENGTH_SHORT).show();
 						}
@@ -1635,8 +1639,13 @@ public class Expense_Form extends Fragment {
 					expenseModel.setPaidAtDate(DateEdit_text);
 					expenseModel.setCatId(Category_text);
 
-					new ServerUtil(getContext()).createEntry(expenseModel);
-
+					long rowId = mDbHelper.createEntry(expenseModel);
+					expenseModel.setId(rowId);
+					if (NetworkUtil.hasInternetConnection(getContext())) {
+						new ServerUtil(getContext()).createEntry(expenseModel);
+					} else {
+						mDbHelper.addToTemp(rowId, 0, "new");
+					}
 					//TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
 					//SQLiteDatabase db = mdbhelper.getWritableDatabase();
 					//ContentValues values = new ContentValues();
@@ -1654,11 +1663,11 @@ public class Expense_Form extends Fragment {
 					//long newRowId =
 					//	db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
 					//if (newRowId == -1) {
-					//	// If the row ID is -1, then there was an error with insertion.
+					//	// If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
 					//	Toast.makeText(getContext(), "Error with saving pet", Toast.LENGTH_SHORT)
 					//		.show();
 					//} else {
-					//	// Otherwise, the insertion was successful and we can display a toast with the row ID.
+					//	// Otherwise, the insertion was successful and we can display a toast with the row COLUMN_ONLINE_ID.
 					//	Toast.makeText(getContext(), "Recipe saved with row id: " + newRowId,
 					//		Toast.LENGTH_SHORT).show();
 					//	new ServerUtil(getContext()).createEntry(expenseModel);
@@ -1672,15 +1681,19 @@ public class Expense_Form extends Fragment {
 					Updated_Amount = AmountEdit.getText().toString();
 					Updated_Date = dateEdit.getText().toString();
 
-					IncomeModel expenseModel = new IncomeModel();
-					expenseModel.setType("expense");
-					expenseModel.setTitle(Updated_Title);
-					expenseModel.setTotalAmount(Updated_Amount);
-					expenseModel.setPaidAtDate(Updated_Date);
-					expenseModel.setCatId(Updated_Category);
-					expenseModel.setId(Updated_Id);
+					model.setPaidAtDate(Updated_Date);
+					model.setTotalAmount(Updated_Amount);
+					model.setTitle(Updated_Title);
+					model.setCatId(Updated_Category);
 
-					new ServerUtil(getContext()).updateEntry(pos, expenseModel);
+					mDbHelper.updateEntry(pos, model);
+					if (NetworkUtil.hasInternetConnection(getContext())) {
+						new ServerUtil(getContext()).updateEntry(model);
+					} else {
+						mDbHelper.addToTemp(model.getId(), 0, "edit");
+					}
+
+					//new ServerUtil(getContext()).updateEntry(pos, expenseModel);
 					//
 					//
 					//TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
@@ -1695,19 +1708,23 @@ public class Expense_Form extends Fragment {
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
 					//	Updated_Date);
 					//db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
-					//	TransactionDbContract.Transaction_Entry.ID + "=" + Updated_Id, null);
+					//	TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID + "=" + Updated_Id, null);
 					//new ServerUtil(getContext()).updateEntry(expenseModel);
 				}
-				Intent intent = new Intent(getContext(), Main2Activity.class);
-				startActivity(intent);
+				getActivity().finish();
 			}
 		}
 	}
 
 	public void Delete_Button() {
-		new ServerUtil(getContext()).deleteEntry(pos, Updated_Id);
-		Intent intent = new Intent(getContext(), Main2Activity.class);
-		startActivity(intent);
+		if (NetworkUtil.hasInternetConnection(getContext())) {
+			new ServerUtil(getContext()).deleteEntry(model.getOnlineId());
+		} else {
+			mDbHelper.addToTemp(model.getId(), model.getOnlineId(), "delete");
+		}
+
+		mDbHelper.deleteEntry(pos, model.getId());
+		getActivity().finish();
 	}
 
 	public void MoreButton() {

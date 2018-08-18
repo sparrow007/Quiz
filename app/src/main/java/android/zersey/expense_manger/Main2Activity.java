@@ -1,6 +1,9 @@
 package android.zersey.expense_manger;
 
+import android.content.BroadcastReceiver;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,17 +18,20 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+import android.zersey.expense_manger.Data.TransactionDbHelper;
+import com.google.gson.JsonObject;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
-import com.github.mikephil.charting.charts.BarChart;
-
-public class Main2Activity extends AppCompatActivity
-	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener{
+public class Main2Activity extends BaseActivity
+	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener,Groups.OnFragmentInteractionListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -77,11 +83,8 @@ public class Main2Activity extends AppCompatActivity
 				@Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 					// set item as selected to persist highlight
 					menuItem.setChecked(true);
-					if (menuItem.getItemId()==R.id.nav_gallery){
-						Intent i =new Intent(Main2Activity.this,Contact_List_Activity.class);
-						startActivity(i);
-					}else if (menuItem.getItemId()==R.id.nav_camera){
-						Intent i =new Intent(Main2Activity.this,SpecificTransactions.class);
+					if (menuItem.getItemId() == R.id.nav_gallery) {
+						Intent i = new Intent(Main2Activity.this, Contact_List_Activity.class);
 						startActivity(i);
 					}
 					// close drawer when item is tapped
@@ -108,38 +111,39 @@ public class Main2Activity extends AppCompatActivity
 		TabLayout tab_layout = findViewById(R.id.Tab_layout);
 		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
 		tab_layout.addTab(tab_layout.newTab().setText("Graphs"));
+		tab_layout.addTab(tab_layout.newTab().setText("Groups"));
 		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 		mViewPager = findViewById(R.id.container);
 		adapter = new PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount());
 		mViewPager.setAdapter(adapter);
 		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
-        /*mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                Fragment fragment=((FragmentPagerAdapter)mViewPager.getAdapter()).getItem(position);
-                if(position==1){
-                    //fragment.onResume();
-                }
-            }
+		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+			@Override public void onPageScrolled(int position, float positionOffset,
+				int positionOffsetPixels) {
+				Fragment fragment =
+					((FragmentPagerAdapter) mViewPager.getAdapter()).getItem(position);
+				if (position == 1) {
+					fragment.onStart();
+					//adapter.notifyDataSetChanged();
+				}
+			}
 
-            @Override
-            public void onPageSelected(int position) {
+			@Override public void onPageSelected(int position) {
 
-            }
+			}
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
+			@Override public void onPageScrollStateChanged(int state) {
 
-            }
-        });*/
+			}
+		});
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
+//				adapter.notifyDataSetChanged();
 			}
 
 			@Override public void onTabUnselected(TabLayout.Tab tab) {
-
 
 			}
 
@@ -160,11 +164,42 @@ public class Main2Activity extends AppCompatActivity
 			}
 		});
 		//if(!TextUtils.isEmpty(Category_text)){ addTransaction();}
+
+		TransactionDbHelper dbHelper = new TransactionDbHelper(this);
+		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
+			showProgress("Getting your notes...");
+			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchAllUserEntry();
+			result.enqueue(new Callback<JsonObject>() {
+				@Override public void onResponse(@NonNull Call<JsonObject> call,
+					@NonNull Response<JsonObject> response) {
+					JsonObject obj = response.body();
+					if (obj != null && obj.has("success")) {
+						String access = obj.get("success").getAsString();
+						if (access.equals("UnauthorizedAccess") || access.equals(
+							"Unauthorized Access")) {
+							Toast.makeText(Main2Activity.this, "Unauthorized access",
+								Toast.LENGTH_SHORT).show();
+							return;
+						}
+					}
+					Util.getNotesList(Main2Activity.this, response);
+				}
+
+				@Override
+				public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+					t.printStackTrace();
+				}
+			});
+		}
+
+		NetworkChangeReceiver br = new NetworkChangeReceiver();
+		IntentFilter netFilter = new IntentFilter();
+		netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+		registerReceiver(br, netFilter);
+
 	}
 
-	@Override public void onBackPressed() {
 
-	}
 
     /*public void addTransaction(){
         TextView Transaction_Category_text_view,Transaction_Notes_text_view,
@@ -207,8 +242,6 @@ public class Main2Activity extends AppCompatActivity
 	@Override public void onFragmentInteraction(Uri uri) {
 
 	}
-
-
 
 	/**
 	 * A placeholder fragment containing a simple view.
@@ -265,6 +298,8 @@ public class Main2Activity extends AppCompatActivity
 					return new Transactions();
 				case 1:
 					return new Graphs();
+				case 2:
+					return new Groups();
 				default:
 					return null;
 			}
@@ -272,14 +307,14 @@ public class Main2Activity extends AppCompatActivity
 			//return PlaceholderFragment.newInstance(position + 1);
 		}
 
-
 		@Override public int getCount() {
 			// Show 3 total pages.
 			return mnooftabes;
 		}
+
+		@Override public int getItemPosition(@NonNull Object object) {
+			return POSITION_NONE;
+		}
 	}
-
-
-
 }
 
