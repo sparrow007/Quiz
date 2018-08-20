@@ -1,38 +1,21 @@
 package android.zersey.expense_manger;
 
 import java.io.Serializable;
+import java.util.List;
 
-public class IncomeModel implements Serializable{
+public class IncomeModel implements Serializable {
 
-	private long id, onlineId;
-	private String type, title, description, totalAmount, paidAtDate, amountDue, payerId, invoiceId, catId;
+	private long id, onlineId, groupId;
+	private String type, title, description, uuid, catId;
+	private String totalAmount, paidAtDate, amountDue, payerId, invoiceId;
+	private List<IncomeModel> subList;
 
-	public IncomeModel(){}
-
-	public IncomeModel(long id, String type, String title, String description, String totalAmount,
-		String paidAtDate, String amountDue, String payerId, String invoiceId, String catId) {
+	public void setId(long id) {
 		this.id = id;
-		this.type = type;
-		this.title = title;
-		this.description = description;
-		this.totalAmount = totalAmount;
-		this.paidAtDate = paidAtDate;
-		this.amountDue = amountDue;
-		this.payerId = payerId;
-		this.invoiceId = invoiceId;
-		this.catId = catId;
-	}
-
-	public long getOnlineId() {
-		return onlineId;
 	}
 
 	public void setOnlineId(long onlineId) {
 		this.onlineId = onlineId;
-	}
-
-	public String getType() {
-		return type;
 	}
 
 	public void setType(String type) {
@@ -45,6 +28,10 @@ public class IncomeModel implements Serializable{
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
 	public void setTotalAmount(String totalAmount) {
@@ -67,13 +54,28 @@ public class IncomeModel implements Serializable{
 		this.invoiceId = invoiceId;
 	}
 
-	public String getTitle() {
+	public long getId() {
+		return id;
+	}
 
+	public long getOnlineId() {
+		return onlineId;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public String getTitle() {
 		return title;
 	}
 
 	public String getDescription() {
 		return description;
+	}
+
+	public String getUuid() {
+		return uuid;
 	}
 
 	public String getTotalAmount() {
@@ -104,12 +106,20 @@ public class IncomeModel implements Serializable{
 		this.catId = catId;
 	}
 
-	public long getId() {
-		return id;
+	public long getGroupId() {
+		return groupId;
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	public void setGroupId(long groupId) {
+		this.groupId = groupId;
+	}
+
+	public List<IncomeModel> getSubList() {
+		return subList;
+	}
+
+	public void setSubList(List<IncomeModel> subList) {
+		this.subList = subList;
 	}
 
 	@Override public String toString() {
@@ -118,6 +128,8 @@ public class IncomeModel implements Serializable{
 			+ id
 			+ ", onlineId="
 			+ onlineId
+			+ ", groupId="
+			+ groupId
 			+ ", type='"
 			+ type
 			+ '\''
@@ -126,6 +138,12 @@ public class IncomeModel implements Serializable{
 			+ '\''
 			+ ", description='"
 			+ description
+			+ '\''
+			+ ", uuid='"
+			+ uuid
+			+ '\''
+			+ ", catId='"
+			+ catId
 			+ '\''
 			+ ", totalAmount='"
 			+ totalAmount
@@ -142,9 +160,8 @@ public class IncomeModel implements Serializable{
 			+ ", invoiceId='"
 			+ invoiceId
 			+ '\''
-			+ ", catId='"
-			+ catId
-			+ '\''
+			+ ", subList="
+			+ subList
 			+ '}';
 	}
 }

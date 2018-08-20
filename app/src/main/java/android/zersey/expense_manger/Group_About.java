@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.TextView;
+import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class Group_About extends Fragment {
     private RecyclerView recyclerView;
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private GroupModel mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
@@ -62,8 +64,8 @@ public class Group_About extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = (GroupModel)getArguments().getSerializable("group");
+            //mParam2 = getArguments().getString(ARG_PARAM2);
         }
         initList();
         recyclerView=new RecyclerView(getContext());
@@ -73,6 +75,8 @@ public class Group_About extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View fragmentLayout=inflater.inflate(R.layout.fragment_group__about, container, false);
+        TextView desc = fragmentLayout.findViewById(R.id.group_desc);
+        desc.setText(mParam1.getGroupDesc());
         fragmentLayout=initRecyclerView(fragmentLayout);
         return fragmentLayout;
     }

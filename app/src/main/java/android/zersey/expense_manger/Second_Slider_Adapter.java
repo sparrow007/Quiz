@@ -15,8 +15,8 @@ import java.util.zip.Inflater;
 
 public class Second_Slider_Adapter extends RecyclerView.Adapter<Second_Slider_Adapter.Second_Slider_ViewHolder>{
 Context context;
-List<String> list;
- public Second_Slider_Adapter(Context context,List<String> list){
+List<GroupModel> list;
+ public Second_Slider_Adapter(Context context,List<GroupModel> list){
      this.context=context;
      this.list=list;
  }
@@ -33,7 +33,8 @@ List<String> list;
         if(position==list.size()){
             holder.tv.setText("Add Group");
         }else {
-    holder.tv.setText(list.get(position));}
+            //holder.tv.setText(list.get(position));
+        }
     }
 
     @Override

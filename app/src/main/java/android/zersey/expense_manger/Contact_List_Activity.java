@@ -50,7 +50,6 @@ private ArrayList<Custom_Contact_items> Item_list;
 
                 int currentID = cursor.getInt(cursor.getColumnIndex(Contacts_Entry._id));
                 String Name = cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Name));
-                //Log.d( "current label ",currentName);
                 String Number = cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Number));
                 //String amount = cursor.getString(cursor.getColumnIndex(Transaction_contract.Transaction_Entry.Column_Amount));
                 //String dateCreated = cursor.getString(cursor.getColumnIndex(Transaction_contract.Transaction_Entry.Column_Date_Created));
@@ -110,7 +109,6 @@ private ArrayList<Custom_Contact_items> Item_list;
                 // at the current row the cursor is on.
                 int currentID = cursor.getInt(cursor.getColumnIndex(Contacts_Entry._id));
                 String Name = cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Name));
-                //Log.d( "current label ",currentName);
                 String Number = cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Number));
 
                 Custom_Contact_items CCItem = new Custom_Contact_items(Name,Number);

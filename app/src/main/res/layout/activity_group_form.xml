@@ -1,101 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Group_Form">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context=".Group_Form"
+    >
 
-    <LinearLayout
+
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:id="@+id/Material_Group_name"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginTop="8dp"
+        app:mtf_hasFocus="true"
+        app:mtf_labelColor="#666"
+        >
 
-        <com.github.florent37.materialtextfield.MaterialTextField
-            android:id="@+id/Material_Group_name"
+        <EditText
+            android:id="@+id/group_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            app:mtf_hasFocus="true"
-            app:mtf_labelColor="#666">
-
-            <EditText
-                android:id="@+id/Group_name_Edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#000000"
-                android:hint="Group name"
-                android:inputType="text" />
-        </com.github.florent37.materialtextfield.MaterialTextField>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#B0BEC5" />
-
-        <com.github.florent37.materialtextfield.MaterialTextField
-            android:id="@+id/Material_Group_Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            app:mtf_hasFocus="true"
-            app:mtf_labelColor="#666">
-
-            <EditText
-                android:id="@+id/Group_Description_Edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="#000000"
-                android:hint="Description"
-                android:inputType="text" />
-        </com.github.florent37.materialtextfield.MaterialTextField>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#B0BEC5" />
-
-        <LinearLayout
-            android:onClick="Add_Members"
-            android:padding="10dp"
-            android:id="@+id/Add_Member_Layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <ImageView
-            android:layout_marginLeft="10dp"
-            android:src="@drawable/plus"
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
-        <TextView
-            android:layout_weight="1"
-            android:layout_marginLeft="10dp"
-            android:textSize="25dp"
-            android:layout_gravity="center_vertical"
-            android:text="Add Member"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        </LinearLayout>
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#B0BEC5" />
-        <ListView
-            android:visibility="gone"
-            android:id="@+id/Add_Member_ListView"
-            android:layout_weight="1"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:hint="Group name"
+            android:inputType="text"
             />
+    </com.github.florent37.materialtextfield.MaterialTextField>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#B0BEC5"
+        />
 
-    </LinearLayout>
-    <Button
-        android:backgroundTint="@color/colorPrimary"
-        android:background="@drawable/layout_bg"
-        android:text="Submit"
-        android:layout_marginTop="10dp"
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:id="@+id/Material_Group_Description"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:mtf_hasFocus="true"
+        app:mtf_labelColor="#666"
+        >
+
+        <EditText
+            android:id="@+id/group_desc_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:inputType="text"
+            />
+    </com.github.florent37.materialtextfield.MaterialTextField>
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#B0BEC5"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/plus"
+        android:onClick="Add_Members"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp"
+        android:text="Add Member"
+        android:textSize="24sp"
+        />
+    <View
+        android:layout_width="fill_parent"
+        android:layout_height="1dp"
+        android:background="#B0BEC5"
+        />
+    <ListView
+        android:id="@+id/Add_Member_ListView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        />
+
+    <android.support.v7.widget.AppCompatButton
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/layout_bg"
+        android:onClick="addGroup"
+        android:text="Submit"
+        app:backgroundTint="@color/colorPrimary"
+        />
 </LinearLayout>

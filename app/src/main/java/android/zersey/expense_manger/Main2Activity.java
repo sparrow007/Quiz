@@ -1,9 +1,6 @@
 package android.zersey.expense_manger;
 
-import android.content.BroadcastReceiver;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,19 +16,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-import android.zersey.expense_manger.Data.TransactionDbHelper;
-import com.google.gson.JsonObject;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class Main2Activity extends BaseActivity
-	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener,Groups.OnFragmentInteractionListener {
+	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener,
+	Groups.OnFragmentInteractionListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -53,6 +46,7 @@ public class Main2Activity extends BaseActivity
 	private ViewPager mViewPager;
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
+	private String[] tags = new String[3];
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -140,7 +134,7 @@ public class Main2Activity extends BaseActivity
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
-//				adapter.notifyDataSetChanged();
+				//				adapter.notifyDataSetChanged();
 			}
 
 			@Override public void onTabUnselected(TabLayout.Tab tab) {
@@ -165,37 +159,37 @@ public class Main2Activity extends BaseActivity
 		});
 		//if(!TextUtils.isEmpty(Category_text)){ addTransaction();}
 
-		TransactionDbHelper dbHelper = new TransactionDbHelper(this);
-		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
-			showProgress("Getting your notes...");
-			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchAllUserEntry();
-			result.enqueue(new Callback<JsonObject>() {
-				@Override public void onResponse(@NonNull Call<JsonObject> call,
-					@NonNull Response<JsonObject> response) {
-					JsonObject obj = response.body();
-					if (obj != null && obj.has("success")) {
-						String access = obj.get("success").getAsString();
-						if (access.equals("UnauthorizedAccess") || access.equals(
-							"Unauthorized Access")) {
-							Toast.makeText(Main2Activity.this, "Unauthorized access",
-								Toast.LENGTH_SHORT).show();
-							return;
-						}
-					}
-					Util.getNotesList(Main2Activity.this, response);
-				}
-
-				@Override
-				public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-					t.printStackTrace();
-				}
-			});
-		}
-
-		NetworkChangeReceiver br = new NetworkChangeReceiver();
-		IntentFilter netFilter = new IntentFilter();
-		netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-		registerReceiver(br, netFilter);
+		//TransactionDbHelper dbHelper = new TransactionDbHelper(this);
+		//if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
+		//	showProgress("Getting your notes...");
+		//	Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchAllUserEntry();
+		//	result.enqueue(new Callback<JsonObject>() {
+		//		@Override public void onResponse(@NonNull Call<JsonObject> call,
+		//			@NonNull Response<JsonObject> response) {
+		//			JsonObject obj = response.body();
+		//			if (obj != null && obj.has("success")) {
+		//				String access = obj.get("success").getAsString();
+		//				if (access.equals("UnauthorizedAccess") || access.equals(
+		//					"Unauthorized Access")) {
+		//					Toast.makeText(Main2Activity.this, "Unauthorized access",
+		//						Toast.LENGTH_SHORT).show();
+		//					return;
+		//				}
+		//			}
+		//			Util.getNotesList(Main2Activity.this, response);
+		//		}
+		//
+		//		@Override
+		//		public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+		//			t.printStackTrace();
+		//		}
+		//	});
+		//}
+		//
+		//NetworkChangeReceiver br = new NetworkChangeReceiver();
+		//IntentFilter netFilter = new IntentFilter();
+		//netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+		//registerReceiver(br, netFilter);
 
 	}
 
@@ -315,12 +309,23 @@ public class Main2Activity extends BaseActivity
 		@Override public int getItemPosition(@NonNull Object object) {
 			return POSITION_NONE;
 		}
+
+		@NonNull @Override public Object instantiateItem(ViewGroup container, int position) {
+
+			Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
+			tags[position] = createdFragment.getTag();
+			return createdFragment;
+		}
 	}
 
-
-	@Override public void onBackPressed() {
-		//Intent intent=new Intent(Contact_List_Activity.this,Main2Activity.class);
-		//startActivity(intent);
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (data == null) {
+			Log.d("hueh", "onActivityResult: act" + "Data is null");
+		}
+		Fragment fragment = getSupportFragmentManager().findFragmentByTag(tags[2]);
+		fragment.onActivityResult(requestCode, resultCode, data);
 	}
 }
+
 

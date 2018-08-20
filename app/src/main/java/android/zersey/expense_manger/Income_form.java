@@ -7,6 +7,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -25,7 +26,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 public class Income_form extends Fragment {
 	// TODO: Rename parameter arguments, choose names that match
@@ -96,7 +97,7 @@ public class Income_form extends Fragment {
 		Updated_Title = model.getTitle();
 		Updated_Amount = model.getTotalAmount();
 		Updated_Date = model.getPaidAtDate();
-		Updated_Category = model.getCatId();
+		//Updated_Category = model.getCatId();
 		Updated_Id = model.getId();
 		this.pos = pos;
 		this.model = model;
@@ -174,7 +175,6 @@ public class Income_form extends Fragment {
 			(AutoCompleteTextView) fragmentLayout.findViewById(R.id.Contact_Income_AutoComplete);
 		if (!Util.isEmpty(Updated_Title)) {
 			Updated_Amount = Updated_Amount.replace("Rs ", "");
-			Log.d("Rs replaced", Updated_Amount);
 			AmountEdit.setText(Updated_Amount);
 			TitleEdit.setText(Updated_Title);
 			dateEdit.setText(Updated_Date);
@@ -870,7 +870,6 @@ public class Income_form extends Fragment {
 					values.put(Contacts_Entry.Column_Contact_Name, Contact_Person_Name);
 					values.put(Contacts_Entry.Column_Contact_Number, Contact_Person_Number);
 					//values.put(Transaction_contract.Transaction_Entry.Column_Amount, "Rs " + Amount_text);
-					//Log.d("Date created", DateEdit_text);
 					//values.put(Transaction_contract.Transaction_Entry.Column_Date_Created, DateEdit_text);
 
 					long newRowId = db.insert(Contacts_Entry.Table_name, null, values);
@@ -892,19 +891,34 @@ public class Income_form extends Fragment {
 				//      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
 				//customlist.add(items);
 
+
+				SharedPreferences prefs = getContext().getSharedPreferences("login", MODE_PRIVATE);
+
+				GroupModel model = new GroupModel();
+				model.setGroupName(Title_text);
+				//model.setGroupDesc();
+				model.setUsers(prefs.getString("userid", null));
+				long groupId = mDbHelper.createGroup(model);
+
 				IncomeModel incomeModel = new IncomeModel();
-				incomeModel.setType("income");
 				incomeModel.setTitle(Title_text);
+				incomeModel.setGroupId(groupId);
 				incomeModel.setTotalAmount(Amount_text);
 				incomeModel.setPaidAtDate(DateEdit_text);
+				incomeModel.setCatId(Updated_Category);
+				incomeModel.setType("income");
+				incomeModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
+				incomeModel.setAmountDue(Amount_text);
 
-				long rowId = mDbHelper.createEntry(incomeModel);
-				incomeModel.setId(rowId);
-				if (NetworkUtil.hasInternetConnection(getContext())) {
-					new ServerUtil(getContext()).createEntry(incomeModel);
-				} else {
-					mDbHelper.addToTemp(rowId, 0, "new");
-				}
+				mDbHelper.createEntry(incomeModel);
+
+				//long rowId = mDbHelper.createEntry(incomeModel);
+				//incomeModel.setId(rowId);
+				//if (NetworkUtil.hasInternetConnection(getContext())) {
+				//	new ServerUtil(getContext()).createEntry(incomeModel);
+				//} else {
+				//	mDbHelper.addToTemp(rowId, 0, "new");
+				//}
 				//new ServerUtil(getContext()).createEntry(incomeModel);
 				//if (newRowId == -1) {
 				//	// If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
@@ -922,11 +936,10 @@ public class Income_form extends Fragment {
 				Updated_Title = TitleEdit.getText().toString();
 				Updated_Amount = AmountEdit.getText().toString();
 				Updated_Date = dateEdit.getText().toString();
-
-				model.setPaidAtDate(Updated_Date);
-				model.setTotalAmount(Updated_Amount);
-				model.setTitle(Updated_Title);
-				Log.d("hueh", "Submit: " + model.toString());
+				//
+				//model.setPaidAtDate(Updated_Date);
+				//model.setTotalAmount(Updated_Amount);
+				//model.setTitle(Updated_Title);
 
 				mDbHelper.updateEntry(pos, model);
 				if (NetworkUtil.hasInternetConnection(getContext())) {
@@ -1046,7 +1059,6 @@ public class Income_form extends Fragment {
 					cNumber = phones.getString(phones.getColumnIndex("data1"));
 					//System.out.println("number is:"+cNumber);
 				}
-				Log.d("onActivityResult: ", cNumber);
 
 				AutoCompleteContacts.setText(name);
 				final EditText Image_Link, Contact_number;
@@ -1081,10 +1093,8 @@ public class Income_form extends Fragment {
 								cancel = true;
 							}
 							if (cancel) {
-								Log.d("onClick: ", extractNumber(finalCNumber).length() + "");
 								focus_View.requestFocus();
 							} else {
-								Log.d("onClick: ", name);
 								final SpannableStringBuilder sb = new SpannableStringBuilder();
 								TextView tv = createContactTextView(name);
 								BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
@@ -1176,8 +1186,13 @@ public class Income_form extends Fragment {
 		phones.close();
 
 		Contact_Names = new String[200];
-		for (int i = 0; i < 200; i++) {
-			Contact_Names[i] = Contact_list.get(i);
+
+		try {
+			for (int i = 0; i < 200; i++) {
+				Contact_Names[i] = Contact_list.get(i);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 		// Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
 		//Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
@@ -1261,7 +1276,6 @@ public class Income_form extends Fragment {
 				int currentID = cursor.getInt(cursor.getColumnIndex(Contacts_Entry._id));
 				String Name =
 					cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Name));
-				//Log.d( "current label ",currentName);
 				String Number =
 					cursor.getString(cursor.getColumnIndex(Contacts_Entry.Column_Contact_Number));
 				if (TextUtils.equals(Number, contactnumber)) {

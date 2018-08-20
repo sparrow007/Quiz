@@ -1,7 +1,7 @@
 package android.zersey.expense_manger;
 
 import android.Manifest;
-import android.app.AlertDialog;
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -18,11 +18,8 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,11 +33,11 @@ import android.text.TextWatcher;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
@@ -65,6 +62,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+@SuppressLint("NewApi")
 public class MainActivity extends AppCompatActivity {
 
 	/**
@@ -126,14 +124,14 @@ public class MainActivity extends AppCompatActivity {
 	private String mParam1;
 	private String mParam2;
 
-	
+
 	private int pos;
 	private TransactionDbHelper mDbHelper;
 	private IncomeModel model;
-	
+
 	//private pageradapter adapter;
 	private String Updated_Type = "";
-	
+
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -159,14 +157,16 @@ public class MainActivity extends AppCompatActivity {
 		CardClicked = getIntent().getStringExtra("CardClicked");
 		pos = getIntent().getIntExtra("pos", -1);
 		if (!TextUtils.isEmpty(CardClicked)) {
-          
+
           model = (IncomeModel) getIntent().getSerializableExtra("model");
+
 			Updated_Category = getIntent().getStringExtra("Category");
 			Updated_Amount = getIntent().getStringExtra("Amount");
 			Updated_Title = getIntent().getStringExtra("Title");
 			Updated_Date = getIntent().getStringExtra("DateCreated");
 			Updated_Type = getIntent().getStringExtra("Type");
 			Updated_Id = getIntent().getIntExtra("_ID", 0);
+
 
 		}
 		Contact_list = new ArrayList<String>();
@@ -1174,6 +1174,7 @@ private void initRecyclerView(){
 
 
 
+
 	Thread th = new Thread() {
 		@Override public void run() {
 
@@ -1189,7 +1190,7 @@ private void initRecyclerView(){
 
 	/*private CheckBox.OnCheckedChangeListener checkedChangeListener =
 			new CheckBox.OnCheckedChangeListener() {
-				@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				 @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if (isChecked == true) {
 						if (buttonView.getParent().equals(Clothing)) {
 							Category_text = "Expense";
@@ -1585,7 +1586,7 @@ private void initRecyclerView(){
 				cancel = true;
 			}
 
-			if (cancel == true) {
+			if (cancel) {
 				focus.requestFocus();
 			} else {
 				if (person_added) {
@@ -1813,8 +1814,8 @@ private void initRecyclerView(){
 		}
 		phones.close();
 
-		Contact_Names = new String[200];
-		for (int i = 0; i < 200; i++) {
+		Contact_Names = new String[Contact_list.size()];
+		for (int i = 0; i < Contact_Names.length; i++) {
 			Contact_Names[i] = Contact_list.get(i);
 		}
 		// Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
@@ -1919,16 +1920,16 @@ private void initRecyclerView(){
 
 		return false;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
+
 /*
     Thread th= new Thread(){
         @Override
@@ -2263,7 +2264,6 @@ private void initRecyclerView(){
                     values.put(Transaction_Entry.COLUMN_TITLE, Title_text);
                     values.put(Transaction_Entry.COLUMN_CATEGORY, Category_text);
                     values.put(Transaction_Entry.COLUMN_AMOUNT, "Rs " + Amount_text);
-                    Log.d("Date created", DateEdit_text);
                     values.put(Transaction_Entry.COLUMN_DATE_CREATED, DateEdit_text);
                     //values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
                     //values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
@@ -2417,5 +2417,5 @@ public void Contact_Button(View view){
 
 
 */
-	
+
 }
