@@ -12,4 +12,6 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="title_activity_contact__list_">Contact_List_Activity</string>
     <string name="title_activity_specific_transactions">SpecificTransactions</string>
+    <string name="title_activity_main3">Main3Activity</string>
+    <string name="title_activity_specific__group__transaction">Specific_Group_Transaction</string>
 </resources>

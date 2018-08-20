@@ -94,9 +94,9 @@ public class Expense_Form extends Fragment {
 	private String[] Months = {
 		"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
 	}, Contact_Names;
-	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
+/*	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
 	private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
-		Health_checkbox, Salary_checkbox, More_checkbox;
+		Health_checkbox, Salary_checkbox, More_checkbox;*/
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
@@ -166,12 +166,12 @@ public class Expense_Form extends Fragment {
 		//Material_Date = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Date);
 		//Material_Date.setHasFocus(true);
 		Material_Notes = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Notes);
-		Notes_Layout = (LinearLayout) fragmentLayout.findViewById(R.id.Notes_Layout);
+		//Notes_Layout = (LinearLayout) fragmentLayout.findViewById(R.id.Notes_Layout);
 		Material_Amount_Due =
 			(MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount_Due);
 		Material_Amount_Due.setVisibility(View.GONE);
 		More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
-		Notes_Layout.setVisibility(View.GONE);
+		//Notes_Layout.setVisibility(View.GONE);
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
@@ -190,7 +190,7 @@ public class Expense_Form extends Fragment {
 		AmountEdit = (EditText) fragmentLayout.findViewById(R.id.Amount_Edit);
 		Amount_Due_Edit = (EditText) fragmentLayout.findViewById(R.id.Amount_Due_Edit);
 		AutoCompleteContacts = (AutoCompleteTextView) fragmentLayout.findViewById(R.id.Notes_Edit);
-		Clothing = (LinearLayout) fragmentLayout.findViewById(R.id.Clothing_layout);
+		/*Clothing = (LinearLayout) fragmentLayout.findViewById(R.id.Clothing_layout);
 		Entertainment = (LinearLayout) fragmentLayout.findViewById(R.id.Entertainment_layout);
 		Food = (LinearLayout) fragmentLayout.findViewById(R.id.food_layout);
 		Fuel = (LinearLayout) fragmentLayout.findViewById(R.id.fuel_layout);
@@ -213,7 +213,7 @@ public class Expense_Form extends Fragment {
 		Fuel_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Health_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
+		More_checkbox.setOnCheckedChangeListener(checkedChangeListener);*/
 
 		dateEdit.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
@@ -1103,7 +1103,7 @@ public class Expense_Form extends Fragment {
             Updated_Title = getIntent().getStringExtra("Title");
             Updated_Date = getIntent().getStringExtra("DateCreated");
             Updated_Id = getIntent().getIntExtra("_ID", 0);*/
-			if ("Clothing".equals(Updated_Category)) {
+			/*if ("Clothing".equals(Updated_Category)) {
 				Clothing.setBackgroundTintList(
 					getContext().getResources().getColorStateList(R.color.newdarkblue));
 				Category_text = "Clothing";
@@ -1127,7 +1127,7 @@ public class Expense_Form extends Fragment {
 				Salary.setBackgroundTintList(
 					getContext().getResources().getColorStateList(R.color.newdarkblue));
 				Category_text = "Salary";
-			}
+			}*/
 			Updated_Amount = Updated_Amount.replace("Rs ", "");
 			Log.d("Rs replaced", Updated_Amount);
 			AmountEdit.setText(Updated_Amount);
@@ -1159,7 +1159,7 @@ public class Expense_Form extends Fragment {
 		}
 	};
 
-	private CheckBox.OnCheckedChangeListener checkedChangeListener =
+	/*private CheckBox.OnCheckedChangeListener checkedChangeListener =
 		new CheckBox.OnCheckedChangeListener() {
 			@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked == true) {
@@ -1268,7 +1268,7 @@ public class Expense_Form extends Fragment {
                             Health.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newlightblue));
                             Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newlightblue));
                             More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newlightblue));
-                        }*/
+                        }
 				} else {
 					if (buttonView.getParent().equals(Clothing)) {
 						Category_text = "";
@@ -1279,7 +1279,7 @@ public class Expense_Form extends Fragment {
                        Fuel.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
 					}
 					if (buttonView.getParent().equals(Entertainment)) {
 						Category_text = "";
@@ -1290,7 +1290,7 @@ public class Expense_Form extends Fragment {
                        Fuel.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
 					}
 					if (buttonView.getParent().equals(Food)) {
 						Category_text = "";
@@ -1301,7 +1301,7 @@ public class Expense_Form extends Fragment {
                        Fuel.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
 					}
 					if (buttonView.getParent().equals(Fuel)) {
 						Category_text = "";
@@ -1312,7 +1312,7 @@ public class Expense_Form extends Fragment {
                        Clothing.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
 					}
 					if (buttonView.getParent().equals(Health)) {
 						Category_text = "";
@@ -1323,7 +1323,7 @@ public class Expense_Form extends Fragment {
                        Fuel.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Clothing.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
 					}
                         /*if(buttonView.getParent().equals(Salary)){
                             Category_text="";
@@ -1343,11 +1343,11 @@ public class Expense_Form extends Fragment {
                        Fuel.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));*/
+                       Clothing.setBackgroundTintList(getContext().getResources().getColorStateList(R.color.newdarkblue));
 					//}
 				}
 			}
-		};
+		};*/
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -1695,7 +1695,7 @@ public class Expense_Form extends Fragment {
 	public void MoreButton() {
 		Fetch_Contacts();
 		th.run();
-		if (Notes_Layout.getVisibility() == View.GONE) {
+		/*if (Notes_Layout.getVisibility() == View.GONE) {
 			Notes_Layout.setVisibility(View.VISIBLE);
 			Material_Amount_Due.setVisibility(View.VISIBLE);
 			if (!TextUtils.isEmpty(AmountEdit.getText().toString())) {
@@ -1707,7 +1707,7 @@ public class Expense_Form extends Fragment {
             /*YoYo.with(Techniques.SlideInLeft)
                     .duration(1000)
                     .repeat(0)
-                    .playOn(Notes_Layout);*/
+                    .playOn(Notes_Layout);
 			Material_Notes.setHasFocus(true);
 			Material_Amount_Due.setHasFocus(true);
 			// More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
@@ -1730,9 +1730,9 @@ public class Expense_Form extends Fragment {
                     Notes_Layout.setVisibility(View.GONE);
                     More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
                 }
-            }, 500);*/
+            }, 500);
 
-		}
+		}*/
 	}
 
 	public void Contact_Button() {

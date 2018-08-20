@@ -65,7 +65,11 @@
         <activity
             android:name=".Specific_Group"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Group_Form"></activity>
+        <activity android:name=".Group_Form" />
+        <activity
+            android:name=".Specific_Group_Transaction"
+            android:label="@string/title_activity_specific__group__transaction"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

@@ -24,6 +24,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
@@ -85,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<String> Contact_list;
     private TextView Category_text_view;*/
 	private boolean person_added = false;
+	private RecyclerView Category_Recycler_View;
 	private String Contact_Person_Name, Contact_Person_Number;
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
@@ -102,6 +105,7 @@ public class MainActivity extends AppCompatActivity {
 	public View layout_view = null;
 	private List<IncomeModel> customlist;
 	private ArrayList<String> Contact_list;
+	private List<String> Category_list;
 	private TextView Category_text_view;
 	private int year_x, month_x, day_x, Selected_date = 0;
 	private long Updated_Id;
@@ -115,8 +119,8 @@ public class MainActivity extends AppCompatActivity {
 			"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
 	}, Contact_Names;
 	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
-	private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
-			Health_checkbox, Salary_checkbox, More_checkbox;
+	//private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
+	//		Health_checkbox, Salary_checkbox, More_checkbox;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
@@ -138,6 +142,8 @@ public class MainActivity extends AppCompatActivity {
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		mDbHelper = new TransactionDbHelper(MainActivity.this);
+		Category_list=new ArrayList<>();
+
 		Dexter.withActivity(MainActivity.this)
 			.withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
 				Manifest.permission.READ_CONTACTS)
@@ -164,7 +170,10 @@ public class MainActivity extends AppCompatActivity {
 
 		}
 		Contact_list = new ArrayList<String>();
-
+		Category_list.add("Expense");
+		Category_list.add("Income");
+		Category_list.add("Group");
+        initRecyclerView();
 		//customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
 		Material_Title = (MaterialTextField) findViewById(R.id.Material_Title);
 		Material_Title.setHasFocus(true);
@@ -197,14 +206,14 @@ public class MainActivity extends AppCompatActivity {
 		AmountEdit = (EditText) findViewById(R.id.Amount_Edit);
 		Amount_Due_Edit = (EditText) findViewById(R.id.Amount_Due_Edit);
 		AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
-		Clothing = (LinearLayout) findViewById(R.id.Clothing_layout);
+/*		Clothing = (LinearLayout) findViewById(R.id.Clothing_layout);
 		Entertainment = (LinearLayout) findViewById(R.id.Entertainment_layout);
 		Food = (LinearLayout) findViewById(R.id.food_layout);
 		Fuel = (LinearLayout) findViewById(R.id.fuel_layout);
 		Health = (LinearLayout) findViewById(R.id.Health_layout);
 		Salary = (LinearLayout) findViewById(R.id.Salary_layout);
 		More = (LinearLayout) findViewById(R.id.More_layout);
-		Clothing_checkbox = (CheckBox) findViewById(R.id.Clothing_checkbox);
+	Clothing_checkbox = (CheckBox) findViewById(R.id.Clothing_checkbox);
 		Entertainment_checkbox =
 				(CheckBox) findViewById(R.id.Entertainment_checkbox);
 		Food_checkbox = (CheckBox) findViewById(R.id.Food_checkbox);
@@ -213,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
 		Salary_checkbox = (CheckBox) findViewById(R.id.Salary_checkbox);
 		More_checkbox = (CheckBox) findViewById(R.id.More_checkbox);
 		Category_text_view = (TextView) findViewById(R.id.Category_text_view);
-		Submit_button = (TextView) findViewById(R.id.Submit_Button);
+
 		Clothing_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Entertainment_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Food_checkbox.setOnCheckedChangeListener(checkedChangeListener);
@@ -221,7 +230,8 @@ public class MainActivity extends AppCompatActivity {
 		Health_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-
+*/
+		Submit_button = (TextView) findViewById(R.id.Submit_Button);
 		dateEdit.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
@@ -1110,7 +1120,7 @@ public class MainActivity extends AppCompatActivity {
             Updated_Title = getIntent().getStringExtra("Title");
             Updated_Date = getIntent().getStringExtra("DateCreated");
             Updated_Id = getIntent().getIntExtra("_ID", 0);*/
-			if ("Clothing".equals(Updated_Category)) {
+			/*if ("Clothing".equals(Updated_Category)) {
 				Clothing.setBackgroundTintList(
 						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
 				Category_text = "Clothing";
@@ -1134,7 +1144,7 @@ public class MainActivity extends AppCompatActivity {
 				Salary.setBackgroundTintList(
 						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
 				Category_text = "Salary";
-			}
+			}*/
 			Updated_Amount = Updated_Amount.replace("Rs ", "");
 			Log.d("Rs replaced", Updated_Amount);
 			AmountEdit.setText(Updated_Amount);
@@ -1148,7 +1158,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+private void initRecyclerView(){
+		//View view=Category_Recycler_View.findViewHolderForAdapterPosition(0);
+	Category_Recycler_View=new RecyclerView(this);
+	Category_Recycler_View=(RecyclerView)findViewById(R.id.Category_Recycler_View);
+	Category_Recycler_View.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+	Category_Recycler_View.setAdapter(new CategoryAdapter(Category_list));
+	Category_Recycler_View.setOnClickListener(new View.OnClickListener() {
+		@Override
+		public void onClick(View v) {
+		}
+	});
+}
 
 
 
@@ -1166,7 +1187,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 	};
 
-	private CheckBox.OnCheckedChangeListener checkedChangeListener =
+	/*private CheckBox.OnCheckedChangeListener checkedChangeListener =
 			new CheckBox.OnCheckedChangeListener() {
 				@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if (isChecked == true) {
@@ -1185,7 +1206,7 @@ public class MainActivity extends AppCompatActivity {
 							Salary.setBackgroundTintList(
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));*/
+									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 						}
 						if (buttonView.getParent().equals(Entertainment)) {
 							Category_text = "Income";
@@ -1202,7 +1223,7 @@ public class MainActivity extends AppCompatActivity {
 							Salary.setBackgroundTintList(
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));*/
+									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 						}
 						if (buttonView.getParent().equals(Food)) {
 							Category_text = "Group Expense";
@@ -1212,14 +1233,14 @@ public class MainActivity extends AppCompatActivity {
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 							Clothing.setBackgroundTintList(
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							/*Fuel.setBackgroundTintList(
+							Fuel.setBackgroundTintList(
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 							Health.setBackgroundTintList(
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 							Salary.setBackgroundTintList(
 									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));*/
+									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
 						}
 						/*if (buttonView.getParent().equals(Fuel)) {
 							Category_text = "Fuel";
@@ -1275,7 +1296,7 @@ public class MainActivity extends AppCompatActivity {
                             Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
                             Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
                             More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }*/
+                        }
 					} else {
 						if (buttonView.getParent().equals(Clothing)) {
 							Category_text = "";
@@ -1286,7 +1307,7 @@ public class MainActivity extends AppCompatActivity {
                        Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
 						}
 						if (buttonView.getParent().equals(Entertainment)) {
 							Category_text = "";
@@ -1297,7 +1318,7 @@ public class MainActivity extends AppCompatActivity {
                        Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
 						}
 						if (buttonView.getParent().equals(Food)) {
 							Category_text = "";
@@ -1308,7 +1329,7 @@ public class MainActivity extends AppCompatActivity {
                        Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
+                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
 						}
 						/*if (buttonView.getParent().equals(Fuel)) {
 							Category_text = "";
@@ -1350,11 +1371,11 @@ public class MainActivity extends AppCompatActivity {
                        Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
                        Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
+                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
 						//}
 					}
 				}
-			};
+			};*/
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);

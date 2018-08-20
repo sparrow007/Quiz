@@ -28,7 +28,6 @@ List<String> list;
         View view=inflater.inflate(R.layout.second_slider,parent,false);
         return new Second_Slider_ViewHolder(view);
     }
-
     @Override
     public void onBindViewHolder(@NonNull Second_Slider_ViewHolder holder, int position) {
         if(position==list.size()){
@@ -56,7 +55,7 @@ List<String> list;
                 Intent intent=new Intent(v.getContext(),Group_Form.class);
                 v.getContext().startActivity(intent);
             }else {
-                Intent intent=new Intent(v.getContext(),Specific_Group.class);
+                Intent intent=new Intent(v.getContext(),Specific_Group_Transaction.class);
                 v.getContext().startActivity(intent);
             }
         }
