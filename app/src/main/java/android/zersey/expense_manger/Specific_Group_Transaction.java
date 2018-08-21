@@ -30,6 +30,10 @@ public class Specific_Group_Transaction extends AppCompatActivity {
         list.add("Amrit");
         list.add("Rahul");
         mAppBarLayout = findViewById(R.id.appbar);
+        //toolbar.setTitle("Big Gift");
+        //toolbar.setSubtitle("20 Aug");
+        //getSupportActionBar().setDisplayShowTitleEnabled(true   );
+        //setSupportActionBar(toolbar);
         mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {

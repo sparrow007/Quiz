@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private List<IncomeModel> customlist;
     private ArrayList<String> Contact_list;
     private TextView Category_text_view;*/
+    private CategoryAdapter adapter;
 	private boolean person_added = false;
 	private RecyclerView Category_Recycler_View;
 	private String Contact_Person_Name, Contact_Person_Number;
@@ -1161,9 +1162,10 @@ public class MainActivity extends AppCompatActivity {
 private void initRecyclerView(){
 		//View view=Category_Recycler_View.findViewHolderForAdapterPosition(0);
 	Category_Recycler_View=new RecyclerView(this);
+	adapter=new CategoryAdapter(getApplicationContext(),Category_list);
 	Category_Recycler_View=(RecyclerView)findViewById(R.id.Category_Recycler_View);
 	Category_Recycler_View.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
-	Category_Recycler_View.setAdapter(new CategoryAdapter(Category_list));
+	Category_Recycler_View.setAdapter(adapter);
 	Category_Recycler_View.setOnClickListener(new View.OnClickListener() {
 		@Override
 		public void onClick(View v) {
@@ -1562,6 +1564,7 @@ private void initRecyclerView(){
 		Amount_text = AmountEdit.getText().toString();
 		Notes_text = AutoCompleteContacts.getText().toString();
 		Title_text = TitleEdit.getText().toString();
+		Category_text=adapter.getLastCategory();
 		View focus = null;
 		Boolean cancel = false;
 		if (TextUtils.isEmpty(Category_text)) {
