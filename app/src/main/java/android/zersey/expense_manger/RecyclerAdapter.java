@@ -30,7 +30,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	@Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
 		IncomeModel customitems = list.get(position);
-		Log.d("hueh", "onBindViewHolder: " + customitems.toString());
+		//Log.d("hueh", "onBindViewHolder: " + customitems.toString());
 		if (customitems != null) {
 
 			if (holder.customcategory != null) {

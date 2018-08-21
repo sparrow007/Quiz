@@ -9,17 +9,26 @@ public class JsonHandler {
 	public static Call<JsonObject> createEntry(Context context, IncomeModel incomeModel) {
 		return NetworkUtil.getRestAdapter(context)
 			.createEntry(incomeModel.getType(), incomeModel.getTitle(),
-				incomeModel.getDescription(), incomeModel.getTotalAmount(),
-				incomeModel.getAmountDue(), incomeModel.getPayerId(), incomeModel.getPaidAtDate(),
-				incomeModel.getInvoiceId(), incomeModel.getCatId());
+				incomeModel.getDescription(), incomeModel.getUuid(),
+				new String[] { incomeModel.getPayerId() },
+				new String[] { incomeModel.getTotalAmount() },
+				new String[] { incomeModel.getAmountDue() },
+				new String[] { incomeModel.getPaidAtDate() },
+				new String[] { incomeModel.getInvoiceId() });
 	}
 
-	public static Call<JsonObject> updateEntry(Context context, IncomeModel incomeModel) {
+	//public static Call<JsonObject> updateEntry(Context context, IncomeModel incomeModel) {
+	//	return NetworkUtil.getRestAdapter(context)
+	//		.updateEntry(incomeModel.getOnlineId(), incomeModel.getType(), incomeModel.getTitle(),
+	//			incomeModel.getDescription(), incomeModel.getTotalAmount(),
+	//			incomeModel.getAmountDue(), incomeModel.getPayerId(), incomeModel.getPaidAtDate(),
+	//			incomeModel.getInvoiceId(), incomeModel.getCatId());
+	//}
+
+	public static Call<JsonObject> createGroup(Context context, GroupModel groupModel) {
 		return NetworkUtil.getRestAdapter(context)
-			.updateEntry(incomeModel.getOnlineId(), incomeModel.getType(), incomeModel.getTitle(),
-				incomeModel.getDescription(), incomeModel.getTotalAmount(),
-				incomeModel.getAmountDue(), incomeModel.getPayerId(), incomeModel.getPaidAtDate(),
-				incomeModel.getInvoiceId(), incomeModel.getCatId());
+			.createGroup(groupModel.getGroupName(), groupModel.getGroupDesc(),
+				groupModel.getUsers());
 	}
 
 	public static Call<JsonObject> deleteEntry(Context context, long id) {

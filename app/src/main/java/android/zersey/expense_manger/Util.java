@@ -5,14 +5,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
-import android.util.Log;
 import android.zersey.expense_manger.Data.TransactionDbHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import retrofit2.Response;
@@ -84,6 +82,10 @@ public class Util {
 			//ft.attach(frg);
 			//ft.commit();
 		}
+	}
+
+	public static String generateUuid(String userId){
+		return userId + Calendar.getInstance().getTimeInMillis();
 	}
 }
 

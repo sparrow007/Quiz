@@ -12,14 +12,18 @@ public class TransactionDbContract {
 		public final static String TABLE_NAME = "expenses";
 
 		public final static String COLUMN_ONLINE_ID = "online_id";
+		public static final String COLUMN_UUID = "uuid";
+		public static final String COLUMN_GROUP_ID = "group_id";
 		public final static String COLUMN_TITLE = "title";
+		public static final String COLUMN_DESCRIPTION = "desc";
 		public final static String COLUMN_CATEGORY = "category";
 		public final static String COLUMN_AMOUNT = "amount";
 		public final static String COLUMN_DATE_CREATED = "date_created";
-		public final static String COLUMN_NOTES = "notes";
 		public final static String COLUMN_DATE_UPDATED = "date_updated";
-		public final static String COLUMN_IMAGE = "image";
 		public static final String COLUMN_TYPE = "type";
+		public static final String COLUMN_AMOUNT_DUE = "amount_due";
+		public static final String COLUMN_PAYER_ID = "payer_id";
+		public static final String COLUMN_INVOICE_ID = "invoice_id";
 
 		public final static String SQL_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE "
 			+ Transaction_Entry.TABLE_NAME
@@ -32,6 +36,8 @@ public class TransactionDbContract {
 			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_TITLE
 			+ " TEXT, "
+			+ Transaction_Entry.COLUMN_DESCRIPTION
+			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_CATEGORY
 			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_AMOUNT
@@ -40,10 +46,16 @@ public class TransactionDbContract {
 			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_DATE_UPDATED
 			+ " TEXT, "
-			+ Transaction_Entry.COLUMN_IMAGE
-			+ " BLOB, "
-			+ Transaction_Entry.COLUMN_NOTES
-			+ " TEXT );";
+			+ COLUMN_PAYER_ID
+			+ " TEXT, "
+			+ COLUMN_AMOUNT_DUE
+			+ " TEXT, "
+			+ COLUMN_INVOICE_ID
+			+ " TEXT, "
+			+ Transaction_Entry.COLUMN_GROUP_ID
+			+ " INTEGER, "
+			+ Transaction_Entry.COLUMN_UUID
+			+ " TEXT);";
 	}
 
 	public static final class TempEntry implements BaseColumns {
@@ -72,5 +84,28 @@ public class TransactionDbContract {
 			+ Transaction_Entry._ID
 			+ ")"
 			+ ");";
+	}
+
+	public static final class GroupEntry implements BaseColumns {
+
+		public static final String TABLE_NAME = "groups";
+		public static final String COLUMN_GROUP_ID = "group_id";
+		public static final String COLUMN_GROUP_NAME = "group_name";
+		public static final String COLUMN_GROUP_DESC = "group_desc";
+		public static final String COLUMN_USERS = "users";
+
+		public static final String SQL_CREATE_GROUP_TABLE = "CREATE TABLE "
+			+ TABLE_NAME
+			+ " ( "
+			+ GroupEntry._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_GROUP_ID
+			+ " INTEGER, "
+			+ COLUMN_GROUP_NAME
+			+ " TEXT, "
+			+ COLUMN_GROUP_DESC
+			+ " TEXT, "
+			+ COLUMN_USERS
+			+ " TEXT);";
 	}
 }

@@ -10,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Contact_ListView_Adapter extends ArrayAdapter<Custom_Contact_items> {
 
     private int layoutResource;
-    private ArrayList<Custom_Contact_items> list;
-    public Contact_ListView_Adapter(@NonNull Context context, int resource,ArrayList<Custom_Contact_items> Custom_item_contact) {
+    private List<Custom_Contact_items> list;
+    public Contact_ListView_Adapter(@NonNull Context context, int resource,List<Custom_Contact_items> Custom_item_contact) {
         super(context, resource,Custom_item_contact);
         this.layoutResource = resource;
         list=Custom_item_contact;

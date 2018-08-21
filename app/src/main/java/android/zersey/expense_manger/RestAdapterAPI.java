@@ -1,6 +1,7 @@
 package android.zersey.expense_manger;
 
 import com.google.gson.JsonObject;
+import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -48,17 +49,14 @@ public interface RestAdapterAPI {
 
 	@FormUrlEncoded @POST("/Split_bills/create_income_expense") Call<JsonObject> createEntry(
 		@Field("type") String type, @Field("title") String title,
-		@Field("description") String description, @Field("total_amount") String totalAmount,
-		@Field("amount__due") String amountDue, @Field("payer_id") String payerId,
-		@Field("paid_at") String paidAt, @Field("invoice_id") String invoiceId,
-		@Field("catid") String catId);
+		@Field("description") String description, @Field("uuid") String uuid,
+		@Field("payer_id") String[] payerId, @Field("total_amount") String[] totalAmount,
+		@Field("amount__due") String[] amountDue, @Field("paid_at") String[] paidAt,
+		@Field("invoice_id") String[] invoiceId);
 
-	@FormUrlEncoded @POST("/Split_bills/edit_income_expense/{id}") Call<JsonObject> updateEntry(
-		@Path("id") long id, @Field("type") String type, @Field("title") String title,
-		@Field("description") String description, @Field("total_amount") String totalAmount,
-		@Field("amount__due") String amountDue, @Field("payer_id") String payerId,
-		@Field("paid_at") String paidAt, @Field("invoice_id") String invoiceId,
-		@Field("catid") String catId);
+	@FormUrlEncoded @POST("/Split_bills/create_edit_group") Call<JsonObject> createGroup(
+		@Field("group_name") String groupName, @Field("group_description") String groupDescription,
+		@Field("users") String users);
 
 	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
 
@@ -67,6 +65,9 @@ public interface RestAdapterAPI {
 
 	@GET("/Split_bills/delete_income_expense/{id}") Call<JsonObject> deleteSpecificUserEntry(
 		@Path("id") long id);
+
+	@GET("Split_bills/search_contacts") Call<List<Custom_Contact_items>> getUserIdFromServer(
+		@Query("keyword") String keyword, @Query("code") String code);
 
 	@FormUrlEncoded @POST("/Split_bills/report_income_expense_by_filter")
 	Call<JsonObject> reportIncomeExpense(@Field("payer_id") String payerId);

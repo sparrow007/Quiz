@@ -1,12 +1,13 @@
 package android.zersey.expense_manger;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,7 +18,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
@@ -27,7 +27,6 @@ import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,6 +51,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -152,7 +152,8 @@ public class Expense_Form extends Fragment {
 		mDbHelper = new TransactionDbHelper(getContext());
 	}
 
-	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
+	@SuppressLint("NewApi") @Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		fragmentLayout = inflater.inflate(R.layout.content_main, container, false);
 
@@ -1129,7 +1130,6 @@ public class Expense_Form extends Fragment {
 				Category_text = "Salary";
 			}*/
 			Updated_Amount = Updated_Amount.replace("Rs ", "");
-			Log.d("Rs replaced", Updated_Amount);
 			AmountEdit.setText(Updated_Amount);
 			TitleEdit.setText(Updated_Title);
 			dateEdit.setText(Updated_Date);
@@ -1161,7 +1161,8 @@ public class Expense_Form extends Fragment {
 
 	/*private CheckBox.OnCheckedChangeListener checkedChangeListener =
 		new CheckBox.OnCheckedChangeListener() {
-			@Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+			@SuppressLint("NewApi") @Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				if (isChecked == true) {
 					if (buttonView.getParent().equals(Clothing)) {
 						Category_text = "Clothing";
@@ -1393,7 +1394,6 @@ public class Expense_Form extends Fragment {
 					cNumber = phones.getString(phones.getColumnIndex("data1"));
 					//System.out.println("number is:"+cNumber);
 				}
-				Log.d("onActivityResult: ", cNumber);
 
 				AutoCompleteContacts.setText(name);
 				final EditText Image_Link, Contact_number;
@@ -1575,7 +1575,6 @@ public class Expense_Form extends Fragment {
 						values.put(Contacts_contract.Contacts_Entry.Column_Contact_Number,
 							Contact_Person_Number);
 						//values.put(Transaction_contract.Transaction_Entry.Column_Amount, "Rs " + Amount_text);
-						//Log.d("Date created", DateEdit_text);
 						//values.put(Transaction_contract.Transaction_Entry.Column_Date_Created, DateEdit_text);
 
 						long newRowId =
@@ -1597,20 +1596,35 @@ public class Expense_Form extends Fragment {
 					//      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
 					//customlist.add(items);
 
-					IncomeModel expenseModel = new IncomeModel();
-					expenseModel.setType("expense");
-					expenseModel.setTitle(Title_text);
-					expenseModel.setTotalAmount(Amount_text);
-					expenseModel.setPaidAtDate(DateEdit_text);
-					expenseModel.setCatId(Category_text);
+					SharedPreferences prefs =
+						getContext().getSharedPreferences("login", MODE_PRIVATE);
 
-					long rowId = mDbHelper.createEntry(expenseModel);
-					expenseModel.setId(rowId);
-					if (NetworkUtil.hasInternetConnection(getContext())) {
-						new ServerUtil(getContext()).createEntry(expenseModel);
-					} else {
-						mDbHelper.addToTemp(rowId, 0, "new");
-					}
+					GroupModel model = new GroupModel();
+					model.setGroupName(Title_text);
+					//model.setGroupDesc();
+					model.setUsers(prefs.getString("userid", null));
+					long groupId = mDbHelper.createGroup(model);
+
+					IncomeModel incomeModel = new IncomeModel();
+					incomeModel.setTitle(Title_text);
+					incomeModel.setGroupId(groupId);
+					incomeModel.setTotalAmount(Amount_text);
+					incomeModel.setPaidAtDate(DateEdit_text);
+					incomeModel.setCatId(Updated_Category);
+					incomeModel.setType("income");
+					incomeModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
+					incomeModel.setAmountDue(Amount_text);
+
+					mDbHelper.createEntry(incomeModel);
+
+					//long rowId = mDbHelper.createEntry(expenseModel);
+					//expenseModel.setId(rowId);
+					//if (NetworkUtil.hasInternetConnection(getContext())) {
+					//	new ServerUtil(getContext()).createEntry(expenseModel);
+					//} else {
+					//	mDbHelper.addToTemp(rowId, 0, "new");
+					//}
+
 					//TransactionDbHelper mdbhelper = new TransactionDbHelper(getContext());
 					//SQLiteDatabase db = mdbhelper.getWritableDatabase();
 					//ContentValues values = new ContentValues();
@@ -1620,7 +1634,6 @@ public class Expense_Form extends Fragment {
 					//	Category_text);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
 					//	"Rs " + Amount_text);
-					//Log.d("Date created", DateEdit_text);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
 					//	DateEdit_text);
 					//values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
@@ -1870,7 +1883,6 @@ public class Expense_Form extends Fragment {
 					cursor.getInt(cursor.getColumnIndex(Contacts_contract.Contacts_Entry._id));
 				String Name = cursor.getString(
 					cursor.getColumnIndex(Contacts_contract.Contacts_Entry.Column_Contact_Name));
-				//Log.d( "current label ",currentName);
 				String Number = cursor.getString(
 					cursor.getColumnIndex(Contacts_contract.Contacts_Entry.Column_Contact_Number));
 				if (TextUtils.equals(Number, contactnumber)) {
