@@ -1,6 +1,7 @@
 package android.zersey.expense_manger;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.gson.JsonObject;
 import retrofit2.Call;
 
@@ -8,7 +9,7 @@ public class JsonHandler {
 
 	public static Call<JsonObject> createEntry(Context context, IncomeModel incomeModel) {
 		return NetworkUtil.getRestAdapter(context)
-			.createEntry(incomeModel.getType(), incomeModel.getTitle(),
+			.createEntry(incomeModel.getType(), incomeModel.getTitle(), incomeModel.getGroupId(),
 				incomeModel.getDescription(), incomeModel.getUuid(),
 				new String[] { incomeModel.getPayerId() },
 				new String[] { incomeModel.getTotalAmount() },
@@ -42,9 +43,15 @@ public class JsonHandler {
 		try {
 			model.setOnlineId(obj.get("id").getAsLong());
 			model.setType(obj.get("type").getAsString());
+			model.setUuid(obj.get("uuid").getAsString());
 			if (!obj.get("title").isJsonNull()) {
 				model.setTitle(obj.get("title").getAsString());
 			}
+
+			if (!obj.get("group_id").isJsonNull()) {
+				model.setGroupId(obj.get("group_id").getAsLong());
+			}
+
 			if (!obj.get("description").isJsonNull()) {
 				model.setDescription(obj.get("description").getAsString());
 			}
@@ -62,9 +69,6 @@ public class JsonHandler {
 			}
 			if (!obj.get("invoice_id").isJsonNull()) {
 				model.setInvoiceId(obj.get("invoice_id").getAsString());
-			}
-			if (!obj.get("catid").isJsonNull()) {
-				model.setCatId(obj.get("catid").getAsString());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

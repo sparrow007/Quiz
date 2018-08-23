@@ -1,5 +1,6 @@
 package android.zersey.expense_manger;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,6 +22,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.zersey.expense_manger.Data.TransactionDbHelper;
+import com.google.gson.JsonObject;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Main2Activity extends BaseActivity
 	implements Transactions.OnFragmentInteractionListener, Graphs.OnFragmentInteractionListener,
@@ -47,11 +56,12 @@ public class Main2Activity extends BaseActivity
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String[] tags = new String[3];
+	private List<GroupModel> list;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main2);
-
+		list = new ArrayList<>();
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		ActionBar actionbar = getSupportActionBar();
@@ -191,6 +201,42 @@ public class Main2Activity extends BaseActivity
 		//netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 		//registerReceiver(br, netFilter);
 
+		final TransactionDbHelper dbHelper = new TransactionDbHelper(this);
+		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getGroupsCount() == 0) {
+			showProgress("Getting your groups...");
+			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchGroups();
+			result.enqueue(new Callback<JsonObject>() {
+				@Override
+				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+					list.addAll(Util.parseGroupResponse(response.body()));
+					dbHelper.addGroups(list);
+				}
+
+				@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+
+				}
+			});
+		} else {
+			list.addAll(dbHelper.getAllGroups());
+		}
+
+		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
+			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchAllUserEntry();
+			result.enqueue(new Callback<JsonObject>() {
+				@Override
+				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
+
+					Transactions.adapter.addAll(Util.getNotesList(Main2Activity.this, response));
+
+				}
+
+				@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+
+				}
+			});
+			dismissProgress();
+		}
 	}
 
 
@@ -293,7 +339,11 @@ public class Main2Activity extends BaseActivity
 				case 1:
 					return new Graphs();
 				case 2:
-					return new Groups();
+					Fragment fragment = new Groups();
+					Bundle bundle = new Bundle();
+					bundle.putSerializable("groupList", (Serializable) list);
+					fragment.setArguments(bundle);
+					return fragment;
 				default:
 					return null;
 			}
@@ -320,9 +370,6 @@ public class Main2Activity extends BaseActivity
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (data == null) {
-			Log.d("hueh", "onActivityResult: act" + "Data is null");
-		}
 		Fragment fragment = getSupportFragmentManager().findFragmentByTag(tags[2]);
 		fragment.onActivityResult(requestCode, resultCode, data);
 	}

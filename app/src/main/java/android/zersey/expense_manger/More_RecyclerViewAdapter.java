@@ -13,9 +13,9 @@ import java.util.Timer;
 
 public class More_RecyclerViewAdapter extends RecyclerView.Adapter<More_RecyclerViewAdapter.More_RecyclerViewHolder>{
    // private Context context;
-    private List<String> list;
-    private List<String> list2;
-    public More_RecyclerViewAdapter(Context context,List<String> list,List<String> list2){
+    private List<GroupModel> list;
+    private List<GroupModel> list2;
+    public More_RecyclerViewAdapter(Context context,List<GroupModel> list,List<GroupModel> list2){
        // this.context=context;
         this.list=list;
         this.list2=list2;
@@ -31,8 +31,8 @@ public class More_RecyclerViewAdapter extends RecyclerView.Adapter<More_Recycler
 
     @Override
     public void onBindViewHolder(@NonNull More_RecyclerViewHolder holder, int position) {
-    holder.title.setText(list.get(position));
-    holder.title2.setText(list2.get(position));
+    holder.title.setText(list.get(position).getGroupName());
+    holder.title2.setText(list2.get(position).getGroupName());
     }
 
     @Override

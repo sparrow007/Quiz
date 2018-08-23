@@ -29,6 +29,7 @@ public class Groups extends Fragment {
 	private List<GroupModel> First_List, Second_List;
 	private OnFragmentInteractionListener mListener;
 	private TransactionDbHelper mDbHelper;
+	private List<GroupModel> list;
 
 	public Groups() {
 		// Required empty public constructor
@@ -45,12 +46,12 @@ public class Groups extends Fragment {
 
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		list = new ArrayList<>();
 		if (getArguments() != null) {
-			mParam1 = getArguments().getString(ARG_PARAM1);
-			mParam2 = getArguments().getString(ARG_PARAM2);
+			list.addAll((List<GroupModel>)getArguments().getSerializable("groupList"));
 		}
 		mDbHelper = new TransactionDbHelper(getContext());
-		First_List = new ArrayList<>(mDbHelper.getAllGroups());
+		First_List = new ArrayList<>(list);
 		Second_List = new ArrayList<>();
 		First_RecyclerView = new RecyclerView(getContext());
 		Second_RecyclerView = new RecyclerView(getContext());
@@ -135,14 +136,9 @@ public class Groups extends Fragment {
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Log.d("hueh", "onActivityResult: " + "in frag");
-		if (data == null) {
-			Log.d("hueh", "onActivityResult: frag" + "Data is null");
-		}
 		if (requestCode == 1234) {
 			if (resultCode == RESULT_OK) {
 				GroupModel model = (GroupModel) data.getSerializableExtra("group");
-				Log.d("hueh", "onActivityResult: " + model.toString());
 				First_List.add(model);
 				First_RecyclerView.getAdapter().notifyItemInserted(First_List.size() - 1);
 			}

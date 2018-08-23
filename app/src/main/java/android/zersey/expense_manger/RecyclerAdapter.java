@@ -30,38 +30,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	@Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
 		IncomeModel customitems = list.get(position);
-		//Log.d("hueh", "onBindViewHolder: " + customitems.toString());
 		if (customitems != null) {
 
 			if (holder.customcategory != null) {
-				if (Util.isEmpty(customitems.getCatId())) {
 					holder.category_logo.setImageResource(R.drawable.salary);
-					holder.customcategory.setText("Income");
-				} else {
-					holder.customcategory.setText(customitems.getCatId());
-					switch (customitems.getCatId()) {
-						case "Clothing":
-							holder.customcategory.setText("Clothing");
-							holder.category_logo.setImageResource(R.drawable.cloth);
-							break;
-						case "Entertainment":
-							holder.customcategory.setText("Entertainment");
-							holder.category_logo.setImageResource(R.drawable.entertainment);
-							break;
-						case "Food":
-							holder.customcategory.setText("Food");
-							holder.category_logo.setImageResource(R.drawable.food);
-							break;
-						case "Fuel":
-							holder.customcategory.setText("Fuel");
-							holder.category_logo.setImageResource(R.drawable.fuel);
-							break;
-						case "Health":
-							holder.customcategory.setText("Health");
-							holder.category_logo.setImageResource(R.drawable.health);
-							break;
-					}
-				}
+					holder.customcategory.setText(customitems.getType());
 			}
 			if (holder.customtitle != null) {
 				holder.customtitle.setText(customitems.getTitle());
@@ -81,6 +54,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	public void addItem(IncomeModel model) {
 		list.add(model);
+		notifyDataSetChanged();
+	}
+
+	public void addAll(List<IncomeModel> transactionList){
+		list.clear();
+		list.addAll(transactionList);
 		notifyDataSetChanged();
 	}
 

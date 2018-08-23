@@ -95,7 +95,7 @@ public class Income_form extends Fragment {
 	public void setString(IncomeModel model, String updated_Title, String updated_Amount,
 		String updated_Date, String updated_Category, int id, int pos) {
 		Updated_Title = model.getTitle();
-		Updated_Amount = model.getTotalAmount();
+		//Updated_Amount = model.getTotalAmount();
 		Updated_Date = model.getPaidAtDate();
 		//Updated_Category = model.getCatId();
 		Updated_Id = model.getId();
@@ -903,12 +903,12 @@ public class Income_form extends Fragment {
 				IncomeModel incomeModel = new IncomeModel();
 				incomeModel.setTitle(Title_text);
 				incomeModel.setGroupId(groupId);
-				incomeModel.setTotalAmount(Amount_text);
+				//incomeModel.setTotalAmount(Amount_text);
 				incomeModel.setPaidAtDate(DateEdit_text);
 				incomeModel.setCatId(Updated_Category);
 				incomeModel.setType("income");
-				incomeModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
-				incomeModel.setAmountDue(Amount_text);
+				//incomeModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
+				//incomeModel.setAmountDue(Amount_text);
 
 				mDbHelper.createEntry(incomeModel);
 

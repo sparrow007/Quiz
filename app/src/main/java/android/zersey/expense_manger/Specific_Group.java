@@ -1,5 +1,6 @@
 package android.zersey.expense_manger;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 public class Specific_Group extends AppCompatActivity
 	implements Group_Balances.OnFragmentInteractionListener,
@@ -79,6 +81,12 @@ public class Specific_Group extends AppCompatActivity
 
 	@Override public void onFragmentInteraction(Uri uri) {
 
+	}
+
+	public void addTransactionInGroup(View view) {
+		Intent intent = new Intent(this, MainActivity.class);
+		intent.putExtra("group", model);
+		startActivity(intent);
 	}
 
 /*TextView tv=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);

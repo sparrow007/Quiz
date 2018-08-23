@@ -26,9 +26,9 @@ public class ServerUtil {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
-				//long id = object.get("uid").getAsLong();
-				//incomeModel.setOnlineId(id);
-				//mDbHelper.addOnlineId(incomeModel);
+				long id = object.get("id").getAsLong();
+				groupModel.setGroupId(id);
+				mDbHelper.addOnlineId(groupModel);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
@@ -43,9 +43,9 @@ public class ServerUtil {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
-				long id = object.get("uid").getAsLong();
+				long id = object.get("id").getAsLong();
 				incomeModel.setOnlineId(id);
-				mDbHelper.addOnlineId(incomeModel);
+				mDbHelper.addTransactionOnlineId(incomeModel);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
@@ -82,24 +82,26 @@ public class ServerUtil {
 		});
 	}
 
-	public Custom_Contact_items getUserIdFromServer(String keyword, String code) {
+	public void getUserIdFromServer(String keyword, String code) {
 
 		final Custom_Contact_items customContactItem = new Custom_Contact_items();
 
 		Call<List<Custom_Contact_items>> result =
 			NetworkUtil.getRestAdapter(context).getUserIdFromServer(keyword, code);
+
+		final UserIdInterface userIdInterface = (UserIdInterface) context;
+
 		result.enqueue(new Callback<List<Custom_Contact_items>>() {
 
 			@Override public void onResponse(@NonNull Call<List<Custom_Contact_items>> call,
 				@NonNull Response<List<Custom_Contact_items>> response) {
 				List<Custom_Contact_items> item = response.body();
-				//Log.d("hueh", "onResponse: " + response.body());
 				if (item != null && item.size() > 0) {
-					//Log.d("hueh", "onResponse: " + item.get(0).toString());
 					customContactItem.setId(item.get(0).getId());
 					customContactItem.setContact_Person_Name(item.get(0).getContact_Person_Name());
 					customContactItem.setContact_Person_Number(
 						item.get(0).getContact_Person_Number());
+					userIdInterface.updateUserId(customContactItem.getId());
 				}
 			}
 
@@ -108,7 +110,5 @@ public class ServerUtil {
 				t.printStackTrace();
 			}
 		});
-
-		return customContactItem;
 	}
 }

@@ -46,6 +46,8 @@ import android.zersey.expense_manger.Data.Contacts_contract;
 import android.zersey.expense_manger.Data.Contactsdbhelper;
 import android.zersey.expense_manger.Data.TransactionDbHelper;
 import com.github.florent37.materialtextfield.MaterialTextField;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -115,7 +117,7 @@ public class Expense_Form extends Fragment {
 		String updated_Amount, String updated_Date, String updated_Category, int id, int pos) {
 		CardClicked = cardClicked;
 		Updated_Title = model.getTitle();
-		Updated_Amount = model.getTotalAmount();
+		//Updated_Amount = model.getTotalAmount();
 		Updated_Date = model.getPaidAtDate();
 		Updated_Category = model.getCatId();
 		Updated_Id = model.getId();
@@ -1608,12 +1610,12 @@ public class Expense_Form extends Fragment {
 					IncomeModel incomeModel = new IncomeModel();
 					incomeModel.setTitle(Title_text);
 					incomeModel.setGroupId(groupId);
-					incomeModel.setTotalAmount(Amount_text);
+					//incomeModel.setTotalAmount(Amount_text);
 					incomeModel.setPaidAtDate(DateEdit_text);
 					incomeModel.setCatId(Updated_Category);
 					incomeModel.setType("income");
-					incomeModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
-					incomeModel.setAmountDue(Amount_text);
+
+					//incomeModel.setAmountDue(Amount_text);
 
 					mDbHelper.createEntry(incomeModel);
 

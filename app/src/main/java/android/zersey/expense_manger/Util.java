@@ -9,6 +9,9 @@ import android.text.TextUtils;
 import android.zersey.expense_manger.Data.TransactionDbHelper;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,61 +34,92 @@ public class Util {
 		preferences.edit().putString("pass", pass).apply();
 	}
 
-	public static void getNotesList(Context context, Response<JsonObject> response) {
-		HandleNotes2 notes = new HandleNotes2();
-		notes.context = context;
-		notes.execute(response);
+	private static String convertToHex(byte[] data) {
+		StringBuilder buf = new StringBuilder();
+		for (byte b : data) {
+			int halfbyte = (b >>> 4) & 0x0F;
+			int two_halfs = 0;
+			do {
+				buf.append((0 <= halfbyte) && (halfbyte <= 9) ? (char) ('0' + halfbyte) : (char) ('a' + (halfbyte - 10)));
+				halfbyte = b & 0x0F;
+			} while (two_halfs++ < 1);
+		}
+		return buf.toString();
+	}
+
+
+	public static String SHA1(String text) throws NoSuchAlgorithmException,
+		UnsupportedEncodingException {
+		MessageDigest md = MessageDigest.getInstance("SHA-1");
+		byte[] textBytes = text.getBytes("iso-8859-1");
+		md.update(textBytes, 0, textBytes.length);
+		byte[] sha1hash = md.digest();
+		return convertToHex(sha1hash);
+	}
+
+	public static List<IncomeModel> getNotesList(Context context, Response<JsonObject> response) {
+		List<IncomeModel> list = new ArrayList<>();
+		try {
+			JsonArray array = response.body().get("entries").getAsJsonArray();
+			for (int i = 0; i < array.size(); i++) {
+				JsonObject obj = array.get(i).getAsJsonObject();
+				IncomeModel model = JsonHandler.handleSingleReminder(obj);
+				list.add(model);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		TransactionDbHelper dbHelper = new TransactionDbHelper(context);
+		dbHelper.addTransactions(list);
+		return list;
+	}
+
+	public static List<GroupModel> parseGroupResponse(JsonObject response) {
+
+		List<GroupModel> list = new ArrayList<>();
+		try {
+
+			JsonArray array = response.get("groups").getAsJsonArray();
+			for (int i = 0; i < array.size(); i++) {
+				JsonObject obj = array.get(i).getAsJsonObject();
+				GroupModel model = new GroupModel();
+				model.setGroupId(obj.get("id").getAsLong());
+				model.setGroupName(obj.get("group_name").getAsString());
+				if (!obj.get("group_description").isJsonNull()) {
+					model.setGroupDesc(obj.get("group_description").getAsString());
+				}
+				if (!obj.get("users").isJsonNull()) model.setUsers(obj.get("users").getAsString());
+				list.add(model);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return list;
 	}
 
 	static class HandleNotes2 extends AsyncTask {
 
 		Context context;
-		boolean working = false;
 
-		@Override protected void onPreExecute() {
-			super.onPreExecute();
-			((Main2Activity) context).showProgress("Updating notes...");
-		}
 
 		@Override protected Object doInBackground(Object[] objects) {
 
 			Response<JsonObject> response = (Response<JsonObject>) objects[0];
-			final TransactionDbHelper rb = new TransactionDbHelper(context);
-			working = true;
 
-			List<IncomeModel> list = new ArrayList<>();
 
-			try {
-				// store attachments, set up the alarm dates, set alarms, add the parent id to all sub reminders;
-				//Type 0, 3, 4, 5 need to set alarm dates others are already set properly;
-
-				JsonArray array = response.body().get("entries").getAsJsonArray();
-				for (int i = 0; i < array.size(); i++) {
-					JsonObject obj = array.get(i).getAsJsonObject();
-					IncomeModel model = JsonHandler.handleSingleReminder(obj);
-					list.add(model);
-					rb.createEntry(model);
-				}
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 			return null;
 		}
 
 		@Override protected void onPostExecute(Object o) {
 			super.onPostExecute(o);
-			((Main2Activity) context).dismissProgress();
-			//Fragment frg = null;
-			//frg = ((Main2Activity) context).getSupportFragmentManager().findFragmentByTag("Your_Fragment_TAG");
-			//final FragmentTransaction ft = ((Main2Activity) context).getSupportFragmentManager().beginTransaction();
-			//ft.detach(frg);
-			//ft.attach(frg);
-			//ft.commit();
-		}
+			}
 	}
 
-	public static String generateUuid(String userId){
-		return userId + Calendar.getInstance().getTimeInMillis();
+	public static String generateUuid(String userId)
+		throws UnsupportedEncodingException, NoSuchAlgorithmException {
+		String s =  userId + Calendar.getInstance().getTimeInMillis();
+		return SHA1(s);
 	}
 }
 

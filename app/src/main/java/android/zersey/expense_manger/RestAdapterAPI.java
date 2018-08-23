@@ -48,15 +48,17 @@ public interface RestAdapterAPI {
 	@GET("/logout") Call<Void> logout();
 
 	@FormUrlEncoded @POST("/Split_bills/create_income_expense") Call<JsonObject> createEntry(
-		@Field("type") String type, @Field("title") String title,
+		@Field("type") String type, @Field("title") String title, @Field("group_id") long groupId,
 		@Field("description") String description, @Field("uuid") String uuid,
-		@Field("payer_id") String[] payerId, @Field("total_amount") String[] totalAmount,
-		@Field("amount__due") String[] amountDue, @Field("paid_at") String[] paidAt,
-		@Field("invoice_id") String[] invoiceId);
+		@Field("payer_id[]") String[] payerId, @Field("total_amount[]") String[] totalAmount,
+		@Field("amount_due[]") String[] amountDue, @Field("paid_at[]") String[] paidAt,
+		@Field("invoice_id[]") String[] invoiceId);
 
 	@FormUrlEncoded @POST("/Split_bills/create_edit_group") Call<JsonObject> createGroup(
 		@Field("group_name") String groupName, @Field("group_description") String groupDescription,
 		@Field("users") String users);
+
+	@GET("/Split_bills/fetch_groups") Call<JsonObject> fetchGroups();
 
 	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
 

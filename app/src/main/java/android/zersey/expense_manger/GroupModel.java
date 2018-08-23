@@ -1,11 +1,16 @@
 package android.zersey.expense_manger;
 
+import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 public class GroupModel implements Serializable {
 
-	private long groupId, id;
-	private String groupName, groupDesc, users;
+	private long id;
+
+	@SerializedName("id") private long groupId;
+	@SerializedName("group_name") private String groupName;
+	@SerializedName("group_description") private String groupDesc;
+	@SerializedName("users") private String users;
 
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
