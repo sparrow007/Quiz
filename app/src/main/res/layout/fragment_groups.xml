@@ -38,7 +38,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/First_Slider"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="wrap_content"
         app:stackFromEnd="true"
         app:reverseLayout="true"
         />
@@ -54,7 +54,7 @@
             android:layout_margin="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="UPCOMING EVENTS >"/>
+            android:text="BILL LIST >"/>
         <TextView
             android:id="@+id/Second_More"
             android:textColor="@color/colorPrimary"
@@ -69,7 +69,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/Second_Slider"
         android:layout_width="match_parent"
-        android:layout_height="210dp"
+        android:layout_height="wrap_content"
         />
     </LinearLayout>
 </ScrollView>

@@ -29,7 +29,9 @@ public class Groups extends Fragment {
 	private List<GroupModel> First_List, Second_List;
 	private OnFragmentInteractionListener mListener;
 	private TransactionDbHelper mDbHelper;
+	private List<IncomeModel> Item_list;
 	private List<GroupModel> list;
+	public static RecyclerAdapter adapter;
 
 	public Groups() {
 		// Required empty public constructor
@@ -56,6 +58,9 @@ public class Groups extends Fragment {
 		First_RecyclerView = new RecyclerView(getContext());
 		Second_RecyclerView = new RecyclerView(getContext());
 		//initList();
+		mDbHelper = new TransactionDbHelper(getContext());
+		Item_list = new ArrayList<>();
+		Item_list.addAll(mDbHelper.getAllEntries());
 	}
 
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -100,10 +105,9 @@ public class Groups extends Fragment {
 
 		Second_RecyclerView = fragmentLayout.findViewById(R.id.Second_Slider);
 		Second_RecyclerView.setLayoutManager(
-			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-		//new CardSnapHelper().attachToRecyclerView(Second_RecyclerView);
-		Second_RecyclerView.setAdapter(new Second_Slider_Adapter(getContext(), Second_List));
-		//Second_RecyclerView.smoothScrollToPosition(0);
+				new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+		adapter = new RecyclerAdapter(Item_list);
+		Second_RecyclerView.setAdapter(adapter);
 
 		return fragmentLayout;
 	}

@@ -76,10 +76,10 @@ public class Expense_Form extends Fragment {
 	ImageView Img_File;
 	private Button Submit_button;
 	private TextView More_TextButton;
-	private ImageButton Delete_Button, Camera_Button, Contact_Button;
+	private ImageButton Delete_Button, Camera_Button;
 	private AutoCompleteTextView AutoCompleteContacts;
 	private ArrayAdapter<String> ContactAdapter;
-	private MaterialTextField Material_Title, Material_Amount, Material_Notes,
+	private MaterialTextField Material_Title, Material_Amount,
 		Material_Amount_Due;
 	public View layout_view = null;
 	private List<IncomeModel> customlist;
@@ -168,7 +168,7 @@ public class Expense_Form extends Fragment {
 		Material_Amount.setHasFocus(true);
 		//Material_Date = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Date);
 		//Material_Date.setHasFocus(true);
-		Material_Notes = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Notes);
+		//Material_Notes = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Notes);
 		//Notes_Layout = (LinearLayout) fragmentLayout.findViewById(R.id.Notes_Layout);
 		Material_Amount_Due =
 			(MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount_Due);
@@ -182,7 +182,7 @@ public class Expense_Form extends Fragment {
 		More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
 		Delete_Button = (ImageButton) fragmentLayout.findViewById(R.id.Delete_Button);
 		Delete_Button.setVisibility(View.GONE);
-		Contact_Button = (ImageButton) fragmentLayout.findViewById(R.id.Contact_Button);
+		//Contact_Button = (ImageButton) fragmentLayout.findViewById(R.id.Contact_Button);
 		//Camera_Button=(ImageButton)fragmentLayout.findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
 		Img_File = (ImageView) fragmentLayout.findViewById(R.id.Img_file);
@@ -192,7 +192,7 @@ public class Expense_Form extends Fragment {
 		TitleEdit = (EditText) fragmentLayout.findViewById(R.id.Title_Edit);
 		AmountEdit = (EditText) fragmentLayout.findViewById(R.id.Amount_Edit);
 		Amount_Due_Edit = (EditText) fragmentLayout.findViewById(R.id.Amount_Due_Edit);
-		AutoCompleteContacts = (AutoCompleteTextView) fragmentLayout.findViewById(R.id.Notes_Edit);
+		//AutoCompleteContacts = (AutoCompleteTextView) fragmentLayout.findViewById(R.id.Notes_Edit);
 		/*Clothing = (LinearLayout) fragmentLayout.findViewById(R.id.Clothing_layout);
 		Entertainment = (LinearLayout) fragmentLayout.findViewById(R.id.Entertainment_layout);
 		Food = (LinearLayout) fragmentLayout.findViewById(R.id.food_layout);
@@ -305,11 +305,7 @@ public class Expense_Form extends Fragment {
 			}
 		});
 
-		Contact_Button.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				Contact_Button();
-			}
-		});
+
 
 
         /*Camera_Button.setOnClickListener(new View.OnClickListener() {
@@ -1148,7 +1144,7 @@ public class Expense_Form extends Fragment {
 
 
 
-	Thread th = new Thread() {
+	/*Thread th = new Thread() {
 		@Override public void run() {
 
 			ArrayAdapter<String> contactAdapter =
@@ -1159,7 +1155,7 @@ public class Expense_Form extends Fragment {
 			AutoCompleteContacts.setThreshold(1);
 			AutoCompleteContacts.setAdapter(contactAdapter);
 		}
-	};
+	};*/
 
 	/*private CheckBox.OnCheckedChangeListener checkedChangeListener =
 		new CheckBox.OnCheckedChangeListener() {
@@ -1709,7 +1705,7 @@ public class Expense_Form extends Fragment {
 
 	public void MoreButton() {
 		Fetch_Contacts();
-		th.run();
+		//th.run();
 		/*if (Notes_Layout.getVisibility() == View.GONE) {
 			Notes_Layout.setVisibility(View.VISIBLE);
 			Material_Amount_Due.setVisibility(View.VISIBLE);

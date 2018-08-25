@@ -10,12 +10,14 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.List;
 
 public class First_Slider_Adapter
 	extends RecyclerView.Adapter<First_Slider_Adapter.First_Slider_ViewHolder> {
 	Context context;
+	int ViewType=0;
 	List<GroupModel> list;
 
 	public First_Slider_Adapter(Context context, List<GroupModel> list) {
@@ -25,14 +27,25 @@ public class First_Slider_Adapter
 
 	@NonNull @Override
 	public First_Slider_ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-		View view = inflater.inflate(R.layout.first_slider, parent, false);
-		return new First_Slider_ViewHolder(view);
+		if(viewType==1){
+			View view = LayoutInflater.from(parent.getContext())
+					.inflate(R.layout.add_button, parent, false);
+			return new First_Slider_ViewHolder(view);
+		}else {
+			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+			View view = inflater.inflate(R.layout.first_slider, parent, false);
+			return new First_Slider_ViewHolder(view);}
 	}
 
 	@Override public void onBindViewHolder(@NonNull First_Slider_ViewHolder holder, int position) {
 		if (position == list.size()) {
-			holder.tv.setText("Add Group");
+			holder.Plus_Button.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent=new Intent(context,Group_Form.class);
+					context.startActivity(intent);
+				}
+			});
 		} else {
 			//holder.tv.setText(list.get(position));
 			holder.tv.setText(list.get(position).getGroupName());
@@ -43,18 +56,39 @@ public class First_Slider_Adapter
 		return list.size() + 1;
 	}
 
+	@Override
+	public int getItemViewType(int position) {
+		if(position==list.size()){
+			ViewType=1;
+			return 1;
+		}else {
+			ViewType=0;
+			return 0;}
+	}
+
 	public class First_Slider_ViewHolder extends RecyclerView.ViewHolder
 		implements View.OnClickListener {
-		TextView tv;
+		TextView tv,Add_Group_TextView;
+		ImageButton Plus_Button;
 
 		public First_Slider_ViewHolder(View itemView) {
 			super(itemView);
-			tv = itemView.findViewById(R.id.First_Title);
+			if(ViewType==1) {
+				//Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
+				Plus_Button = (ImageButton) itemView.findViewById(R.id.Add_Group_Plus_Button);
+				Plus_Button.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+
+					}
+				});
+			}else {
+				tv = itemView.findViewById(R.id.First_Title);}
 			itemView.setOnClickListener(this);
 		}
 
 		@Override public void onClick(View view) {
-			if (TextUtils.equals(tv.getText().toString(), "Add Group")) {
+			if (Plus_Button!=null) {
 				Intent intent = new Intent(view.getContext(), Group_Form.class);
 				((Activity) view.getContext()).startActivityForResult(intent, 1234);
 			} else {

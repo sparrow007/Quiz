@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.zersey.expense_manger.Data.TransactionDbHelper;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,25 +34,26 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 	private Spinner Split_Spinner;
 	private TextView Split_Notes;
 	private RecyclerView Split_RecyclerView;
+	private RecyclerView Contact_RecyclerView;
 	private Dialog_Split_RecyclerViewAdapter Adapter;
 	private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
 	private String users = "";
-	private Contact_ListView_Adapter adapter;
+	private Contact_RecyclerView_Adapter RecyclerView_Adapter;
 	private TransactionDbHelper mDbHelper;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_group_form);
 		Item_list = new ArrayList<>();
-		Split_List = new ArrayList<>();
-		Amount_Edit = (EditText) findViewById(R.id.Group_Amount_Edit);
+		//Split_List = new ArrayList<>();
+		//Amount_Edit = (EditText) findViewById(R.id.Group_Amount_Edit);
 		Description_Edit = (EditText) findViewById(R.id.group_desc_edit_text);
 		Group_Name_Edit = (EditText) findViewById(R.id.group_name_edit_text);
-		Split_RecyclerView = new RecyclerView(this);
-		Add_Member_ListView = (ListView) findViewById(R.id.Add_Member_ListView);
-		adapter =
-			new Contact_ListView_Adapter(Group_Form.this, R.layout.contacts_list_layout, Item_list);
-		Add_Member_ListView.setAdapter(adapter);
+		//Split_RecyclerView = new RecyclerView(this);
+		Contact_RecyclerView=new RecyclerView(this);
+		Contact_RecyclerView = (RecyclerView) findViewById(R.id.Add_Member_Group_Form_RecyclerView);
+		Contact_RecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
+
 
 		mDbHelper = new TransactionDbHelper(this);
 
@@ -153,16 +155,33 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 					}
 
 					Custom_Contact_items item2 = new Custom_Contact_items(name, cNumber);
-					Log.d("onActivityResult: ", Item_list.size() + "");
-					Add_Member_ListView.setVisibility(View.VISIBLE);
-					Log.d("onActivityResult: ", "Number " + cNumber);
-					c.close();
-					new ServerUtil(Group_Form.this).getUserIdFromServer(cNumber, code);
-					Item_list.add(item2);
-					adapter.notifyDataSetChanged();
+					if (!Check_Contact_List(cNumber)){
+						Item_list.add(item2);
+						Log.d("onActivityResult: ",Item_list.size()+"");
+						Contact_RecyclerView.setVisibility(View.VISIBLE);
+						RecyclerView_Adapter=new Contact_RecyclerView_Adapter(Item_list);
+						Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
+						Log.d("onActivityResult: ", cNumber+"  "+Contact_RecyclerView.getChildCount());
+					}else {
+						Toast.makeText(Group_Form.this,"Contact is already added",Toast.LENGTH_LONG).show();
+					}
+					RecyclerView_Adapter.notifyDataSetChanged();
 				}
 			}
 		}
+	}
+
+	public boolean Check_Contact_List(String Number){
+		Boolean check=false;
+		for(int i=0;i<Item_list.size();i++){
+			if(TextUtils.equals(Item_list.get(i).getContact_Person_Number(),Number)){
+				check=true;
+				//return true;
+			}else {
+				check=false;
+			}
+		}
+		return check;
 	}
 
 	public void addGroup(View view) {

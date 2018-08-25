@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:orientation="vertical">
+
+
+
+            <android.support.v7.widget.CardView
+            android:id="@+id/CardView"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:backgroundTint="#263238"
+            app:cardCornerRadius="25dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp">
+
+            <TextView
+                android:gravity="center_horizontal|center_vertical"
+                android:id="@+id/Contact_RecyclerView_Initials"
+                android:text="BS"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="22dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp" />
+                    <ImageButton
+                        android:id="@+id/Cross_Button"
+                        android:layout_marginLeft="10dp"
+                        android:scaleType="centerCrop"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/error"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp" />
+                </RelativeLayout>
+        </android.support.v7.widget.CardView>
+
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_vertical|center_horizontal"
+            android:id="@+id/Contact_RecyclerView_Number"
+            android:textColor="#000000"
+            android:text="+918527201827"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

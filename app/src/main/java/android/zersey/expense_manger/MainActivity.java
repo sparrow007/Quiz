@@ -36,13 +36,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.zersey.expense_manger.Data.Contacts_contract;
@@ -89,26 +93,28 @@ import java.util.List;
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
 	private ImageButton fab;
+	private RecyclerView Contact_RecyclerView;
+	private Contact_RecyclerView_Adapter RecyclerView_Adapter;
 	private DatePickerDialog datePicker;
 	//private View fragmentLayout;
 	ImageView Img_File;
 	private TextView Submit_button;
 	private TextView More_TextButton;
-	private ImageButton Delete_Button, Camera_Button, Contact_Button;
-	private AutoCompleteTextView AutoCompleteContacts;
+	private ImageButton Delete_Button, Camera_Button;
+	//private AutoCompleteTextView AutoCompleteContacts;
 	private ArrayAdapter<String> ContactAdapter;
-	private MaterialTextField Material_Title, Material_Amount, Material_Notes, Material_Amount_Due;
+	private MaterialTextField Material_Title, Material_Amount,Material_Amount_Due;
 	public View layout_view = null;
 	private List<IncomeModel> customlist;
 	private ArrayList<String> Contact_list;
 	private List<String> Category_list;
-	private TextView Category_text_view;
+	private TextView Category_text_view,dateEdit;
 	private int year_x, month_x, day_x, Selected_date = 0;
 	private long Updated_Id;
 	private String Category_text, Add_Person_text, Amount_text, Title_text;
 	private Uri Image_uri = null;
 	private static int DIALOG_ID = 0;
-	private EditText dateEdit, AmountEdit, TitleEdit, Amount_Due_Edit;
+	private EditText AmountEdit, TitleEdit, Amount_Due_Edit;
 	private String CardClicked, Updated_Category, Updated_Title, Updated_Amount, Updated_Date;
 	private Calendar cal;
 	private String[] Months = {
@@ -117,6 +123,15 @@ import java.util.List;
 	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
 	//private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
 	//		Health_checkbox, Salary_checkbox, More_checkbox;
+
+	private ListView Add_Member_ListView;
+	private ArrayList<Custom_Contact_items> Item_list;
+	private List<Split_Contact_model> Split_List;
+	private Spinner Split_Spinner;
+	private TextView Split_Notes;
+	private RecyclerView Split_RecyclerView;
+	private Dialog_Split_RecyclerViewAdapter Adapter;
+	private EditText Amount_Edit,Description_Edit,Group_Name_Edit;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
@@ -172,20 +187,16 @@ import java.util.List;
 		Category_list.add("Group");
 
 		Category_Recycler_View = findViewById(R.id.Category_Recycler_View);
+		//Category_Recycler_View.setVisibility(View.VISIBLE);
 		initRecyclerView();
 		//customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
 		Material_Title = (MaterialTextField) findViewById(R.id.Material_Title);
 		Material_Title.setHasFocus(true);
 		Material_Amount = (MaterialTextField) findViewById(R.id.Material_Amount);
 		Material_Amount.setHasFocus(true);
-		//Material_Date = (MaterialTextField) findViewById(R.id.Material_Date);
-		//Material_Date.setHasFocus(true);
-		Material_Notes = (MaterialTextField) findViewById(R.id.Material_Notes);
-		Notes_Layout = (LinearLayout) findViewById(R.id.Notes_Layout);
 		Material_Amount_Due = (MaterialTextField) findViewById(R.id.Material_Amount_Due);
 		Material_Amount_Due.setVisibility(View.GONE);
 		More_TextButton = (TextView) findViewById(R.id.MoreButton);
-		//Notes_Layout.setVisibility(View.G);
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
@@ -193,17 +204,17 @@ import java.util.List;
 		More_TextButton = (TextView) findViewById(R.id.MoreButton);
 		Delete_Button = (ImageButton) findViewById(R.id.Delete_Button);
 		Delete_Button.setVisibility(View.GONE);
-		Contact_Button = (ImageButton) findViewById(R.id.Contact_Button);
+		//Contact_Button = (ImageButton) findViewById(R.id.Contact_Button);
 		//Camera_Button=(ImageButton)findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
 		Img_File = (ImageView) findViewById(R.id.Img_file);
 		Img_File.setVisibility(View.GONE);
-		dateEdit = (EditText) findViewById(R.id.Date_Edit);
+		dateEdit = (TextView) findViewById(R.id.Date_Edit);
 		dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
 		TitleEdit = (EditText) findViewById(R.id.Title_Edit);
 		AmountEdit = (EditText) findViewById(R.id.Amount_Edit);
 		Amount_Due_Edit = (EditText) findViewById(R.id.Amount_Due_Edit);
-		AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
+		//AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
 
 		if (getIntent().getSerializableExtra("group") != null) {
 			groupModel = (GroupModel) getIntent().getSerializableExtra("group");
@@ -236,97 +247,26 @@ import java.util.List;
 		Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 */
+		Item_list=new ArrayList<>();
+		Split_List=new ArrayList<>();
+		// Amount_Edit=(EditText)findViewById(R.id.Group_Amount_Edit);
+		//Description_Edit=(EditText)findViewById(R.id.Group_Description_Edit);
+		//Group_Name_Edit=(EditText)findViewById(R.id.Group_Amount_Edit);
+		Split_RecyclerView=new RecyclerView(this);
+		//Add_Member_Layout=(LinearLayout)findViewById(R.id.Add_Member_Layout);
+		//Add_Member_ListView=(ListView)findViewById(R.id.Add_Member_ListView);
+
+
 		Submit_button = (TextView) findViewById(R.id.Submit_Button);
 		dateEdit.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
-				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-					onclick_date();
-				} else {
-					if (person_added == false) {
-						final EditText Image_Link, Contact_number;
-						LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-						View PromptsView = LI.inflate(R.layout.image_dialog, null);
-						Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-						//Conact_number.setText(cNumber);
-						Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-						//Image_Link.setText(name);
-						android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-							new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-						final String Name = AutoCompleteContacts.getText().toString();
-						if (extractNumber(Name).length() == 10) {
-							Contact_number.setText(Name);
-						} else {
-							if (extractNumber(Name).length() == 0) {
-								if (!TextUtils.isEmpty(Name)) {
-									Image_Link.setText(Name);
-								}
-							}
-						}
-						alertDialogBuilder.setView(PromptsView);
-
-						Image_Link.setText(Name);
-						alertDialogBuilder.setCancelable(true)
-							.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-								@Override public void onClick(DialogInterface dialog, int which) {
-									Boolean cancel = false;
-									View focus_View = Image_Link;
-									String name = Image_Link.getText().toString();
-									String finalCNumber = Contact_number.getText().toString();
-									if (TextUtils.isEmpty(name)) {
-										Image_Link.setError("Required field");
-										focus_View = Image_Link;
-										cancel = true;
-									}
-									if (extractNumber(finalCNumber).length() < 10) {
-										Contact_number.setError("Required field");
-										focus_View = Contact_number;
-										cancel = true;
-									}
-									if (cancel) {
-										focus_View.requestFocus();
-									} else {
-										final SpannableStringBuilder sb =
-											new SpannableStringBuilder();
-										TextView tv = createContactTextView(name);
-										BitmapDrawable bd =
-											(BitmapDrawable) convertViewToDrawable(tv);
-										bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-											bd.getIntrinsicHeight());
-
-										sb.append(name);
-										sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-											Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-										AutoCompleteContacts.setText(sb);
-
-										//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-										person_added = true;
-										Contact_Person_Name = name;
-										Contact_Person_Number = finalCNumber;
-										Toast.makeText(MainActivity.this, name
-											+ "\n"
-											+ extractNumber(finalCNumber)
-											+ "\nwas added", Toast.LENGTH_LONG).show();
-									}
-								}
-							});
-
-						android.support.v7.app.AlertDialog alertDialog =
-							alertDialogBuilder.create();
-						alertDialog.show();
-					}
-				}
+				onclick_date();
 			}
 		});
 
 		Delete_Button.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Delete_Button();
-			}
-		});
-
-		Contact_Button.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				Contact_Button();
 			}
 		});
 
@@ -345,680 +285,7 @@ import java.util.List;
 		Submit_button.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 
-				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-					Submit();
-				} else {
-					if (person_added == false) {
-						final EditText Image_Link, Contact_number;
-						LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-						View PromptsView = LI.inflate(R.layout.image_dialog, null);
-						Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-						//Conact_number.setText(cNumber);
-						Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-						//Image_Link.setText(name);
-						android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-							new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-						alertDialogBuilder.setView(PromptsView);
-						final String Name = AutoCompleteContacts.getText().toString();
-						if (extractNumber(Name).length() == 10) {
-							Contact_number.setText(Name);
-						} else {
-							if (extractNumber(Name).length() == 0) {
-								if (!TextUtils.isEmpty(Name)) {
-									Image_Link.setText(Name);
-								}
-							}
-						}
-						alertDialogBuilder.setCancelable(true)
-							.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-								@Override public void onClick(DialogInterface dialog, int which) {
-									Boolean cancel = false;
-									View focus_View = Image_Link;
-									String name = Image_Link.getText().toString();
-									String finalCNumber = Contact_number.getText().toString();
-									if (TextUtils.isEmpty(name)) {
-										Image_Link.setError("Required field");
-										focus_View = Image_Link;
-										cancel = true;
-									}
-									if (extractNumber(finalCNumber).length() < 10) {
-										Contact_number.setError("Required field");
-										focus_View = Contact_number;
-										cancel = true;
-									}
-									if (cancel) {
-										focus_View.requestFocus();
-									} else {
-										final SpannableStringBuilder sb =
-											new SpannableStringBuilder();
-										TextView tv = createContactTextView(name);
-										BitmapDrawable bd =
-											(BitmapDrawable) convertViewToDrawable(tv);
-										bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-											bd.getIntrinsicHeight());
-
-										sb.append(name);
-										sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-											Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-										AutoCompleteContacts.setText(sb);
-
-										//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-										person_added = true;
-										Contact_Person_Name = name;
-										Contact_Person_Number = finalCNumber;
-										Toast.makeText(MainActivity.this, name
-											+ "\n"
-											+ extractNumber(finalCNumber)
-											+ "\nwas added", Toast.LENGTH_LONG).show();
-									}
-								}
-							});
-
-						android.support.v7.app.AlertDialog alertDialog =
-							alertDialogBuilder.create();
-						alertDialog.show();
-					} else {
-						Submit();
-					}
-				}
-			}
-		});
-
-		AmountEdit.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-				} else {
-
-					final EditText Image_Link, Contact_number;
-					LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-					View PromptsView = LI.inflate(R.layout.image_dialog, null);
-					Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-					//Conact_number.setText(cNumber);
-					Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-					//Image_Link.setText(name);
-					android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-						new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-					alertDialogBuilder.setView(PromptsView);
-					final String Name = AutoCompleteContacts.getText().toString();
-					if (extractNumber(Name).length() == 10) {
-						Contact_number.setText(Name);
-					} else {
-						if (extractNumber(Name).length() == 0) {
-							if (!TextUtils.isEmpty(Name)) {
-								Image_Link.setText(Name);
-							}
-						}
-					}
-					alertDialogBuilder.setCancelable(true)
-						.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-							@Override public void onClick(DialogInterface dialog, int which) {
-								Boolean cancel = false;
-								View focus_View = Image_Link;
-								String name = Image_Link.getText().toString();
-								String finalCNumber = Contact_number.getText().toString();
-								if (TextUtils.isEmpty(name)) {
-									Image_Link.setError("Required field");
-									focus_View = Image_Link;
-									cancel = true;
-								}
-								if (extractNumber(finalCNumber).length() < 10) {
-									Contact_number.setError("Required field");
-									focus_View = Contact_number;
-									cancel = true;
-								}
-								if (cancel) {
-									focus_View.requestFocus();
-								} else {
-									final SpannableStringBuilder sb = new SpannableStringBuilder();
-									TextView tv = createContactTextView(name);
-									BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
-									bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-										bd.getIntrinsicHeight());
-
-									sb.append(name);
-									sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-										Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-									AutoCompleteContacts.setText(sb);
-
-									//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-									person_added = true;
-									Contact_Person_Name = name;
-									Contact_Person_Number = finalCNumber;
-									Toast.makeText(MainActivity.this,
-										name + "\n" + extractNumber(finalCNumber) + "\nwas added",
-										Toast.LENGTH_LONG).show();
-								}
-							}
-						});
-
-					android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-					alertDialog.show();
-				}
-			}
-		});
-
-		Amount_Due_Edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus == true) {
-					if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-					} else {
-
-						if (person_added == false) {
-							final EditText Image_Link, Contact_number;
-							LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-							View PromptsView = LI.inflate(R.layout.image_dialog, null);
-							Contact_number =
-								(EditText) PromptsView.findViewById(R.id.Contact_Number);
-							//Conact_number.setText(cNumber);
-							Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-							//Image_Link.setText(name);
-							android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-								new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-							alertDialogBuilder.setView(PromptsView);
-							final String Name = AutoCompleteContacts.getText().toString();
-							if (extractNumber(Name).length() == 10) {
-								Contact_number.setText(Name);
-							} else {
-								if (extractNumber(Name).length() == 0) {
-									if (!TextUtils.isEmpty(Name)) {
-										Image_Link.setText(Name);
-									}
-								}
-							}
-							alertDialogBuilder.setCancelable(true)
-								.setPositiveButton("Add Person",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											Boolean cancel = false;
-											View focus_View = Image_Link;
-											String name = Image_Link.getText().toString();
-											String finalCNumber =
-												Contact_number.getText().toString();
-											if (TextUtils.isEmpty(name)) {
-												Image_Link.setError("Required field");
-												focus_View = Image_Link;
-												cancel = true;
-											}
-											if (extractNumber(finalCNumber).length() < 10) {
-												Contact_number.setError("Required field");
-												focus_View = Contact_number;
-												cancel = true;
-											}
-											if (cancel) {
-												focus_View.requestFocus();
-											} else {
-												final SpannableStringBuilder sb =
-													new SpannableStringBuilder();
-												TextView tv = createContactTextView(name);
-												BitmapDrawable bd =
-													(BitmapDrawable) convertViewToDrawable(tv);
-												bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-													bd.getIntrinsicHeight());
-
-												sb.append(name);
-												sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-													Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-												AutoCompleteContacts.setText(sb);
-
-												//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-												person_added = true;
-												Contact_Person_Name = name;
-												Contact_Person_Number = finalCNumber;
-												Toast.makeText(MainActivity.this, name
-													+ "\n"
-													+ extractNumber(finalCNumber)
-													+ "\nwas added", Toast.LENGTH_LONG).show();
-											}
-										}
-									});
-
-							android.support.v7.app.AlertDialog alertDialog =
-								alertDialogBuilder.create();
-							alertDialog.show();
-						}
-					}
-				}
-			}
-		});
-
-		AmountEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus == false) {
-					if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-					} else {
-						if (person_added == false) {
-							final EditText Image_Link, Contact_number;
-							LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-							View PromptsView = LI.inflate(R.layout.image_dialog, null);
-							Contact_number =
-								(EditText) PromptsView.findViewById(R.id.Contact_Number);
-							//Conact_number.setText(cNumber);
-							Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-							//Image_Link.setText(name);
-							android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-								new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-							alertDialogBuilder.setView(PromptsView);
-							final String Name = AutoCompleteContacts.getText().toString();
-							if (extractNumber(Name).length() == 10) {
-								Contact_number.setText(Name);
-							} else {
-								if (extractNumber(Name).length() == 0) {
-									if (!TextUtils.isEmpty(Name)) {
-										Image_Link.setText(Name);
-									}
-								}
-							}
-							alertDialogBuilder.setCancelable(true)
-								.setPositiveButton("Add Person",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											Boolean cancel = false;
-											View focus_View = Image_Link;
-											String name = Image_Link.getText().toString();
-											String finalCNumber =
-												Contact_number.getText().toString();
-											if (TextUtils.isEmpty(name)) {
-												Image_Link.setError("Required field");
-												focus_View = Image_Link;
-												cancel = true;
-											}
-											if (extractNumber(finalCNumber).length() < 10) {
-												Contact_number.setError("Required field");
-												focus_View = Contact_number;
-												cancel = true;
-											}
-											if (cancel) {
-												focus_View.requestFocus();
-											} else {
-												final SpannableStringBuilder sb =
-													new SpannableStringBuilder();
-												TextView tv = createContactTextView(name);
-												BitmapDrawable bd =
-													(BitmapDrawable) convertViewToDrawable(tv);
-												bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-													bd.getIntrinsicHeight());
-
-												sb.append(name);
-												sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-													Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-												AutoCompleteContacts.setText(sb);
-
-												//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-												person_added = true;
-												Contact_Person_Name = name;
-												Contact_Person_Number = finalCNumber;
-												Toast.makeText(MainActivity.this, name
-													+ "\n"
-													+ extractNumber(finalCNumber)
-													+ "\nwas added", Toast.LENGTH_LONG).show();
-											}
-										}
-									});
-
-							android.support.v7.app.AlertDialog alertDialog =
-								alertDialogBuilder.create();
-							alertDialog.show();
-						}
-					}
-				}
-			}
-		});
-
-		TitleEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus == true) {
-					if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-					} else {
-						if (person_added == false) {
-							final EditText Image_Link, Contact_number;
-							LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-							View PromptsView = LI.inflate(R.layout.image_dialog, null);
-							Contact_number =
-								(EditText) PromptsView.findViewById(R.id.Contact_Number);
-							//Conact_number.setText(cNumber);
-							Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-							//Image_Link.setText(name);
-							android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-								new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-							alertDialogBuilder.setView(PromptsView);
-							final String Name = AutoCompleteContacts.getText().toString();
-							if (extractNumber(Name).length() == 10) {
-								Contact_number.setText(Name);
-							} else {
-								if (extractNumber(Name).length() == 0) {
-									if (!TextUtils.isEmpty(Name)) {
-										Image_Link.setText(Name);
-									}
-								}
-							}
-							alertDialogBuilder.setCancelable(true)
-								.setPositiveButton("Add Person",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											Boolean cancel = false;
-											View focus_View = Image_Link;
-											String name = Image_Link.getText().toString();
-											String finalCNumber =
-												Contact_number.getText().toString();
-											if (TextUtils.isEmpty(name)) {
-												Image_Link.setError("Required field");
-												focus_View = Image_Link;
-												cancel = true;
-											}
-											if (extractNumber(finalCNumber).length() < 10) {
-												Contact_number.setError("Required field");
-												focus_View = Contact_number;
-												cancel = true;
-											}
-											if (cancel) {
-												focus_View.requestFocus();
-											} else {
-												final SpannableStringBuilder sb =
-													new SpannableStringBuilder();
-												TextView tv = createContactTextView(name);
-												BitmapDrawable bd =
-													(BitmapDrawable) convertViewToDrawable(tv);
-												bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-													bd.getIntrinsicHeight());
-
-												sb.append(name);
-												sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-													Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-												AutoCompleteContacts.setText(sb);
-
-												//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-												person_added = true;
-												Contact_Person_Name = name;
-												Contact_Person_Number = finalCNumber;
-												Toast.makeText(MainActivity.this, name
-													+ "\n"
-													+ extractNumber(finalCNumber)
-													+ "\nwas added", Toast.LENGTH_LONG).show();
-											}
-										}
-									});
-
-							android.support.v7.app.AlertDialog alertDialog =
-								alertDialogBuilder.create();
-							alertDialog.show();
-						}
-					}
-				}
-			}
-		});
-
-		dateEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-			@Override public void onFocusChange(View v, boolean hasFocus) {
-				if (hasFocus == true) {
-					if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-					} else {
-						if (person_added == false) {
-							final EditText Image_Link, Contact_number;
-							LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-							View PromptsView = LI.inflate(R.layout.image_dialog, null);
-							Contact_number =
-								(EditText) PromptsView.findViewById(R.id.Contact_Number);
-							//Conact_number.setText(cNumber);
-							Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-							//Image_Link.setText(name);
-							android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-								new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-							alertDialogBuilder.setView(PromptsView);
-							final String Name = AutoCompleteContacts.getText().toString();
-							if (extractNumber(Name).length() == 10) {
-								Contact_number.setText(Name);
-							} else {
-								if (extractNumber(Name).length() == 0) {
-									if (!TextUtils.isEmpty(Name)) {
-										Image_Link.setText(Name);
-									}
-								}
-							}
-							alertDialogBuilder.setCancelable(true)
-								.setPositiveButton("Add Person",
-									new DialogInterface.OnClickListener() {
-										@Override
-										public void onClick(DialogInterface dialog, int which) {
-											Boolean cancel = false;
-											View focus_View = Image_Link;
-											String name = Image_Link.getText().toString();
-											String finalCNumber =
-												Contact_number.getText().toString();
-											if (TextUtils.isEmpty(name)) {
-												Image_Link.setError("Required field");
-												focus_View = Image_Link;
-												cancel = true;
-											}
-											if (extractNumber(finalCNumber).length() < 10) {
-												Contact_number.setError("Required field");
-												focus_View = Contact_number;
-												cancel = true;
-											}
-											if (cancel) {
-												focus_View.requestFocus();
-											} else {
-												final SpannableStringBuilder sb =
-													new SpannableStringBuilder();
-												TextView tv = createContactTextView(name);
-												BitmapDrawable bd =
-													(BitmapDrawable) convertViewToDrawable(tv);
-												bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-													bd.getIntrinsicHeight());
-
-												sb.append(name);
-												sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-													Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-												AutoCompleteContacts.setText(sb);
-
-												//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-												person_added = true;
-												Contact_Person_Name = name;
-												Contact_Person_Number = finalCNumber;
-												Toast.makeText(MainActivity.this, name
-													+ "\n"
-													+ extractNumber(finalCNumber)
-													+ "\nwas added", Toast.LENGTH_LONG).show();
-											}
-										}
-									});
-
-							android.support.v7.app.AlertDialog alertDialog =
-								alertDialogBuilder.create();
-							alertDialog.show();
-						}
-					}
-				}
-			}
-		});
-
-		Amount_Due_Edit.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-				} else {
-					{
-						final EditText Image_Link, Contact_number;
-						LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-						View PromptsView = LI.inflate(R.layout.image_dialog, null);
-						Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-						//Conact_number.setText(cNumber);
-						Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-						//Image_Link.setText(name);
-						android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-							new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-						alertDialogBuilder.setView(PromptsView);
-						final String Name = AutoCompleteContacts.getText().toString();
-						if (extractNumber(Name).length() == 10) {
-							Contact_number.setText(Name);
-						} else {
-							if (extractNumber(Name).length() == 0) {
-								if (!TextUtils.isEmpty(Name)) {
-									Image_Link.setText(Name);
-								}
-							}
-						}
-						alertDialogBuilder.setCancelable(true)
-							.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-								@Override public void onClick(DialogInterface dialog, int which) {
-									Boolean cancel = false;
-									View focus_View = Image_Link;
-									String name = Image_Link.getText().toString();
-									String finalCNumber = Contact_number.getText().toString();
-									if (TextUtils.isEmpty(name)) {
-										Image_Link.setError("Required field");
-										focus_View = Image_Link;
-										cancel = true;
-									}
-									if (extractNumber(finalCNumber).length() < 10) {
-										Contact_number.setError("Required field");
-										focus_View = Contact_number;
-										cancel = true;
-									}
-									if (cancel) {
-										focus_View.requestFocus();
-									} else {
-										final SpannableStringBuilder sb =
-											new SpannableStringBuilder();
-										TextView tv = createContactTextView(name);
-										BitmapDrawable bd =
-											(BitmapDrawable) convertViewToDrawable(tv);
-										bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-											bd.getIntrinsicHeight());
-
-										sb.append(name);
-										sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-											Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-										AutoCompleteContacts.setText(sb);
-
-										//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-										person_added = true;
-										Contact_Person_Name = name;
-										Contact_Person_Number = finalCNumber;
-										Toast.makeText(MainActivity.this, name
-											+ "\n"
-											+ extractNumber(finalCNumber)
-											+ "\nwas added", Toast.LENGTH_LONG).show();
-									}
-								}
-							});
-
-						android.support.v7.app.AlertDialog alertDialog =
-							alertDialogBuilder.create();
-						alertDialog.show();
-					}
-				}
-			}
-		});
-
-		AutoCompleteContacts.addTextChangedListener(new TextWatcher() {
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-			}
-
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if (person_added) {
-					person_added = false;
-				}
-			}
-
-			@Override public void afterTextChanged(Editable s) {
-
-			}
-		});
-
-		TitleEdit.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-
-				} else {
-					if (person_added == false) {
-						final EditText Image_Link, Contact_number;
-						LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-						View PromptsView = LI.inflate(R.layout.image_dialog, null);
-						Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-						//Conact_number.setText(cNumber);
-						Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-						//Image_Link.setText(name);
-						android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-							new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-						alertDialogBuilder.setView(PromptsView);
-						final String Name = AutoCompleteContacts.getText().toString();
-						if (extractNumber(Name).length() == 10) {
-							Contact_number.setText(Name);
-						} else {
-							if (extractNumber(Name).length() == 0) {
-								if (!TextUtils.isEmpty(Name)) {
-									Image_Link.setText(Name);
-								}
-							}
-						}
-						alertDialogBuilder.setCancelable(true)
-							.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-								@Override public void onClick(DialogInterface dialog, int which) {
-									Boolean cancel = false;
-									View focus_View = Image_Link;
-									String name = Image_Link.getText().toString();
-									String finalCNumber = Contact_number.getText().toString();
-									if (TextUtils.isEmpty(name)) {
-										Image_Link.setError("Required field");
-										focus_View = Image_Link;
-										cancel = true;
-									}
-									if (extractNumber(finalCNumber).length() < 10) {
-										Contact_number.setError("Required field");
-										focus_View = Contact_number;
-										cancel = true;
-									}
-									if (cancel) {
-										focus_View.requestFocus();
-									} else {
-										final SpannableStringBuilder sb =
-											new SpannableStringBuilder();
-										TextView tv = createContactTextView(name);
-										BitmapDrawable bd =
-											(BitmapDrawable) convertViewToDrawable(tv);
-										bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-											bd.getIntrinsicHeight());
-
-										sb.append(name);
-										sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-											Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-										AutoCompleteContacts.setText(sb);
-
-										//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-										person_added = true;
-										Contact_Person_Name = name;
-										Contact_Person_Number = finalCNumber;
-										Toast.makeText(MainActivity.this, name
-											+ "\n"
-											+ extractNumber(finalCNumber)
-											+ "\nwas added", Toast.LENGTH_LONG).show();
-									}
-								}
-							});
-
-						android.support.v7.app.AlertDialog alertDialog =
-							alertDialogBuilder.create();
-						alertDialog.show();
-					}
-				}
+				Submit();
 			}
 		});
 
@@ -1034,83 +301,7 @@ import java.util.List;
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();*/
 
-				if (TextUtils.isEmpty(AutoCompleteContacts.getText().toString())) {
-					Onclick_Image_button();
-				} else {
-					if (person_added == false) {
-						final EditText Image_Link, Contact_number;
-						LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-						View PromptsView = LI.inflate(R.layout.image_dialog, null);
-						Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-						//Conact_number.setText(cNumber);
-						Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-						//Image_Link.setText(name);
-						android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-							new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-						alertDialogBuilder.setView(PromptsView);
-						final String Name = AutoCompleteContacts.getText().toString();
-						if (extractNumber(Name).length() == 10) {
-							Contact_number.setText(Name);
-						} else {
-							if (extractNumber(Name).length() == 0) {
-								if (!TextUtils.isEmpty(Name)) {
-									Image_Link.setText(Name);
-								}
-							}
-						}
-						alertDialogBuilder.setCancelable(true)
-							.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-								@Override public void onClick(DialogInterface dialog, int which) {
-									Boolean cancel = false;
-									View focus_View = Image_Link;
-									String name = Image_Link.getText().toString();
-									String finalCNumber = Contact_number.getText().toString();
-									if (TextUtils.isEmpty(name)) {
-										Image_Link.setError("Required field");
-										focus_View = Image_Link;
-										cancel = true;
-									}
-									if (extractNumber(finalCNumber).length() < 10) {
-										Contact_number.setError("Required field");
-										focus_View = Contact_number;
-										cancel = true;
-									}
-									if (cancel) {
-										focus_View.requestFocus();
-									} else {
-										final SpannableStringBuilder sb =
-											new SpannableStringBuilder();
-										TextView tv = createContactTextView(name);
-										BitmapDrawable bd =
-											(BitmapDrawable) convertViewToDrawable(tv);
-										bd.setBounds(0, 0, bd.getIntrinsicWidth(),
-											bd.getIntrinsicHeight());
-
-										sb.append(name);
-										sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-											Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-										AutoCompleteContacts.setText(sb);
-
-										//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-										person_added = true;
-										Contact_Person_Name = name;
-										Contact_Person_Number = finalCNumber;
-										Toast.makeText(MainActivity.this, name
-											+ "\n"
-											+ extractNumber(finalCNumber)
-											+ "\nwas added", Toast.LENGTH_LONG).show();
-									}
-								}
-							});
-
-						android.support.v7.app.AlertDialog alertDialog =
-							alertDialogBuilder.create();
-						alertDialog.show();
-					} else {
-						Onclick_Image_button();
-					}
-				}
+				Onclick_Image_button();
 			}
 		});
 
@@ -1159,6 +350,10 @@ import java.util.List;
 	}
 
 	private void initRecyclerView() {
+		//Category_Recycler_View=new RecyclerView(this);
+		Contact_RecyclerView=new RecyclerView(this);
+		Contact_RecyclerView=(RecyclerView)findViewById(R.id.Add_Member_RecyclerView);
+		Contact_RecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
 		//View view=Category_Recycler_View.findViewHolderForAdapterPosition(0);
 		adapter = new CategoryAdapter(getApplicationContext(), Category_list);
 		Category_Recycler_View.setLayoutManager(
@@ -1171,7 +366,117 @@ import java.util.List;
 		});
 	}
 
-	Thread th = new Thread() {
+
+	public void Add_notes(View view){
+		final EditText Notes_Edit;
+		LayoutInflater inflater=LayoutInflater.from(MainActivity.this);
+		View notes_view=inflater.inflate(R.layout.notes_dialogue_layout,null);
+		Notes_Edit=(EditText)notes_view.findViewById(R.id.Notes_EditText);
+		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
+				new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
+		alertDialogBuilder.setView(notes_view);
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setPositiveButton(Html.fromHtml("<font color='#00796B'>Ok</font>"), null);
+		//alertDialogBuilder.setNegativeButton("Cancel",null);
+		alertDialogBuilder.setNeutralButton("Cancel",null);
+
+		final android.support.v7.app.AlertDialog alertDialog =
+				alertDialogBuilder.create();
+		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
+
+				Button button = ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
+				Button Negative=((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+				Negative.setTextColor(getColor(R.color.colorPrimary));
+				button.setTextColor(getColor(R.color.colorPrimary));
+				Negative.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						alertDialog.dismiss();
+					}
+				});
+				button.setOnClickListener(new View.OnClickListener() {
+
+					@Override
+					public void onClick(View view) {
+						// TODO Do something
+
+						//Dismiss once everything is OK.
+						if(TextUtils.isEmpty(Notes_Edit.getText().toString())){
+							Toast.makeText(MainActivity.this,"Please write something",Toast.LENGTH_LONG).show();
+						}else {
+							alertDialog.dismiss();}
+					}
+				});
+			}
+		});
+		alertDialog.show();
+	}
+
+	public void Dialog(View view){
+		String Amount=AmountEdit.getText().toString();
+		int no_of_Person=Item_list.size();
+		String Specific_Amount;
+		if(TextUtils.isEmpty(Amount)){
+			Specific_Amount="0";
+		}else {
+			Specific_Amount=""+Integer.parseInt(Amount)/no_of_Person;
+		}
+		Log.d( "Dialog: ",Item_list.size()+"");
+		if(Item_list.size()>0){
+			Split_List=new ArrayList<>();
+			for (int i=0;i<Item_list.size();i++)
+			{
+
+				Split_List.add(new Split_Contact_model(Item_list.get(i).getContact_Person_Name(),Specific_Amount));
+			}
+		}else {
+			Split_List=new ArrayList<>();
+			Split_List.add(new Split_Contact_model("Bharat",Specific_Amount));
+		}
+		Log.d( "Dialog: ",Split_List.size()+"");
+		LayoutInflater LI = LayoutInflater.from(MainActivity.this);
+		View PromptsView = LI.inflate(R.layout.split_dialog_layout, null);
+		Split_Spinner=(Spinner)PromptsView.findViewById(R.id.Split_Spinner);
+		Split_RecyclerView=(RecyclerView)PromptsView.findViewById(R.id.Dialog_RecyclerView);
+		Split_Notes=(TextView)PromptsView.findViewById(R.id.Dialog_Split_Notes);
+		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
+		Adapter=new Dialog_Split_RecyclerViewAdapter(getApplicationContext(),Split_List);
+		Split_RecyclerView.setAdapter(Adapter);
+
+		Split_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+
+			}
+		});
+		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
+				new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
+		alertDialogBuilder.setView(PromptsView);
+		alertDialogBuilder.setCancelable(true);
+		alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+			}
+		});
+		android.support.v7.app.AlertDialog alertDialog =
+				alertDialogBuilder.create();
+		alertDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
+		alertDialog.show();
+	}
+
+
+
+	/*Thread th = new Thread() {
 		@Override public void run() {
 
 			ArrayAdapter<String> contactAdapter = new ArrayAdapter<String>(MainActivity.this,
@@ -1182,7 +487,7 @@ import java.util.List;
 		}
 	};
 
-	/*private CheckBox.OnCheckedChangeListener checkedChangeListener =
+	private CheckBox.OnCheckedChangeListener checkedChangeListener =
 			new CheckBox.OnCheckedChangeListener() {
 				 @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					if (isChecked == true) {
@@ -1391,26 +696,20 @@ import java.util.List;
 			Img_File.setVisibility(View.VISIBLE);
 			Img_File.setImageURI(uri);
 		} else if (requestCode == 3 && resultCode == RESULT_OK) {
-			//Bitmap photo = (Bitmap) data.getExtras().get("data");
-			// Uri uri = data.getData();
+			//List<String> temp=getIntent().getStringArrayListExtra("Previous_Contacts");
 			Uri contactData = data.getData();
-			Cursor c = getContentResolver().query(contactData, null, null, null, null);
-			if (c != null && c.moveToFirst()) {
-				final String name = c.getString(
-					c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-				//String id = c.getString(c.getColumnIndex(ContactsContract.Contacts._ID));
-				String hasPhone = c.getString(
-					c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
+			Cursor c = MainActivity.this.managedQuery(contactData, null, null, null, null);
+			if (c.moveToFirst()) {
+				String cNumber = null;
+				final String name =c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+				String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+				String hasPhone = c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
 				if (hasPhone.equalsIgnoreCase("1")) {
-					//Cursor phones = getContentResolver().query(
-					//	ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
-					//	ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = " + id, null, null);
-					//phones.moveToFirst();
-					//cNumber = phones.getString(phones.getColumnIndex("data1"));
-					////System.out.println("number is:"+cNumber);
 
 					cNumber = c.getString(
-						c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+							c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 					cNumber = cNumber.replace(" ", "").replace("+", "");
 					if (cNumber.length() > 10) {
 						code = cNumber.substring(0, cNumber.length() - 10);
@@ -1418,70 +717,38 @@ import java.util.List;
 					} else {
 						code = "91";
 					}
+					//System.out.println("number is:"+cNumber);
+				}
+				Custom_Contact_items CCItem = new Custom_Contact_items(name,cNumber);
+				if (!Check_Contact_List(cNumber)){
+					Item_list.add(CCItem);
+					Log.d("onActivityResult: ",Item_list.size()+"");
+					Contact_RecyclerView.setVisibility(View.VISIBLE);
+					RecyclerView_Adapter=new Contact_RecyclerView_Adapter(Item_list);
+					Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
+//					Log.d("onActivityResult: ", cNumber);
+				}else {
+					Toast.makeText(MainActivity.this,"Contact is already added",Toast.LENGTH_LONG).show();
 				}
 
-				AutoCompleteContacts.setText(name);
-				final EditText Image_Link, Contact_number;
-				LayoutInflater LI = LayoutInflater.from(MainActivity.this);
-				View PromptsView = LI.inflate(R.layout.image_dialog, null);
-				Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-
-				Contact_number.setText(cNumber);
-				Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
-				Image_Link.setText(name);
-				android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-					new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-
-				alertDialogBuilder.setView(PromptsView);
-				final String finalCNumber = cNumber;
-				alertDialogBuilder.setCancelable(true)
-					.setPositiveButton("Add Person", new DialogInterface.OnClickListener() {
-						@Override public void onClick(DialogInterface dialog, int which) {
-							Boolean cancel = false;
-							View focus_View = Image_Link;
-							String name = Image_Link.getText().toString();
-							String finalCNumber = Contact_number.getText().toString();
-							if (TextUtils.isEmpty(name)) {
-								Image_Link.setError("Required field");
-								focus_View = Image_Link;
-								cancel = true;
-							}
-							if (extractNumber(finalCNumber).length() > 13) {
-								Contact_number.setError("Required field");
-								focus_View = Contact_number;
-								cancel = true;
-							}
-							if (cancel) {
-								focus_View.requestFocus();
-							} else {
-								final SpannableStringBuilder sb = new SpannableStringBuilder();
-								TextView tv = createContactTextView(name);
-								BitmapDrawable bd = (BitmapDrawable) convertViewToDrawable(tv);
-								bd.setBounds(0, 0, bd.getIntrinsicWidth(), bd.getIntrinsicHeight());
-
-								sb.append(name);
-								sb.setSpan(new ImageSpan(bd), 0, sb.length(),
-									Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-								AutoCompleteContacts.setText(sb);
-
-								//AutoCompleteContacts.setText(name,TextView.BufferType.EDITABLE);
-								person_added = true;
-								Contact_Person_Name = name;
-								Contact_Person_Number = finalCNumber;
-								Toast.makeText(MainActivity.this,
-									name + "\n" + extractNumber(finalCNumber) + "\nwas added",
-									Toast.LENGTH_LONG).show();
-								new ServerUtil(MainActivity.this).getUserIdFromServer(cNumber,
-									code);
-							}
-						}
-					});
-
-				android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
-				alertDialog.show();
 			}
 		}
 	}
+
+
+	public boolean Check_Contact_List(String Number){
+		Boolean check=false;
+		for(int i=0;i<Item_list.size();i++){
+			if(TextUtils.equals(Item_list.get(i).getContact_Person_Number(),Number)){
+				check=true;
+				//return true;
+			}else {
+				check=false;
+			}
+		}
+		return check;
+	}
+
 
 	public void onclick_date() {
 		datePicker.show();
@@ -1542,10 +809,10 @@ import java.util.List;
 				month_x = month + 1;
 				day_x = dayOfMonth;
 				Selected_date = dayOfMonth;
-				year_x = cal.get(Calendar.YEAR);
+				/*year_x = cal.get(Calendar.YEAR);
 				day_x = cal.get(Calendar.DAY_OF_MONTH);
 				month_x = cal.get(Calendar.MONTH);
-                     /*if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH) ){
+                     if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH) ){
                          dateEdit.setText("Today");
                      } else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)+1 ){
                          dateEdit.setText("Tomorrow");
@@ -1558,7 +825,7 @@ import java.util.List;
 
 	public void Submit() {
 		Amount_text = AmountEdit.getText().toString();
-		Add_Person_text = AutoCompleteContacts.getText().toString();
+		//Add_Person_text = AutoCompleteContacts.getText().toString();
 		Title_text = TitleEdit.getText().toString();
 		Category_text = adapter.getLastCategory();
 		View focus = null;
@@ -1736,8 +1003,8 @@ import java.util.List;
 	}
 
 	public void MoreButton() {
-		Fetch_Contacts();
-		th.run();
+		/*Fetch_Contacts();
+		//th.run();
 		if (Notes_Layout.getVisibility() == View.GONE) {
 			Notes_Layout.setVisibility(View.VISIBLE);
 			Material_Amount_Due.setVisibility(View.VISIBLE);
@@ -1750,7 +1017,7 @@ import java.util.List;
             /*YoYo.with(Techniques.SlideInLeft)
                     .duration(1000)
                     .repeat(0)
-                    .playOn(Notes_Layout);*/
+                    .playOn(Notes_Layout);*
 			Material_Notes.setHasFocus(true);
 			Material_Amount_Due.setHasFocus(true);
 			// More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
@@ -1773,9 +1040,9 @@ import java.util.List;
                     Notes_Layout.setVisibility(View.GONE);
                     More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
                 }
-            }, 500);*/
+            }, 500);
 
-		}
+		}*/
 	}
 
 	public void OnBackPressed(View view) {
@@ -1783,7 +1050,7 @@ import java.util.List;
 		startActivity(intent);
 	}
 
-	public void Contact_Button() {
+	public void Contact_Button(View view) {
 		Intent intent =
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 3);
