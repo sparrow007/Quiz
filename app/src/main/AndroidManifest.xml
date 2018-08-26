@@ -70,6 +70,9 @@
             android:name=".Specific_Group_Transaction"
             android:label="@string/title_activity_specific__group__transaction"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="7844611159b7df2790836a6f20fa28253e7b5d61" />
     </application>
 
 </manifest>
