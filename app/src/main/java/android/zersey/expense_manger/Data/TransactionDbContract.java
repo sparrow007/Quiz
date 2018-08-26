@@ -93,6 +93,7 @@ public class TransactionDbContract {
 		public static final String COLUMN_GROUP_NAME = "group_name";
 		public static final String COLUMN_GROUP_DESC = "group_desc";
 		public static final String COLUMN_USERS = "users";
+		public static final String COLUMN_TYPE_ID = "type_id";
 
 		public static final String SQL_CREATE_GROUP_TABLE = "CREATE TABLE "
 			+ TABLE_NAME
@@ -100,6 +101,8 @@ public class TransactionDbContract {
 			+ GroupEntry._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
 			+ COLUMN_GROUP_ID
+			+ " INTEGER, "
+			+ COLUMN_TYPE_ID
 			+ " INTEGER, "
 			+ COLUMN_GROUP_NAME
 			+ " TEXT, "

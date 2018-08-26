@@ -2,6 +2,7 @@ package android.zersey.expense_manger;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +11,8 @@ import android.widget.TextView;
 import java.util.List;
 
 public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transaction_Adapter.TransactionViewHolder> {
-    private List<String> list;
-    public Group_Transaction_Adapter(List<String> list){
+    private List<IncomeModel> list;
+    public Group_Transaction_Adapter(List<IncomeModel> list){
         this.list=list;
     }
 
@@ -25,8 +26,15 @@ public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transa
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
-    holder.Transaction_TextView.setText(list.get(position));
+		Log.d("hueh", "onBindViewHolder: " + list.get(position).toString());
+    holder.Transaction_TextView.setText(list.get(position).getTitle());
+    holder.groupTransactionAmount.setText("Rs " + list.get(position).getTotalAmount());
     }
+
+    public void addItem(IncomeModel model){
+    	list.add(model);
+    	notifyItemInserted(list.size() - 1);
+	}
 
     @Override
     public int getItemCount() {
@@ -34,10 +42,11 @@ public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transa
     }
 
     public class TransactionViewHolder extends RecyclerView.ViewHolder{
-        TextView Transaction_TextView;
+        TextView Transaction_TextView, groupTransactionAmount;
         public TransactionViewHolder(View itemView) {
             super(itemView);
             Transaction_TextView=(TextView)itemView.findViewById(R.id.Group_Transaction_TextView);
+            groupTransactionAmount = itemView.findViewById(R.id.Group_Transaction_Amount_TextView);
         }
     }
 }

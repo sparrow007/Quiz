@@ -56,7 +56,7 @@ public interface RestAdapterAPI {
 
 	@FormUrlEncoded @POST("/Split_bills/create_edit_group") Call<JsonObject> createGroup(
 		@Field("group_name") String groupName, @Field("group_description") String groupDescription,
-		@Field("users") String users);
+		@Field("users") String users, @Field("type_id") int typeId);
 
 	@GET("/Split_bills/fetch_groups") Call<JsonObject> fetchGroups();
 

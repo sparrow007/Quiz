@@ -193,6 +193,7 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 		model.setUsers(users);
 		long groupId = mDbHelper.createGroup(model);
 		model.setId(groupId);
+		model.setTypeId(0);
 		new ServerUtil(this).createGroup(model);
 		Intent intent = new Intent();
 		intent.putExtra("group", model);

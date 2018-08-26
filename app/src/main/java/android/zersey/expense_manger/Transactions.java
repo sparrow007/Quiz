@@ -68,7 +68,7 @@ public class Transactions extends Fragment {
 		mDbHelper = new TransactionDbHelper(getContext());
 		Item_list = new ArrayList<>();
 
-		//groups.addAll(mDbHelper.getAllGroups());
+		//groups.addAll(mDbHelper.getGroups());
 		newModels = new ArrayList<>();
 		newModels.addAll(mDbHelper.getAllEntries());
 		//

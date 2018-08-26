@@ -89,6 +89,7 @@ public class Util {
 					model.setGroupDesc(obj.get("group_description").getAsString());
 				}
 				if (!obj.get("users").isJsonNull()) model.setUsers(obj.get("users").getAsString());
+				if (!obj.get("type_id").isJsonNull()) model.setTypeId(obj.get("type_id").getAsInt());
 				list.add(model);
 			}
 		} catch (Exception e) {

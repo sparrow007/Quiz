@@ -2,6 +2,7 @@ package android.zersey.expense_manger;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -146,6 +147,7 @@ import java.util.List;
 	private GroupModel groupModel;
 	private String payerId;
 	private String cNumber, code;
+	private String users = "";
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -155,6 +157,9 @@ import java.util.List;
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		mDbHelper = new TransactionDbHelper(MainActivity.this);
 		Category_list = new ArrayList<>();
+
+		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
+		users += prefs.getString("userid", null);
 
 		Dexter.withActivity(MainActivity.this)
 			.withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -884,6 +889,9 @@ import java.util.List;
 						}
 					}
 				}
+
+				IncomeModel expenseModel = new IncomeModel();
+
 				if (TextUtils.isEmpty(CardClicked)) {
 					String DateEdit_text = dateEdit.getText().toString();
 					//Custom_items items = new Custom_items(Category_text,
@@ -891,13 +899,24 @@ import java.util.List;
 					//customlist.add(items);
 
 					SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
+					GroupModel groupModel2 = new GroupModel();
 
-					IncomeModel expenseModel = new IncomeModel();
+					if (groupModel == null) {
+
+						groupModel2.setGroupName(Title_text);
+						groupModel2.setTypeId(1);
+						//groupModel.setGroupDesc();
+						groupModel2.setUsers(users);
+						long newrowId = mDbHelper.createGroup(groupModel2);
+						new ServerUtil(MainActivity.this).createGroup(groupModel2);
+						groupModel2.setId(newrowId);
+					}
 					expenseModel.setType(Category_text);
 					expenseModel.setTitle(Title_text);
 					expenseModel.setTotalAmount(Amount_text);
 					expenseModel.setPaidAtDate(DateEdit_text);
 					expenseModel.setAmountDue(Amount_Due_Edit.getText().toString());
+					expenseModel.setGroupId(groupModel2.getId());
 					try {
 						expenseModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
 					} catch (UnsupportedEncodingException e) {
@@ -908,13 +927,14 @@ import java.util.List;
 					expenseModel.setPayerId(payerId);
 
 					if (groupModel != null) {
-						expenseModel.setGroupId(groupModel.getId());
+						expenseModel.setGroupId(groupModel.getGroupId());
+						expenseModel.setType("gt");
 					}
+
 
 					long rowId = mDbHelper.createEntry(expenseModel);
 					new ServerUtil(MainActivity.this).createEntry(expenseModel);
 					expenseModel.setId(rowId);
-
 
 					//if (NetworkUtil.hasInternetConnection(MainActivity.this)) {
 					//	new ServerUtil(MainActivity.this).createEntry(expenseModel);
@@ -986,6 +1006,13 @@ import java.util.List;
 					//	TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID + "=" + Updated_Id, null);
 					//new ServerUtil(MainActivity.this).updateEntry(expenseModel);
 				}
+
+				if (groupModel != null){
+					Intent intent = new Intent();
+					intent.putExtra("model", expenseModel);
+					setResult(Activity.RESULT_OK, intent);
+				}
+
 				finish();
 			}
 		}
@@ -1206,6 +1233,7 @@ import java.util.List;
 
 	@Override public void updateUserId(String userId) {
 		payerId = userId;
+		users += "," + userId;
 	}
 
 

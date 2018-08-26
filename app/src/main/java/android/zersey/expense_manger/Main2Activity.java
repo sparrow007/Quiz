@@ -1,6 +1,5 @@
 package android.zersey.expense_manger;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +24,7 @@ import android.zersey.expense_manger.Data.TransactionDbHelper;
 import com.google.gson.JsonObject;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -208,9 +207,10 @@ public class Main2Activity extends BaseActivity
 			result.enqueue(new Callback<JsonObject>() {
 				@Override
 				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
 					list.addAll(Util.parseGroupResponse(response.body()));
 					dbHelper.addGroups(list);
+					list.clear();
+					list.addAll(dbHelper.getGroups(0));
 				}
 
 				@Override public void onFailure(Call<JsonObject> call, Throwable t) {
@@ -218,7 +218,7 @@ public class Main2Activity extends BaseActivity
 				}
 			});
 		} else {
-			list.addAll(dbHelper.getAllGroups());
+			list.addAll(dbHelper.getGroups(0));
 		}
 
 		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
@@ -226,9 +226,8 @@ public class Main2Activity extends BaseActivity
 			result.enqueue(new Callback<JsonObject>() {
 				@Override
 				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-
-					Transactions.adapter.addAll(Util.getNotesList(Main2Activity.this, response));
-
+					Util.getNotesList(Main2Activity.this, response);
+					Transactions.adapter.addAll(dbHelper.getAllEntries());
 				}
 
 				@Override public void onFailure(Call<JsonObject> call, Throwable t) {

@@ -1,5 +1,6 @@
 package android.zersey.expense_manger;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 
 public class Specific_Group extends AppCompatActivity
@@ -18,7 +20,7 @@ public class Specific_Group extends AppCompatActivity
 	private ViewPager mViewPager;
 	private TabLayout tab_layout;
 	private PagerAdapter adapter;
-	private GroupModel model;
+	public GroupModel model;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -86,10 +88,19 @@ public class Specific_Group extends AppCompatActivity
 	public void addTransactionInGroup(View view) {
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("group", model);
-		startActivity(intent);
+		startActivityForResult(intent, 123);
 	}
 
-/*TextView tv=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
+	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == 123){
+			if (resultCode == Activity.RESULT_OK){
+				Group_Transactions.adapter.addItem((IncomeModel) data.getSerializableExtra("model"));
+			}
+		}
+	}
+
+	/*TextView tv=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
         tv.setText("Transactions");
         TextView tv1=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
         tv1.setText("Balances");

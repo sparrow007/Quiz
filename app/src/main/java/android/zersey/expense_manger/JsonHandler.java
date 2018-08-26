@@ -29,7 +29,7 @@ public class JsonHandler {
 	public static Call<JsonObject> createGroup(Context context, GroupModel groupModel) {
 		return NetworkUtil.getRestAdapter(context)
 			.createGroup(groupModel.getGroupName(), groupModel.getGroupDesc(),
-				groupModel.getUsers());
+				groupModel.getUsers(), groupModel.getTypeId());
 	}
 
 	public static Call<JsonObject> deleteEntry(Context context, long id) {

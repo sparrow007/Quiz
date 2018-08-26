@@ -11,6 +11,7 @@ public class GroupModel implements Serializable {
 	@SerializedName("group_name") private String groupName;
 	@SerializedName("group_description") private String groupDesc;
 	@SerializedName("users") private String users;
+	@SerializedName("type_id") private int typeId;
 
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
@@ -68,5 +69,13 @@ public class GroupModel implements Serializable {
 			+ users
 			+ '\''
 			+ '}';
+	}
+
+	public int getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
 	}
 }

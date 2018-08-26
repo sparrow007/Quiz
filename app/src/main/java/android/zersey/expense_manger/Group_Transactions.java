@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.zersey.expense_manger.Data.TransactionDbHelper;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,15 +28,17 @@ public class Group_Transactions extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private List<String> list;
+    private List<IncomeModel> list;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private TransactionDbHelper mDbHelper;
     private RecyclerView recyclerView;
 
     private OnFragmentInteractionListener mListener;
+	public static Group_Transaction_Adapter adapter;
 
-    public Group_Transactions() {
+	public Group_Transactions() {
         // Required empty public constructor
     }
 
@@ -60,12 +63,16 @@ public class Group_Transactions extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mDbHelper = new TransactionDbHelper(getContext());
+        list = new ArrayList<>();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-        initList();
+        //initList();
         recyclerView=new RecyclerView(getContext());
+        list.addAll(mDbHelper.getGroupEntries(((Specific_Group)getActivity()).model.getGroupId()));
+        adapter = new Group_Transaction_Adapter(list);
     }
 
     @Override
@@ -76,17 +83,17 @@ public class Group_Transactions extends Fragment {
         return fragmentLayout;
     }
 
-    public void initList(){
-        list=new ArrayList<>();
-        for(int i=0;i<20;i++){
-            list.add("Title");
-        }
-    }
+    //public void initList(){
+    //    list=new ArrayList<>();
+    //    for(int i=0;i<20;i++){
+    //        list.add("Title");
+    //    }
+    //}
 
     public View initRecyclerView(View fragmentLayout){
         recyclerView=(RecyclerView) fragmentLayout.findViewById(R.id.Group_Transaction_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new Group_Transaction_Adapter(list));
+        recyclerView.setAdapter(adapter);
         return fragmentLayout;
     }
 
