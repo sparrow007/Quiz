@@ -52,7 +52,7 @@ public class Groups extends Fragment {
 		if (getArguments() != null) {
 			list.addAll((List<GroupModel>)getArguments().getSerializable("groupList"));
 		}
-		mDbHelper = new TransactionDbHelper(getContext());
+		//mDbHelper = new TransactionDbHelper(getContext());
 		First_List = new ArrayList<>(list);
 		Second_List = new ArrayList<>();
 		First_RecyclerView = new RecyclerView(getContext());
@@ -68,14 +68,14 @@ public class Groups extends Fragment {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_groups, container, false);
 		First_More = fragmentLayout.findViewById(R.id.First_More);
 		Second_More = fragmentLayout.findViewById(R.id.Second_More);
-		First_More.setOnClickListener(new View.OnClickListener() {
+		/*First_More.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(getContext(), More_Activity.class);
 				intent.putExtra("More", (ArrayList<GroupModel>) First_List);
 				Log.d("onClick: ", First_List.size() + "");
 				startActivity(intent);
 			}
-		});
+		});*/
 		Second_More.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(getContext(), More_Activity.class);

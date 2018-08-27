@@ -5,10 +5,12 @@ import java.util.List;
 
 public class IncomeModel implements Serializable {
 
+	private int Income_day,Income_month,Income_year;
 	private long id, onlineId, groupId;
 	private String type, title, description, uuid, catId;
 	private String totalAmount, paidAtDate, amountDue, payerId, invoiceId;
 	private List<IncomeModel> subList;
+
 
 	public void setId(long id) {
 		this.id = id;
@@ -40,6 +42,22 @@ public class IncomeModel implements Serializable {
 
 	public void setPaidAtDate(String paidAtDate) {
 		this.paidAtDate = paidAtDate;
+		String[] temp=paidAtDate.split("-");
+		Income_day=Integer.parseInt(temp[2]);
+		Income_month=Integer.parseInt(temp[1]);
+		Income_year=Integer.parseInt(temp[0]);
+	}
+
+	public int getIncome_day() {
+		return Income_day;
+	}
+
+	public int getIncome_month() {
+		return Income_month;
+	}
+
+	public int getIncome_year() {
+		return Income_year;
 	}
 
 	public void setAmountDue(String amountDue) {

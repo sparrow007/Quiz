@@ -112,9 +112,10 @@ public class Main2Activity extends BaseActivity
 		//        Image_uri=Uri.parse(getIntent().getStringExtra("Image"));
 
 		TabLayout tab_layout = findViewById(R.id.Tab_layout);
+		tab_layout.addTab(tab_layout.newTab().setText("Groups"));
 		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
 		tab_layout.addTab(tab_layout.newTab().setText("Graphs"));
-		tab_layout.addTab(tab_layout.newTab().setText("Groups"));
+
 		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 		mViewPager = findViewById(R.id.container);
@@ -228,6 +229,7 @@ public class Main2Activity extends BaseActivity
 				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 					Util.getNotesList(Main2Activity.this, response);
 					Transactions.adapter.addAll(dbHelper.getAllEntries());
+					Groups.adapter.addAll(dbHelper.getAllEntries());
 				}
 
 				@Override public void onFailure(Call<JsonObject> call, Throwable t) {
@@ -334,15 +336,15 @@ public class Main2Activity extends BaseActivity
 			// Return a PlaceholderFragment (defined as a static inner class below).
 			switch (position) {
 				case 0:
-					return new Transactions();
-				case 1:
-					return new Graphs();
-				case 2:
 					Fragment fragment = new Groups();
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("groupList", (Serializable) list);
 					fragment.setArguments(bundle);
 					return fragment;
+				case 1:
+					return new Graphs();
+				case 2:
+					return new Transactions();
 				default:
 					return null;
 			}

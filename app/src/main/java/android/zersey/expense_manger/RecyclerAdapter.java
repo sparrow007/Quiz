@@ -18,6 +18,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	List<IncomeModel> list;
 	int ViewType=0;
 	Context context;
+	private String[] Months = {
+			"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+	};
 	public RecyclerAdapter(List<IncomeModel> list) {
 		this.list = new ArrayList<>();
 		this.list.addAll(list);
@@ -32,7 +35,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			return new ViewHolder(view);
 		}else{
 			View view = LayoutInflater.from(parent.getContext())
-					.inflate(R.layout.transaction_list_layout, parent, false);
+					.inflate(R.layout.copy_of_firstslider, parent, false);
 			return new ViewHolder(view);
 		}
 	}
@@ -48,17 +51,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		if (customitems != null) {
 
 			if (holder.customcategory != null) {
-					holder.category_logo.setImageResource(R.drawable.salary);
+					//holder.category_logo.setImageResource(R.drawable.salary);
 					holder.customcategory.setText(customitems.getType());
 			}
 			if (holder.customtitle != null) {
 				holder.customtitle.setText(customitems.getTitle());
 			}
 			if (holder.customamount != null) {
-				holder.customamount.setText(customitems.getTotalAmount());
+				holder.customamount.setText("INR "+customitems.getTotalAmount());
 			}
 			if (holder.customdate != null) {
-				holder.customdate.setText(customitems.getPaidAtDate());
+				holder.customdate.setText(customitems.getIncome_day()+" "+Months[customitems.getIncome_month()-1]
+						+" "+customitems.getIncome_year());
 			}
 		}
 		if (position == list.size()) {
@@ -117,7 +121,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 		TextView customcategory, customamount, customdate, customtitle;
-		ImageView category_logo;
+		//ImageView category_logo;
 		ImageButton Plus_Button;
 
 		public ViewHolder(View itemView) {
@@ -132,11 +136,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 					}
 				});
 			}else{
-				customcategory = (TextView) itemView.findViewById(R.id.Custom_category);
-				customamount = (TextView) itemView.findViewById(R.id.Custom_amount);
-				customdate = (TextView) itemView.findViewById(R.id.Custom_date);
-				customtitle = (TextView) itemView.findViewById(R.id.Custom_title);
-				category_logo = (ImageView) itemView.findViewById(R.id.Custom_logo);
+				customcategory = (TextView) itemView.findViewById(R.id.Copy_Category_TextView);
+				customamount = (TextView) itemView.findViewById(R.id.Copy_Amount_TextView);
+				customdate = (TextView) itemView.findViewById(R.id.Copy_Date_TextView);
+				customtitle = (TextView) itemView.findViewById(R.id.Copy_Title_TextView);
+				//category_logo = (ImageView) itemView.findViewById(R.id.Custom_logo);
 			}
 			itemView.setOnClickListener(this);
 		}

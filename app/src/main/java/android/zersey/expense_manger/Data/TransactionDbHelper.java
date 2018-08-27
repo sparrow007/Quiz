@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.zersey.expense_manger.GroupModel;
+import android.zersey.expense_manger.Groups;
 import android.zersey.expense_manger.IncomeModel;
 import android.zersey.expense_manger.Temp;
 import android.zersey.expense_manger.Transactions;
@@ -116,7 +117,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		model.setId(newRowId);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				Transactions.adapter.addItem(model);
+				//Transactions.adapter.addItem(model);
+				Groups.adapter.addItem(model);
 			}
 		});
 		return newRowId;
@@ -135,7 +137,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				Transactions.adapter.updateItem(pos, model);
+				//Transactions.adapter.updateItem(pos, model);
+				Groups.adapter.updateItem(pos, model);
 			}
 		});
 	}
@@ -147,7 +150,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				Transactions.adapter.deleteItem(pos);
+				//Transactions.adapter.deleteItem(pos);
+				Groups.adapter.deleteItem(pos);
 			}
 		});
 	}

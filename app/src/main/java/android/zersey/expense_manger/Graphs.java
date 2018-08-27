@@ -8,6 +8,7 @@ import android.graphics.DashPathEffect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import android.view.LayoutInflater;
@@ -157,7 +158,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
 			//Item_list.add(new PieEntry());
 			amount = amount.replace("Rs ", "");
 			Float number = Float.parseFloat(amount);
-			if ("Entertainment".equals(category)) {
+			if ("Expense".equals(Type)) {
 
 				Entertainment_Expense = Entertainment_Expense + number;
 				Log.d("Savings", dateCreated + " = " + Months[month_x - 1]);
@@ -204,7 +205,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
 				Expense_Info expense_info = new Expense_Info(amount, dateCreated, title);
 				Expense_List.add(expense_info);
 
-			} else if (Util.isEmpty(category)) {
+			} else if (TextUtils.equals(Type,"Income")) {
 				Income_Info Info = new Income_Info(amount, dateCreated, title);
 				Income_List.add(Info);
 				String[] temp = dateCreated.split("-");
