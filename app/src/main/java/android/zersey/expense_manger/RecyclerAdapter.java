@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			View view = LayoutInflater.from(parent.getContext())
 					.inflate(R.layout.add_button, parent, false);
 			return new ViewHolder(view);
+		}else if(viewType==2){
+			View view = LayoutInflater.from(parent.getContext())
+					.inflate(R.layout.dummy_layout, parent, false);
+			return new ViewHolder(view);
 		}else{
 			View view = LayoutInflater.from(parent.getContext())
 					.inflate(R.layout.copy_of_firstslider, parent, false);
@@ -43,12 +48,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	@Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
 		IncomeModel customitems = new IncomeModel();
-		if(list.size()>position){
+		if (list.size()==0){
+			holder.Dummy_Layout.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent=new Intent(context,MainActivity.class);
+					context.startActivity(intent);
+				}
+			});
+		}else if(list.size()>position && list.size()!=0){
 			customitems = list.get(position);
-		}else {
+		}else if(list.size()!=0){
 			customitems=null;
 		}
-		if (customitems != null) {
+		if (customitems != null && list.size()!=0) {
 
 			if (holder.customcategory != null) {
 					//holder.category_logo.setImageResource(R.drawable.salary);
@@ -65,7 +78,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 						+" "+customitems.getIncome_year());
 			}
 		}
-		if (position == list.size()) {
+		if (position == list.size() && list.size()!=0) {
 
 			//holder.Add_Group_TextView.setText("Add transactions");
 			holder.Plus_Button.setOnClickListener(new View.OnClickListener() {
@@ -86,10 +99,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	@Override
 	public int getItemViewType(int position) {
-		if(position==list.size()){
+
+		if (list.size()==0){
+			ViewType=2;
+			return 2;
+		} else if(position==list.size()){
 			ViewType=1;
 			return 1;
-		}else {
+		}else{
 			ViewType=0;
 			return 0;}
 	}
@@ -123,10 +140,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		TextView customcategory, customamount, customdate, customtitle;
 		//ImageView category_logo;
 		ImageButton Plus_Button;
+		LinearLayout Dummy_Layout;
 
 		public ViewHolder(View itemView) {
 			super(itemView);
-			if(ViewType==1) {
+			if (list.size()==0){
+				Dummy_Layout=(LinearLayout)itemView.findViewById(R.id.Dummy_Layout);
+			}else if(ViewType==1) {
 				//Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
 				Plus_Button = (ImageButton) itemView.findViewById(R.id.Add_Group_Plus_Button);
 				Plus_Button.setOnClickListener(new View.OnClickListener() {

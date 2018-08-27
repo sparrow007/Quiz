@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.List;
 
@@ -31,6 +32,10 @@ public class First_Slider_Adapter
 			View view = LayoutInflater.from(parent.getContext())
 					.inflate(R.layout.add_button, parent, false);
 			return new First_Slider_ViewHolder(view);
+		}else if(viewType==2){
+			View view = LayoutInflater.from(parent.getContext())
+					.inflate(R.layout.dummy_layout, parent, false);
+			return new First_Slider_ViewHolder(view);
 		}else {
 			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 			View view = inflater.inflate(R.layout.first_slider, parent, false);
@@ -38,7 +43,15 @@ public class First_Slider_Adapter
 	}
 
 	@Override public void onBindViewHolder(@NonNull First_Slider_ViewHolder holder, int position) {
-		if (position == list.size()) {
+		if (list.size()==0){
+			holder.Dummy_Layout.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent=new Intent(context,Group_Form.class);
+					context.startActivity(intent);
+				}
+			});
+		}else if (position == list.size() && list.size()!=0) {
 			holder.Plus_Button.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -46,7 +59,7 @@ public class First_Slider_Adapter
 					context.startActivity(intent);
 				}
 			});
-		} else {
+		} else if(list.size()!=0){
 			//holder.tv.setText(list.get(position));
 			holder.tv.setText(list.get(position).getGroupName());
 		}
@@ -58,7 +71,11 @@ public class First_Slider_Adapter
 
 	@Override
 	public int getItemViewType(int position) {
-		if(position==list.size()){
+
+		if (list.size()==0){
+			ViewType=2;
+			return 2;
+		} else if(position==list.size()){
 			ViewType=1;
 			return 1;
 		}else {
@@ -69,11 +86,15 @@ public class First_Slider_Adapter
 	public class First_Slider_ViewHolder extends RecyclerView.ViewHolder
 		implements View.OnClickListener {
 		TextView tv,Add_Group_TextView;
+		LinearLayout Dummy_Layout;
 		ImageButton Plus_Button;
 
 		public First_Slider_ViewHolder(View itemView) {
 			super(itemView);
-			if(ViewType==1) {
+
+			if (list.size()==0){
+				Dummy_Layout=(LinearLayout)itemView.findViewById(R.id.Dummy_Layout);
+			}else if(ViewType==1 && list.size()!=0) {
 				//Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
 				Plus_Button = (ImageButton) itemView.findViewById(R.id.Add_Group_Plus_Button);
 				Plus_Button.setOnClickListener(new View.OnClickListener() {

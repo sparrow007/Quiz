@@ -113,8 +113,8 @@ public class Main2Activity extends BaseActivity
 
 		TabLayout tab_layout = findViewById(R.id.Tab_layout);
 		tab_layout.addTab(tab_layout.newTab().setText("Groups"));
-		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
 		tab_layout.addTab(tab_layout.newTab().setText("Graphs"));
+		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
 
 		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
 
