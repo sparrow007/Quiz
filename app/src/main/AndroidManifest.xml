@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="android.zersey.expense_manger">
+    package="com.zersey.roz">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -73,6 +73,7 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="7844611159b7df2790836a6f20fa28253e7b5d61" />
+        <activity android:name=".Transactions"/>
     </application>
 
 </manifest>

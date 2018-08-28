@@ -14,7 +14,7 @@
     <string name="title_activity_specific_transactions">SpecificTransactions</string>
     <string name="title_activity_main3">Main3Activity</string>
     <string name="title_activity_specific__group__transaction">Specific_Group_Transaction</string>
-    
+
     <string-array name="Split_Spinner">
         <item>Equally</item>
         <item>Unequally</item>
