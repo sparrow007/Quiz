@@ -58,7 +58,7 @@ public class First_Slider_Adapter
 					context.startActivity(intent);
 				}
 			});
-		}  if(list.size()!=0){
+		}  else if(list.size()!=0){
 			//holder.tv.setText(list.get(position));
 			holder.tv.setText(list.get(position).getGroupName());
 		}
