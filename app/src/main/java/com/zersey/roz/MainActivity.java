@@ -147,11 +147,11 @@ import java.util.List;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//getSupportActionBar().setTitle("Expense Manager");
+		//getSupportActionBar().setTitle("Roz");
 		setContentView(R.layout.activity_main);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-		mDbHelper = new TransactionDbHelper(MainActivity.this);
+		mDbHelper = TransactionDbHelper.getInstance(this);
 		Category_list = new ArrayList<>();
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);

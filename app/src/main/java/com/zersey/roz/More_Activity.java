@@ -23,7 +23,7 @@ private List<GroupModel> More_List,More2_List;
         More2_List=new ArrayList<>();
         More_RecyclerView=new RecyclerView(this);
         split((List<GroupModel>)getIntent().getSerializableExtra("More"));
-        mDbHelper = new TransactionDbHelper(this);
+        mDbHelper = TransactionDbHelper.getInstance(this);
         Item_list = new ArrayList<>();
         Item_list.addAll(mDbHelper.getAllEntries());
         initRecyclerView();

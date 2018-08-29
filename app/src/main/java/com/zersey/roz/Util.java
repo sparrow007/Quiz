@@ -69,7 +69,7 @@ public class Util {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		TransactionDbHelper dbHelper = new TransactionDbHelper(context);
+		TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(context);
 		dbHelper.addTransactions(list);
 		return list;
 	}

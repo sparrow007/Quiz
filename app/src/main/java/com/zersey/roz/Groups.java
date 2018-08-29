@@ -58,7 +58,7 @@ public class Groups extends Fragment {
 		First_RecyclerView = new RecyclerView(getContext());
 		Second_RecyclerView = new RecyclerView(getContext());
 		//initList();
-		mDbHelper = new TransactionDbHelper(getContext());
+		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		Item_list = new ArrayList<>();
 		Item_list.addAll(mDbHelper.getAllEntries());
 	}

@@ -40,7 +40,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 	}
 
 	private void syncWithServer(Context context) {
-		TransactionDbHelper dbHelper = new TransactionDbHelper(context);
+		TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(context);
 		List<Temp> list = dbHelper.getTempEntries();
 
 		for (Temp temp : list) {

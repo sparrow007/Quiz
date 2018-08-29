@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("android.zersey.expense_manger", appContext.getPackageName());
+        assertEquals("com.zersey.roz", appContext.getPackageName());
     }
 }

@@ -17,7 +17,7 @@ public class ServerUtil {
 
 	ServerUtil(Context context) {
 		this.context = context;
-		mDbHelper = new TransactionDbHelper(context);
+		mDbHelper = TransactionDbHelper.getInstance(context);
 	}
 
 	public void createGroup(final GroupModel groupModel) {
@@ -29,6 +29,7 @@ public class ServerUtil {
 				long id = object.get("id").getAsLong();
 				groupModel.setGroupId(id);
 				mDbHelper.addOnlineId(groupModel);
+				//NetworkUtil.shareNote(context, Long.toString(id), groupModel.getGroupName());
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {

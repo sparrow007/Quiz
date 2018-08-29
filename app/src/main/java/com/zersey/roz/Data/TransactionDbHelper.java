@@ -7,7 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.util.Log;
+import com.zersey.roz.ContactModel;
 import com.zersey.roz.GroupModel;
 import com.zersey.roz.Groups;
 import com.zersey.roz.IncomeModel;
@@ -19,14 +21,24 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 
 	private static final String DATABASE_NAME = "Transactions.db";
 	private static final int DATABASE_VERSION = 1;
+	private static TransactionDbHelper mInstance;
 
 	public TransactionDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
+	public static synchronized TransactionDbHelper getInstance(Context context) {
+		// Use the application context, which will ensure that you don't accidentally leak an Activity's context.
+		if (mInstance == null) {
+			mInstance = new TransactionDbHelper(context.getApplicationContext());//todo source of error context as null
+		}
+		return mInstance;
+	}
+
 	@Override public void onCreate(SQLiteDatabase db) {
 		db.execSQL(TransactionDbContract.Transaction_Entry.SQL_CREATE_TRANSACTIONS_TABLE);
 		db.execSQL(TransactionDbContract.GroupEntry.SQL_CREATE_GROUP_TABLE);
+		db.execSQL(TransactionDbContract.ContactEntry.SQL_CREATE_CONTACTS_TABLE);
 		db.execSQL(TransactionDbContract.TempEntry.SQL_CREATE_TEMP_TABLE);
 	}
 
@@ -419,9 +431,37 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 		cursor.close();
-		for (IncomeModel m : list) {
-			Log.d("hueh", "getAllEntries: " + m.toString());
+		return list;
+	}
+
+	public long addContact(ContactModel model) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, model.getUserId());
+		cv.put(TransactionDbContract.ContactEntry.COLUMN_NAME, model.getName());
+		cv.put(TransactionDbContract.ContactEntry.COLUMN_NUMBER, model.getName());
+		return db.insert(TransactionDbContract.ContactEntry.TABLE_NAME, null, cv);
+	}
+
+	public List<ContactModel> getContacts() {
+		SQLiteDatabase db = getReadableDatabase();
+		List<ContactModel> list = new ArrayList<>();
+		Cursor cursor =
+			db.query(TransactionDbContract.ContactEntry.TABLE_NAME, null, null, null, null, null,
+				null, null);
+		while (cursor.moveToNext()) {
+			ContactModel model = new ContactModel();
+			model.setId(
+				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.ContactEntry._ID)));
+			model.setName(cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NAME)));
+			model.setNumber(cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
+			model.setUserId(cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
+			list.add(model);
 		}
+		cursor.close();
 		return list;
 	}
 }

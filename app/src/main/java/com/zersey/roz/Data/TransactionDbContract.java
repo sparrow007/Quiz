@@ -111,4 +111,24 @@ public class TransactionDbContract {
 			+ COLUMN_USERS
 			+ " TEXT);";
 	}
+
+	public static final class ContactEntry implements BaseColumns {
+
+		public static final String TABLE_NAME = "platform_users";
+		public static final String COLUMN_USER_ID = "user_id";
+		public static final String COLUMN_NAME = "name";
+		public static final String COLUMN_NUMBER = "number";
+
+		public static final String SQL_CREATE_CONTACTS_TABLE = "CREATE TABLE "
+			+ TABLE_NAME
+			+ " ( "
+			+ ContactEntry._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_NAME
+			+ " TEXT, "
+			+ COLUMN_NUMBER
+			+ " TEXT, "
+			+ COLUMN_USER_ID
+			+ " INTEGER);";
+	}
 }

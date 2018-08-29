@@ -55,7 +55,7 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 		Contact_RecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.HORIZONTAL,false));
 
 
-		mDbHelper = new TransactionDbHelper(this);
+		mDbHelper = TransactionDbHelper.getInstance(this);
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
 		users += prefs.getString("userid", null);

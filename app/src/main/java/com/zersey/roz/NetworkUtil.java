@@ -1,11 +1,15 @@
 package com.zersey.roz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ShareEvent;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -142,4 +146,31 @@ public class NetworkUtil {
 			return false;
 		}
 	}
+
+	public static void shareNote(Context context, String onlineId, String title) {
+		String text = "Hey! Found something interesting on Cerebro, check it out. You will simply love it!\n\n";
+
+		Toast.makeText(context, "preparing share...", Toast.LENGTH_SHORT).show();
+		String extra = text + title + "\n\n";
+		String domain = "https://k24ek.app.goo.gl/";
+		String apn = "?apn=com.zersey.roz";
+
+
+		String link = "&link=" + RestAdapterAPI.END_POINT_ZERSEY + "/" + onlineId;
+
+		String shareUrl = domain + apn + link;
+		//shortLink(extra, context, shareUrl);
+
+		//Answers.getInstance().logShare(new ShareEvent()
+		//	.putMethod("Notes share")
+		//	.putContentName(title + "")
+		//	.putContentType("Anything shared")
+		//	.putContentId(onlineId + ""));
+
+		Intent i2 = new Intent(Intent.ACTION_SEND);
+		i2.setType("text/plain");
+		i2.putExtra(Intent.EXTRA_TEXT, shareUrl);
+		context.startActivity(i2);
+	}
+
 }

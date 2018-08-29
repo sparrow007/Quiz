@@ -33,7 +33,7 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".Main2Activity"
-            android:label="Expense Manager"
+            android:label="Roz"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".LoginActivity"

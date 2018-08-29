@@ -63,7 +63,7 @@ public class Group_Transactions extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDbHelper = new TransactionDbHelper(getContext());
+        mDbHelper = TransactionDbHelper.getInstance(getContext());
         list = new ArrayList<>();
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);

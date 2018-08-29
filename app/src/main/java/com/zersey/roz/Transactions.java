@@ -30,7 +30,7 @@ public class Transactions extends AppCompatActivity {
 	@Override public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fragment_transactions);
-		mDbHelper = new TransactionDbHelper(Transactions.this);
+		mDbHelper = TransactionDbHelper.getInstance(this);
 		Item_list = new ArrayList<>();
 
 		//groups.addAll(mDbHelper.getGroups());

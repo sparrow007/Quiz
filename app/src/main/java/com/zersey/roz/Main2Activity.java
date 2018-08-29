@@ -198,7 +198,7 @@ public class Main2Activity extends BaseActivity
 		//netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 		//registerReceiver(br, netFilter);
 
-		final TransactionDbHelper dbHelper = new TransactionDbHelper(this);
+		final TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(this);
 		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getGroupsCount() == 0) {
 			showProgress("Getting your groups...");
 			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchGroups();

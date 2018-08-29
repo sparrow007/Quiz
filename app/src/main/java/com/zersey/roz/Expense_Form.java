@@ -151,7 +151,7 @@ public class Expense_Form extends Fragment {
 			mParam1 = getArguments().getString(ARG_PARAM1);
 			mParam2 = getArguments().getString(ARG_PARAM2);
 		}
-		mDbHelper = new TransactionDbHelper(getContext());
+		mDbHelper = TransactionDbHelper.getInstance(getContext());
 	}
 
 	@SuppressLint("NewApi") @Override

@@ -132,7 +132,7 @@ public class Income_form extends Fragment {
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
 		month_x = cal.get(Calendar.MONTH);
-		mDbHelper = new TransactionDbHelper(getContext());
+		mDbHelper = TransactionDbHelper.getInstance(getContext());
 	}
 
 	@Override public View onCreateView(LayoutInflater inflater, ViewGroup container,
