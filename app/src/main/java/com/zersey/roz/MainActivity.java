@@ -86,6 +86,7 @@ import java.util.List;
 	private CategoryAdapter adapter;
 	private boolean person_added = false;
 	private RecyclerView Category_Recycler_View;
+
 	private String Contact_Person_Name, Contact_Person_Number;
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
@@ -103,7 +104,7 @@ import java.util.List;
 	private MaterialTextField Material_Title, Material_Amount, Material_Amount_Due;
 	public View layout_view = null;
 	private List<IncomeModel> customlist;
-	private ArrayList<String> Contact_list;
+	private List<ContactModel> Contact_list;
 	private List<String> Category_list;
 	private TextView Category_text_view, dateEdit;
 	private int year_x, month_x, day_x, Selected_date = 0;
@@ -117,7 +118,8 @@ import java.util.List;
 	private String[] Months = {
 		"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
 	}, Contact_Names;
-	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout;
+	private String USER="";
+	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout,Add_Member_Layout;
 	//private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
 	//		Health_checkbox, Salary_checkbox, More_checkbox;
 
@@ -152,6 +154,7 @@ import java.util.List;
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		mDbHelper = TransactionDbHelper.getInstance(this);
+		//Fetch_Contacts();
 		Category_list = new ArrayList<>();
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
@@ -182,7 +185,7 @@ import java.util.List;
 			Updated_Type = getIntent().getStringExtra("Type");
 			Updated_Id = getIntent().getIntExtra("_ID", 0);
 		}
-		Contact_list = new ArrayList<String>();
+		Contact_list = new ArrayList<>();
 		Category_list.add("Expense");
 		Category_list.add("Income");
 		Category_list.add("Group");
@@ -215,12 +218,17 @@ import java.util.List;
 		TitleEdit = (EditText) findViewById(R.id.Title_Edit);
 		AmountEdit = (EditText) findViewById(R.id.Amount_Edit);
 		Amount_Due_Edit = (EditText) findViewById(R.id.Amount_Due_Edit);
+		Add_Member_Layout=(LinearLayout)findViewById(R.id.Add_Member_Layout);
 		//AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
-
+		Item_list = new ArrayList<>();
+		Split_List = new ArrayList<>();
 		if (getIntent().getSerializableExtra("group") != null) {
 			groupModel = (GroupModel) getIntent().getSerializableExtra("group");
 			Category_Recycler_View.setVisibility(View.GONE);
+			Add_Member_Layout.setVisibility(View.GONE);
+			More_TextButton.setVisibility(View.GONE);
 			findViewById(R.id.Category_text_view).setVisibility(View.GONE);
+
 		}
 
 /*		Clothing = (LinearLayout) findViewById(R.id.Clothing_layout);
@@ -248,8 +256,7 @@ import java.util.List;
 		Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 		More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
 */
-		Item_list = new ArrayList<>();
-		Split_List = new ArrayList<>();
+
 		// Amount_Edit=(EditText)findViewById(R.id.Group_Amount_Edit);
 		//Description_Edit=(EditText)findViewById(R.id.Group_Description_Edit);
 		//Group_Name_Edit=(EditText)findViewById(R.id.Group_Amount_Edit);
@@ -416,16 +423,23 @@ import java.util.List;
 	}
 
 	public void Dialog(View view) {
+        String[] names=groupModel.getUsers().split(",");
 		String Amount = AmountEdit.getText().toString();
 		int no_of_Person = Item_list.size();
 		String Specific_Amount;
 		if (TextUtils.isEmpty(Amount)) {
 			Specific_Amount = "0";
 		} else {
-			Specific_Amount = "" + Integer.parseInt(Amount) / no_of_Person;
+			Specific_Amount = "" + Integer.parseInt(Amount) /users.length() ;
 		}
 		Log.d("Dialog: ", Item_list.size() + "");
-		if (Item_list.size() > 0) {
+		Split_List = new ArrayList<>();
+		Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
+		for(int i=0;i<names.length;i++){
+			Split_List.add(new Split_Contact_model(names[i],Specific_Amount));
+		}
+
+		/*if (Split_List.size() > 0) {
 			Split_List = new ArrayList<>();
 			for (int i = 0; i < Item_list.size(); i++) {
 
@@ -433,9 +447,9 @@ import java.util.List;
 					Specific_Amount));
 			}
 		} else {
-			Split_List = new ArrayList<>();
+			//Split_List = new ArrayList<>();
 			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
-		}
+		}*/
 		Log.d("Dialog: ", Split_List.size() + "");
 		LayoutInflater LI = LayoutInflater.from(MainActivity.this);
 		View PromptsView = LI.inflate(R.layout.split_dialog_layout, null);
@@ -1072,9 +1086,11 @@ import java.util.List;
 	}
 
 	public void Contact_Button(View view) {
-		Intent intent =
+		/*Intent intent =
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-		startActivityForResult(intent, 3);
+		startActivityForResult(intent, 3);*/
+		Intent intent=new Intent(this,Add_Members_Activity.class);
+		startActivity(intent);
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String permissions[],
@@ -1105,27 +1121,40 @@ import java.util.List;
 	}
 
 	public void Fetch_Contacts() {
-		ContentResolver cr = MainActivity.this.getContentResolver();
-		Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-		//phones.moveToFirst();
-		while (phones.moveToNext()) {
-			String name =
-				phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-			//String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-			//Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
-			Contact_list.add(name);
-			phones.moveToNext();
-		}
-		phones.close();
 
-		Contact_Names = new String[Contact_list.size()];
+	thread.run();}
+		/*Contact_Names = new String[Contact_list.size()];
 		for (int i = 0; i < Contact_Names.length; i++) {
 			Contact_Names[i] = Contact_list.get(i);
-		}
+		}*/
 		// Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
 		//Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
 
-	}
+
+	Thread thread=new Thread(new Runnable() {
+		@Override
+		public void run() {
+			int count = mDbHelper.getContactCount();
+			if (count <=0) {
+				Contact_list = new ArrayList<>();
+				//ContentResolver cr = MainActivity.this.getContentResolver();
+				//Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+				//phones.moveToFirst();
+				Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
+				while (phones.moveToNext())
+				{
+					String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+					String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+					Log.d( "run: ",phoneNumber);
+					ContactModel model=new ContactModel();
+					model.setName(name);
+					model.setNumber(phoneNumber);
+					mDbHelper.addContact(model);
+				}
+				phones.close();
+			}
+		}
+	});
 
 	public static String extractNumber(final String str) {
 

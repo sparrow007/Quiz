@@ -8,16 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Specific_Group_Transaction extends AppCompatActivity {
+public class Spererate_Group_Transaction extends AppCompatActivity {
     AppBarLayout mAppBarLayout;
     private List<String> list;
     private RecyclerView Specific_recyclerView;
@@ -27,47 +25,26 @@ public class Specific_Group_Transaction extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_specific_group_transaction);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setContentView(R.layout.activity_spererate_group_transaction);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         list=new ArrayList<>();
         list.add("Bharat");
         list.add("Amrit");
         list.add("Rahul");
         mAppBarLayout = findViewById(R.id.appbar);
-        DATE=(TextView)findViewById(R.id.DATE_TextView);
-        AMOUNT=(TextView)findViewById(R.id.AMOUNT_TextView);
-        TITLE=(TextView)findViewById(R.id.toolbar_TextView);
+        DATE=(TextView)findViewById(R.id.Transaction_DATE_TextView);
+        AMOUNT=(TextView)findViewById(R.id.Transaction_AMOUNT_TextView);
+        TITLE=(TextView)findViewById(R.id.Transaction_toolbar_TextView);
         Amount=getIntent().getStringExtra("Amount");
         Title=getIntent().getStringExtra("Title");
         Date=getIntent().getStringExtra("DateCreated");
-        AMOUNT.setText("Rs "+Amount);
-        DATE.setText(Date);
-        TITLE.setText(Title);
-        //toolbar.setTitle("Big Gift");
-        //toolbar.setSubtitle("20 Aug");
-        //getSupportActionBar().setDisplayShowTitleEnabled(true   );
-        //setSupportActionBar(toolbar);
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-                /*if (verticalOffset == 0) {
-                    getSupportActionBar().setTitle(" ");
-                    Toast.makeText(getApplicationContext(),"Expanded",Toast.LENGTH_LONG).show();
-                }*
-                if (Math.abs(verticalOffset)-appBarLayout.getTotalScrollRange() == 0) {
-                    getSupportActionBar().setTitle("Gift");
-                    Toast.makeText(getApplicationContext(),"Collapsed",Toast.LENGTH_LONG).show();
-                } else {
-                    getSupportActionBar().setTitle(" ");
-                    Toast.makeText(getApplicationContext(),"Expanded",Toast.LENGTH_LONG).show();
-                    //getSupportActionBar().setTitle(" ");
-                    //Toast.makeText(getApplicationContext(),"Idle",Toast.LENGTH_LONG).show();
-                }*/
-
-            }
-        });
-initRecyclerView();
+        if(!TextUtils.isEmpty(Amount) && !TextUtils.isEmpty(Date) && !TextUtils.isEmpty(Title) ) {
+            AMOUNT.setText("Rs " + Amount);
+            DATE.setText(Date);
+            TITLE.setText(Title);
+        }
+        initRecyclerView();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,9 +57,8 @@ initRecyclerView();
 
     public void initRecyclerView(){
         Specific_recyclerView=new RecyclerView(this);
-        Specific_recyclerView=findViewById(R.id.Specific_Recycler_View);
+        Specific_recyclerView=findViewById(R.id.Separate_Recycler_View);
         Specific_recyclerView.setLayoutManager(new LinearLayoutManager(this));
         Specific_recyclerView.setAdapter(new Specific_Group_transaction_Adapter(list));
     }
-
 }

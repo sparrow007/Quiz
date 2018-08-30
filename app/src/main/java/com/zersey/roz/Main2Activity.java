@@ -1,8 +1,10 @@
 package com.zersey.roz;
 
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -16,6 +18,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -54,6 +57,7 @@ public class Main2Activity extends BaseActivity
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String[] tags = new String[3];
 	private List<GroupModel> list;
+	private TransactionDbHelper mDbHelper;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,7 +70,8 @@ public class Main2Activity extends BaseActivity
 			actionbar.setDisplayHomeAsUpEnabled(true);
 			actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 		}
-
+		mDbHelper = TransactionDbHelper.getInstance(this);
+		Fetch_Contacts();
 		mDrawerLayout = findViewById(R.id.drawer_layout);
 		mDrawerToggle =
 			new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
@@ -235,8 +240,33 @@ public class Main2Activity extends BaseActivity
 			dismissProgress();
 		}
 	}
+	public void Fetch_Contacts() {
 
-
+		thread.run();}
+	Thread thread=new Thread(new Runnable() {
+		@Override
+		public void run() {
+			int count = mDbHelper.getContactCount();
+			if (count <=0) {
+				//Contact_list = new ArrayList<>();
+				//ContentResolver cr = MainActivity.this.getContentResolver();
+				//Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+				//phones.moveToFirst();
+				Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
+				while (phones.moveToNext())
+				{
+					String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+					String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+					Log.d( "run: ",phoneNumber);
+					ContactModel model=new ContactModel();
+					model.setName(name);
+					model.setNumber(phoneNumber);
+					mDbHelper.addContact(model);
+				}
+				phones.close();
+			}
+		}
+	});
 
     /*public void addTransaction(){
         TextView Transaction_Category_text_view,Transaction_Notes_text_view,

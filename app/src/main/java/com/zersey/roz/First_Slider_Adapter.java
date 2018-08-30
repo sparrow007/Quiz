@@ -68,6 +68,11 @@ public class First_Slider_Adapter
 		return list.size() + 1;
 	}
 
+	public void addItem(GroupModel model) {
+		list.add(model);
+		notifyDataSetChanged();
+	}
+
 	@Override
 	public int getItemViewType(int position) {
 		if (list.size()==0){

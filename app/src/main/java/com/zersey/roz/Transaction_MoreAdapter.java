@@ -11,12 +11,14 @@ import java.util.List;
 
 public class Transaction_MoreAdapter extends RecyclerView.Adapter<Transaction_MoreAdapter.More_ViewHolder> {
     private List<IncomeModel> list;
+    //private List<GroupModel> Group_List;
     private String[] Months = {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
     public  Transaction_MoreAdapter(List<IncomeModel> list){
         this.list=list;
     }
+
 
     @NonNull
     @Override
@@ -28,10 +30,12 @@ public class Transaction_MoreAdapter extends RecyclerView.Adapter<Transaction_Mo
 
     @Override
     public void onBindViewHolder(@NonNull More_ViewHolder holder, int position) {
-holder.Category.setText(list.get(position).getType());
-holder.Amount.setText("INR "+list.get(position).getTotalAmount());
-holder.Title.setText(list.get(position).getTitle());
-holder.Date.setText(list.get(position).getIncome_day()+" "+Months[list.get(position).getIncome_month()-1]);
+
+            holder.Category.setText(list.get(position).getType());
+            holder.Amount.setText("INR " + list.get(position).getTotalAmount());
+            holder.Title.setText(list.get(position).getTitle());
+            holder.Date.setText(list.get(position).getIncome_day() + " " + Months[list.get(position).getIncome_month() - 1]);
+
     }
 
     @Override

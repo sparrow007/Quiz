@@ -27,7 +27,7 @@ public Group_About_Adapter(List<String> list,List<String> list2){
     @Override
     public void onBindViewHolder(@NonNull AboutViewHolder holder, int position) {
       holder.About_TextView.setText(list.get(position));
-      holder.textView2.setText(list2.get(position));
+      holder.textView2.setText(" ");
     }
 
     @Override

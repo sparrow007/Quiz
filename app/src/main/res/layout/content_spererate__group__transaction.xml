@@ -6,10 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context=".Specific_Group_Transaction"
-    tools:showIn="@layout/activity_specific_group_transaction">
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/Specific_Recycler_View"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    tools:context=".Spererate_Group_Transaction"
+    tools:showIn="@layout/activity_spererate_group_transaction">
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/Separate_Recycler_View"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
 </android.support.v4.widget.NestedScrollView>

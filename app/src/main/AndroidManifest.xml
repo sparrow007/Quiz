@@ -69,11 +69,21 @@
         <activity
             android:name=".Specific_Group_Transaction"
             android:label="@string/title_activity_specific__group__transaction"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="7844611159b7df2790836a6f20fa28253e7b5d61" />
-        <activity android:name=".Transactions"/>
+
+        <activity android:name=".Transactions" />
+        <activity
+            android:name=".Add_Members_Activity"
+            android:label="@string/title_activity_add__members_"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".Spererate_Group_Transaction"
+            android:label="@string/title_activity_spererate__group__transaction"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

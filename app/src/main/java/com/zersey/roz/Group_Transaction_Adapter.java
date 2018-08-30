@@ -1,5 +1,6 @@
 package com.zersey.roz;
 
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transa
 		Log.d("hueh", "onBindViewHolder: " + list.get(position).toString());
     holder.Transaction_TextView.setText(list.get(position).getTitle());
     holder.groupTransactionAmount.setText("Rs " + list.get(position).getTotalAmount());
+
     }
 
     public void addItem(IncomeModel model){
@@ -47,6 +49,14 @@ public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transa
             super(itemView);
             Transaction_TextView=(TextView)itemView.findViewById(R.id.Group_Transaction_TextView);
             groupTransactionAmount = itemView.findViewById(R.id.Group_Transaction_Amount_TextView);
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(v.getContext(),Spererate_Group_Transaction.class);
+                v.getContext().startActivity(intent);
+            }
+        });
         }
+
     }
 }

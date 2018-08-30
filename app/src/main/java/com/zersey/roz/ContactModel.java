@@ -4,6 +4,7 @@ public class ContactModel {
 
 	private long id, userId;
 	private String name;
+	private String number;
 
 	public void setId(long id) {
 		this.id = id;
@@ -37,5 +38,4 @@ public class ContactModel {
 		return number;
 	}
 
-	private String number;
 }

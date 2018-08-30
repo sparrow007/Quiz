@@ -37,7 +37,7 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 	private RecyclerView Contact_RecyclerView;
 	private Dialog_Split_RecyclerViewAdapter Adapter;
 	private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
-	private String users = "";
+	private String users = "",USERS="No Members";
 	private Contact_RecyclerView_Adapter RecyclerView_Adapter;
 	private TransactionDbHelper mDbHelper;
 
@@ -183,20 +183,33 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 		}
 		return check;
 	}
-
+public void initUser(){
+		USERS="";
+		List<Custom_Contact_items> itemsList=RecyclerView_Adapter.getList();
+		for(int i=0;i<itemsList.size();i++){
+			if (i<itemsList.size()-1){
+			USERS=USERS+itemsList.get(i).getContact_Person_Name()+",";
+			}else if (i==(itemsList.size()-1)){
+				USERS=USERS+itemsList.get(i).getContact_Person_Name();
+			}
+		}
+}
 	public void addGroup(View view) {
+		if(RecyclerView_Adapter!=null){
+		initUser();}
 		GroupModel model = new GroupModel();
 		model.setGroupName(
 			((EditText) findViewById(R.id.group_name_edit_text)).getText().toString());
 		model.setGroupDesc(
 			((EditText) findViewById(R.id.group_desc_edit_text)).getText().toString());
-		model.setUsers(users);
+		model.setUsers(USERS);
 		long groupId = mDbHelper.createGroup(model);
 		model.setId(groupId);
 		model.setTypeId(0);
 		new ServerUtil(this).createGroup(model);
 		Intent intent = new Intent();
 		intent.putExtra("group", model);
+		Groups.ADAPTER.addItem(model);
 		setResult(Activity.RESULT_OK, intent);
 		finish();
 	}

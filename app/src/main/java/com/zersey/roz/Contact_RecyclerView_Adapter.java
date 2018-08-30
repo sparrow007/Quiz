@@ -41,7 +41,9 @@ private Context context;
     if(Initials.length>1)
     { holder.Initials.setText(Initials[0].substring(0,1)+Initials[1].substring(0,1));
     }else {holder.Initials.setText(Initials[0].substring(0,1));}
-
+    if (position==1){
+        holder.Cross_Button.setVisibility(View.GONE);
+    }
     holder.Number.setText(Initials[0]);
     }
 
@@ -50,10 +52,19 @@ private Context context;
         return list.size();
     }
 
+    public void add(Custom_Contact_items items){
+        list.add(items);
+        notifyDataSetChanged();
+    }
+
     public void removeAt(int position) {
         list.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, list.size());
+    }
+
+    public List<Custom_Contact_items> getList() {
+        return list;
     }
 
     public class ContactHolder extends RecyclerView.ViewHolder{

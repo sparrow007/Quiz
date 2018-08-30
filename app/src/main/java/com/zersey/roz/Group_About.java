@@ -81,12 +81,16 @@ public class Group_About extends Fragment {
         return fragmentLayout;
     }
     public void initList(){
+        String[] user=mParam1.getUsers().split(",");
         list=new ArrayList<>();
         list2=new ArrayList<>();
-        for(int i=0;i<20;i++){
+        for(int i=0;i<user.length;i++){
+            list.add(user[i]);
+        }
+        /*for(int i=0;i<20;i++){
             list.add("Person name");
             list2.add("Description");
-        }
+        }*/
     }
 
     public View initRecyclerView(View fragmentLayout){

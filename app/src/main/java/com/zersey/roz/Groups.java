@@ -28,6 +28,7 @@ public class Groups extends Fragment {
 	private RecyclerView First_RecyclerView, Second_RecyclerView;
 	private List<GroupModel> First_List, Second_List;
 	private OnFragmentInteractionListener mListener;
+	public static	 First_Slider_Adapter ADAPTER;
 	private TransactionDbHelper mDbHelper;
 	private List<IncomeModel> Item_list;
 	private List<GroupModel> list;
@@ -68,14 +69,14 @@ public class Groups extends Fragment {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_groups, container, false);
 		First_More = fragmentLayout.findViewById(R.id.First_More);
 		Second_More = fragmentLayout.findViewById(R.id.Second_More);
-		/*First_More.setOnClickListener(new View.OnClickListener() {
+		First_More.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(getContext(), More_Activity.class);
 				intent.putExtra("More", (ArrayList<GroupModel>) First_List);
 				Log.d("onClick: ", First_List.size() + "");
 				startActivity(intent);
 			}
-		});*/
+		});
 		Second_More.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(getContext(), Transactions.class);
@@ -100,7 +101,8 @@ public class Groups extends Fragment {
 		First_RecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 		//new CardSnapHelper().attachToRecyclerView(First_RecyclerView);
-		First_RecyclerView.setAdapter(new First_Slider_Adapter(getContext(), First_List));
+		ADAPTER=new First_Slider_Adapter(getContext(), First_List);
+		First_RecyclerView.setAdapter(ADAPTER);
 		//First_RecyclerView.smoothScrollToPosition(0);
 
 		Second_RecyclerView = fragmentLayout.findViewById(R.id.Second_Slider);

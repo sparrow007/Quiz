@@ -439,8 +439,18 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, model.getUserId());
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_NAME, model.getName());
-		cv.put(TransactionDbContract.ContactEntry.COLUMN_NUMBER, model.getName());
+		cv.put(TransactionDbContract.ContactEntry.COLUMN_NUMBER, model.getNumber());
 		return db.insert(TransactionDbContract.ContactEntry.TABLE_NAME, null, cv);
+	}
+	public int getContactCount() {
+		String countQuery = "SELECT * FROM " + TransactionDbContract.ContactEntry.TABLE_NAME;
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor cursor = db.rawQuery(countQuery, null);
+		int count = cursor.getCount();
+		cursor.close();
+		//        db.close();
+
+		return count;
 	}
 
 	public List<ContactModel> getContacts() {
