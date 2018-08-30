@@ -2,6 +2,7 @@ package com.zersey.roz;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -58,6 +59,21 @@ public class Main2Activity extends BaseActivity
 	private String[] tags = new String[3];
 	private List<GroupModel> list;
 	private TransactionDbHelper mDbHelper;
+
+
+	public FragmentRefreshListener getFragmentRefreshListener() {
+		return fragmentRefreshListener;
+	}
+
+	public void setFragmentRefreshListener(FragmentRefreshListener fragmentRefreshListener) {
+		this.fragmentRefreshListener = fragmentRefreshListener;
+	}
+
+	private FragmentRefreshListener fragmentRefreshListener;
+
+	public interface FragmentRefreshListener{
+		void onRefresh(List<GroupModel> list);
+	}
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -203,10 +219,13 @@ public class Main2Activity extends BaseActivity
 		//netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
 		//registerReceiver(br, netFilter);
 
+		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
+
 		final TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(this);
 		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getGroupsCount() == 0) {
 			showProgress("Getting your groups...");
-			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchGroups();
+			Call<JsonObject> result =
+				NetworkUtil.getRestAdapter(this).fetchGroups(prefs.getString("userid", null), null);
 			result.enqueue(new Callback<JsonObject>() {
 				@Override
 				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -214,6 +233,7 @@ public class Main2Activity extends BaseActivity
 					dbHelper.addGroups(list);
 					list.clear();
 					list.addAll(dbHelper.getGroups(0));
+					getFragmentRefreshListener().onRefresh(list);
 				}
 
 				@Override public void onFailure(Call<JsonObject> call, Throwable t) {

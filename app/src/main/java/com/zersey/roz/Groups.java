@@ -51,7 +51,7 @@ public class Groups extends Fragment {
 		super.onCreate(savedInstanceState);
 		list = new ArrayList<>();
 		if (getArguments() != null) {
-			list.addAll((List<GroupModel>)getArguments().getSerializable("groupList"));
+			list.addAll((List<GroupModel>) getArguments().getSerializable("groupList"));
 		}
 		//mDbHelper = new TransactionDbHelper(getContext());
 		First_List = new ArrayList<>(list);
@@ -60,8 +60,7 @@ public class Groups extends Fragment {
 		Second_RecyclerView = new RecyclerView(getContext());
 		//initList();
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
-		Item_list = new ArrayList<>();
-		Item_list.addAll(mDbHelper.getAllEntries());
+		Item_list = new ArrayList<>(mDbHelper.getAllEntries());
 	}
 
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -86,6 +85,20 @@ public class Groups extends Fragment {
 			}
 		});
 		fragmentLayout = initRecyclerView(fragmentLayout);
+
+		((Main2Activity) getActivity()).setFragmentRefreshListener(
+			new Main2Activity.FragmentRefreshListener() {
+				@Override public void onRefresh(List<GroupModel> groups) {
+					// Refresh Your Fragment
+					First_List.clear();
+					First_List.addAll(groups);
+					First_RecyclerView.getAdapter().notifyDataSetChanged();
+					Item_list.clear();
+					Item_list.addAll(mDbHelper.getAllEntries());
+					Second_RecyclerView.getAdapter().notifyDataSetChanged();
+				}
+			});
+
 		return fragmentLayout;
 	}
 
@@ -107,7 +120,7 @@ public class Groups extends Fragment {
 
 		Second_RecyclerView = fragmentLayout.findViewById(R.id.Second_Slider);
 		Second_RecyclerView.setLayoutManager(
-				new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 		adapter = new RecyclerAdapter(Item_list);
 		Second_RecyclerView.setAdapter(adapter);
 

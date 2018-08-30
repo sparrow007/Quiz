@@ -58,7 +58,8 @@ public interface RestAdapterAPI {
 		@Field("group_name") String groupName, @Field("group_description") String groupDescription,
 		@Field("users") String users, @Field("type_id") int typeId);
 
-	@GET("/Split_bills/fetch_groups") Call<JsonObject> fetchGroups();
+	@GET("/Split_bills/fetch_groups") Call<JsonObject> fetchGroups(@Query("userid") String userId,
+		@Query("id") String id);
 
 	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
 
