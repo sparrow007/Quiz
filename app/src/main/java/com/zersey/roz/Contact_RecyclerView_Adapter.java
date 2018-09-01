@@ -3,6 +3,8 @@ package com.zersey.roz;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +43,13 @@ private Context context;
     if(Initials.length>1)
     { holder.Initials.setText(Initials[0].substring(0,1)+Initials[1].substring(0,1));
     }else {holder.Initials.setText(Initials[0].substring(0,1));}
-    if (position==1){
-        holder.Cross_Button.setVisibility(View.GONE);
-    }
+
     holder.Number.setText(Initials[0]);
     }
 
     @Override
     public int getItemCount() {
+
         return list.size();
     }
 
@@ -63,7 +64,17 @@ private Context context;
         notifyItemRangeChanged(position, list.size());
     }
 
+    public Boolean CheckItem(String Name){
+        for(int i=0;i<list.size();i++){
+            if (TextUtils.equals(list.get(i).getContact_Person_Name(),Name)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public List<Custom_Contact_items> getList() {
+        Log.d( "onActivityResult: ",list.size()+"");
         return list;
     }
 

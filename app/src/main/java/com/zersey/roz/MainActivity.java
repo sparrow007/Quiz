@@ -127,7 +127,7 @@ import java.util.List;
 	private ArrayList<Custom_Contact_items> Item_list;
 	private List<Split_Contact_model> Split_List;
 	private Spinner Split_Spinner;
-	private TextView Split_Notes;
+	public static TextView Split_Notes;
 	private RecyclerView Split_RecyclerView;
 	private Dialog_Split_RecyclerViewAdapter Adapter;
 	private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
@@ -139,7 +139,8 @@ import java.util.List;
 	private int pos;
 	private TransactionDbHelper mDbHelper;
 	private IncomeModel model;
-
+	private Boolean check=true;
+    private String Amount;
 	//private pageradapter adapter;
 	private String Updated_Type = "";
 	private GroupModel groupModel;
@@ -228,7 +229,9 @@ import java.util.List;
 			Add_Member_Layout.setVisibility(View.GONE);
 			More_TextButton.setVisibility(View.GONE);
 			findViewById(R.id.Category_text_view).setVisibility(View.GONE);
-
+            check=false;
+		}else if (TextUtils.equals(getIntent().getStringExtra("Activity"),"Transactions")){
+			check=true;
 		}
 
 /*		Clothing = (LinearLayout) findViewById(R.id.Clothing_layout);
@@ -423,22 +426,43 @@ import java.util.List;
 	}
 
 	public void Dialog(View view) {
-        String[] names=groupModel.getUsers().split(",");
-		String Amount = AmountEdit.getText().toString();
-		int no_of_Person = Item_list.size();
-		String Specific_Amount;
-		if (TextUtils.isEmpty(Amount)) {
-			Specific_Amount = "0";
-		} else {
-			Specific_Amount = "" + Integer.parseInt(Amount) /users.length() ;
+		Amount = AmountEdit.getText().toString();
+		if (TextUtils.isEmpty(Amount)){
+			Amount="0";
 		}
-		Log.d("Dialog: ", Item_list.size() + "");
-		Split_List = new ArrayList<>();
-		Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
-		for(int i=0;i<names.length;i++){
-			Split_List.add(new Split_Contact_model(names[i],Specific_Amount));
-		}
+		if (!check) {
+			String[] names = groupModel.getUsers().split(",");
+			//String Amount = AmountEdit.getText().toString();
+			int no_of_Person = Item_list.size();
+			String Specific_Amount="";
+			if (TextUtils.isEmpty(Amount)) {
+				Specific_Amount = "0";
+			} else {
+				Specific_Amount = "" + Integer.parseInt(Amount) / (names.length+1);
+			}
+			Log.d("Dialog: ", Item_list.size() + "");
+			Split_List = new ArrayList<>();
+			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
+			for (int i = 0; i < names.length; i++) {
+				Split_List.add(new Split_Contact_model(names[i], Specific_Amount));
+			}
+		}else if(check){
+			//String[] names = Item_list.get;
 
+			int no_of_Person = Item_list.size();
+			String Specific_Amount;
+			if (TextUtils.isEmpty(Amount)) {
+				Specific_Amount = "0";
+			} else {
+				Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size()+1);
+			}
+			Log.d("Dialog: ", Item_list.size() + "");
+			Split_List = new ArrayList<>();
+			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
+			for (int i = 0; i < Item_list.size(); i++) {
+				Split_List.add(new Split_Contact_model(Item_list.get(i).getId(), Specific_Amount));
+			}
+		}
 		/*if (Split_List.size() > 0) {
 			Split_List = new ArrayList<>();
 			for (int i = 0; i < Item_list.size(); i++) {
@@ -457,13 +481,24 @@ import java.util.List;
 		Split_RecyclerView = (RecyclerView) PromptsView.findViewById(R.id.Dialog_RecyclerView);
 		Split_Notes = (TextView) PromptsView.findViewById(R.id.Dialog_Split_Notes);
 		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
-		Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List);
+		Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"",Integer.parseInt(Amount));
 		Split_RecyclerView.setAdapter(Adapter);
 
 		Split_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
+            if(position==2){
+	            Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"ratio",Integer.parseInt(Amount));
+	            Split_RecyclerView.setAdapter(Adapter);
+            }
+                if(position==1){
+                    Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"",Integer.parseInt(Amount));
+                    Split_RecyclerView.setAdapter(Adapter);
+                }
+                if(position==0){
+                    Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"Equally",Integer.parseInt(Amount));
+                    Split_RecyclerView.setAdapter(Adapter);
+                }
 			}
 
 			@Override public void onNothingSelected(AdapterView<?> parent) {
@@ -694,8 +729,14 @@ import java.util.List;
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		//callbackManager.onActivityResult(requestCode, resultCode, data);
-
-		if (requestCode == 2 && resultCode == RESULT_OK) {
+		Log.d("onActivityResult: ",requestCode+"");
+        if (resultCode==-1){
+			Contact_RecyclerView.setVisibility(View.VISIBLE);
+			Item_list.addAll((List<Custom_Contact_items>) data.getSerializableExtra("ADDED"));
+			Log.d("onActivityResult: ",Item_list.size()+"");
+			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
+		}else if (requestCode == 2 && resultCode == RESULT_OK) {
 
 			//Bitmap photo = (Bitmap) data.getExtras().get("data");
 			Uri uri = data.getData();
@@ -1090,7 +1131,7 @@ import java.util.List;
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 3);*/
 		Intent intent=new Intent(this,Add_Members_Activity.class);
-		startActivity(intent);
+		startActivityForResult(intent,1);
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String permissions[],

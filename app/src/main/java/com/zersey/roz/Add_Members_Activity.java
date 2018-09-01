@@ -1,5 +1,7 @@
 package com.zersey.roz;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -49,9 +51,9 @@ public static Contact_List_RecyclerView_Adapter Adapter;
 
     public void initRecyclerView(){
         Added_Members=new ArrayList<>();
-        Custom_Contact_items items=new Custom_Contact_items();
+        /*Custom_Contact_items items=new Custom_Contact_items();
         items.setContact_Person_Name("Add Members");
-        Added_Members.add(items);
+        Added_Members.add(items);*/
         Contact_List_RecyclerView=new RecyclerView(this);
         Contact_List_RecyclerView=(RecyclerView)findViewById(R.id.Contacts_List_RecyclerView);
         Contact_List_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -66,8 +68,16 @@ public static Contact_List_RecyclerView_Adapter Adapter;
         Add_Member_Horizontal_RecyclerView.setAdapter(Add_Member_Adapter);
     }
 
-    public static  void Add_Members(){
-
+    public void Add_Members(View view){
+        Intent intent=new Intent();
+        //Bundle bundle=new Bundle();
+Added_Members=Add_Member_Adapter.getList();
+        Log.d( "onActivityResult: ",Added_Members.size()+"");
+        //Added_Members.addAll(Add_Member_Adapter.getList());
+        intent.putExtra("ADDED", (ArrayList<Custom_Contact_items>) Added_Members);
+        setResult(Activity.RESULT_OK,intent);
+        finish();
+     //Add_Member_Adapter.getList();
     }
 
 }

@@ -1,15 +1,19 @@
 package com.zersey.roz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.security.acl.Group;
 import java.util.ArrayList;
@@ -30,7 +34,10 @@ public class Group_About extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private List<String> list,list2;
+    private LinearLayout Add_Member;
     private RecyclerView recyclerView;
+    private ArrayList<Custom_Contact_items> Item_list;
+    public static Group_About_Adapter RecyclerView_Adapter;
 
     // TODO: Rename and change types of parameters
     private GroupModel mParam1;
@@ -76,6 +83,14 @@ public class Group_About extends Fragment {
                              Bundle savedInstanceState) {
         View fragmentLayout=inflater.inflate(R.layout.fragment_group__about, container, false);
         TextView desc = fragmentLayout.findViewById(R.id.group_desc);
+        Add_Member=fragmentLayout.findViewById(R.id.Add_Group_Member_Layout);
+        Add_Member.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(getContext(),Add_Members_Activity.class);
+                startActivityForResult(intent,1);
+            }
+        });
         desc.setText(mParam1.getGroupDesc());
         fragmentLayout=initRecyclerView(fragmentLayout);
         return fragmentLayout;
@@ -96,7 +111,8 @@ public class Group_About extends Fragment {
     public View initRecyclerView(View fragmentLayout){
         recyclerView=(RecyclerView) fragmentLayout.findViewById(R.id.Group_About_RecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        recyclerView.setAdapter(new Group_About_Adapter(list,list2));
+        RecyclerView_Adapter = new Group_About_Adapter(list,list2);
+        recyclerView.setAdapter(RecyclerView_Adapter);
         return fragmentLayout;
     }
 
@@ -122,6 +138,25 @@ public class Group_About extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.d( "onActivityResult: ",resultCode+"");
+        if (resultCode==-1){
+            recyclerView.setVisibility(View.VISIBLE);
+            Item_list=new ArrayList<>();
+            if(TextUtils.equals(list.get(0).toString(),"No Members")){
+                list=new ArrayList<>();
+            }
+            Item_list.addAll((List<Custom_Contact_items>) data.getSerializableExtra("ADDED"));
+            for(int i=0;i<Item_list.size();i++){
+                list.add(Item_list.get(i).getId());
+            }
+            Log.d( "onActivityResult: ",list.size()+"");
+            RecyclerView_Adapter = new Group_About_Adapter(list,list2);
+            recyclerView.setAdapter(RecyclerView_Adapter);
+        }
     }
 
     /**

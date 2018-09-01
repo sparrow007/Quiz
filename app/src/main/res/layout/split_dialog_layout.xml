@@ -21,7 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
         <TextView
+            android:layout_gravity="center_horizontal"
             android:layout_margin="10dp"
+            android:textSize="15dp"
             android:id="@+id/Dialog_Split_Notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

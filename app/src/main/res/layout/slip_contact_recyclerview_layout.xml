@@ -21,12 +21,14 @@
     <TextView
         android:layout_gravity="center_vertical"
         android:textColor="#000000"
+        android:id="@+id/Currency"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Rs"/>
     <EditText
+        android:hint="000"
         android:inputType="number"
         android:id="@+id/RecyclerView_Split_Amount"
         android:gravity="center_vertical"
@@ -34,5 +36,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="500"/>
+    <TextView
+        android:layout_gravity="center_vertical"
+        android:textColor="#000000"
+        android:id="@+id/Currency2"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="%"/>
 </LinearLayout>
 </android.support.v7.widget.CardView>

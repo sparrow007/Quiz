@@ -18,6 +18,7 @@
     <string-array name="Split_Spinner">
         <item>Equally</item>
         <item>Unequally</item>
+        <item>Ratio</item>
     </string-array>
     <string name="title_activity_add__members_">Add_Members_Activity</string>
     <string name="title_activity_spererate__group__transaction">Spererate_Group_Transaction</string>

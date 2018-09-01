@@ -2,6 +2,7 @@ package com.zersey.roz;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,15 @@ public Group_About_Adapter(List<String> list,List<String> list2){
     @Override
     public int getItemCount() {
         return list.size();
+    }
+
+    public Boolean CheckItem(String Name){
+        for(int i=0;i<list.size();i++){
+            if (TextUtils.equals(list.get(i).toString(),Name)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public class AboutViewHolder extends RecyclerView.ViewHolder{

@@ -2,7 +2,9 @@ package com.zersey.roz;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Custom_Contact_items {
+import java.io.Serializable;
+
+public class Custom_Contact_items implements Serializable {
 
 	@SerializedName("userId") private String id;
 	@SerializedName("fullname") private String Contact_Person_Name;

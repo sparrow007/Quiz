@@ -1,9 +1,12 @@
 package com.zersey.roz;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.InputType;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,15 +16,22 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Dialog_Split_RecyclerViewAdapter extends RecyclerView.Adapter<Dialog_Split_RecyclerViewAdapter.Split_ViewHolder>{
     private List<Split_Contact_model> list;
+    private List<Integer> Amount_List;
+    private String Slider;
+    private int Amount;
 
     private Context context;
-    public Dialog_Split_RecyclerViewAdapter(Context context,List<Split_Contact_model> list){
+    public Dialog_Split_RecyclerViewAdapter(Context context,List<Split_Contact_model> list,String Slider,int Amount){
         this.context=context;
         this.list=list;
+        this.Slider=Slider;
+        Amount_List=new ArrayList<>();
+        this.Amount=Amount;
     }
 
     @NonNull
@@ -34,11 +44,30 @@ public class Dialog_Split_RecyclerViewAdapter extends RecyclerView.Adapter<Dialo
 
     @Override
     public void onBindViewHolder(@NonNull final Split_ViewHolder holder, final int position) {
+
+        if (TextUtils.equals(Slider,"ratio")){
+            holder.Currency2.setVisibility(View.VISIBLE);
+            holder.Currency.setVisibility(View.GONE);
+        holder.Currency2.setText("%");
+            holder.Contact_Name.setText(list.get(position).getContact_Name());
+        holder.Split_Amount.setText(100/list.size()+"");
+            Amount_List.add(position,100/list.size() );
+        }
+        if (TextUtils.equals(Slider,"") || TextUtils.equals(Slider,"Equally") ){
+            Amount_List.add(position, Integer.parseInt(list.get(position).getSplit_Amount()));
+            holder.Currency2.setVisibility(View.GONE);
+            holder.Currency.setVisibility(View.VISIBLE);
+            holder.Currency.setText("Rs");
+            holder.Contact_Name.setText(list.get(position).getContact_Name());
+            holder.Split_Amount.setText(list.get(position).getSplit_Amount());
+            if (TextUtils.equals(Slider,"Equally")){
+                holder.Split_Amount.setInputType(InputType.TYPE_NULL);
+            }
+        }
         Log.d( "Dialog: ",list.size()+"");
         String name=list.get(position).getSplit_Amount();
         Log.d( "Dialog: ",name);
-        holder.Contact_Name.setText(list.get(position).getContact_Name());
-        holder.Split_Amount.setText(list.get(position).getSplit_Amount());
+
         holder.Split_Amount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -53,7 +82,20 @@ public class Dialog_Split_RecyclerViewAdapter extends RecyclerView.Adapter<Dialo
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-     list.set(position,new Split_Contact_model(holder.Contact_Name.getText().toString(),holder.Split_Amount.getText().toString()));
+     //list.set(position,new Split_Contact_model(holder.Contact_Name.getText().toString(),holder.Split_Amount.getText().toString()));
+     if(TextUtils.equals(holder.Split_Amount.getText().toString(),"")){
+         Amount_List.set(position, 0);
+     }   else {
+     Amount_List.set(position, Integer.parseInt(holder.Split_Amount.getText().toString()));}
+        if(Check()){
+            if (TextUtils.equals(Slider,"ratio")){
+            MainActivity.Split_Notes.setText("Total:"+"with 100%");}else {
+                MainActivity.Split_Notes.setText("All settle with "+Amount);
+            }
+
+        }else {
+            MainActivity.Split_Notes.setText("All Amount is not Split Correctly");
+        }
     }
 
     @Override
@@ -72,14 +114,39 @@ public class Dialog_Split_RecyclerViewAdapter extends RecyclerView.Adapter<Dialo
         return list.size();
     }
 
+    public Boolean Check(){
+        if (TextUtils.equals(Slider,"ratio")){
+            int Total=0;
+            for (int i=0;i<Amount_List.size();i++){
+                Total=Total+Integer.parseInt(Amount_List.get(i).toString());
+            }
+            Log.d( "Check: ",Amount+"  "+Total);
+            if(Total==100){
+                return true;
+            }
+        }else {
+            int Total=0;
+            for (int i=0;i<Amount_List.size();i++){
+                Total=Total+Integer.parseInt(Amount_List.get(i).toString());
+            }
+            Log.d( "Check: ",Amount+"  "+Total);
+            if(Total==Amount){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public class Split_ViewHolder extends RecyclerView.ViewHolder{
         public TextView Contact_Name;
         public EditText Split_Amount;
+        public TextView Currency,Currency2;
         public Split_ViewHolder(View itemView) {
             super(itemView);
             Contact_Name=(TextView)itemView.findViewById(R.id.RecyclerView_Contact_Name);
             Split_Amount=(EditText)itemView.findViewById(R.id.RecyclerView_Split_Amount);
+            Currency=(TextView)itemView.findViewById(R.id.Currency);
+            Currency2=(TextView)itemView.findViewById(R.id.Currency2);
         }
 
         public EditText getSplit_Amount() {

@@ -53,6 +53,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 				@Override
 				public void onClick(View v) {
 					Intent intent=new Intent(context,MainActivity.class);
+					intent.putExtra("Activity","Transactions");
 					context.startActivity(intent);
 				}
 			});

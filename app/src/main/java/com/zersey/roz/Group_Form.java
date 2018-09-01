@@ -29,7 +29,7 @@ import java.util.List;
 public class Group_Form extends AppCompatActivity implements UserIdInterface {
 	private LinearLayout Add_Member_Layout;
 	private ListView Add_Member_ListView;
-	private List<Custom_Contact_items> Item_list;
+	private ArrayList<Custom_Contact_items> Item_list;
 	private List<Split_Contact_model> Split_List;
 	private Spinner Split_Spinner;
 	private TextView Split_Notes;
@@ -63,8 +63,8 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 
 	public void Add_Members(View view) {
 		Intent intent =
-			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-		startActivityForResult(intent, 0);
+			new Intent(this.getApplicationContext(),Add_Members_Activity.class);
+		startActivityForResult(intent, 1);
 	}
 
 	public void Dialog(View view) {
@@ -74,7 +74,7 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 		if (TextUtils.isEmpty(Amount)) {
 			Specific_Amount = "0";
 		} else {
-			Specific_Amount = "" + Integer.parseInt(Amount) / no_of_Person;
+			Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size()+1);
 		}
 		Log.d("Dialog: ", Item_list.size() + "");
 		if (Item_list.size() > 0) {
@@ -95,7 +95,7 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 		Split_RecyclerView = (RecyclerView) PromptsView.findViewById(R.id.Dialog_RecyclerView);
 		Split_Notes = (TextView) PromptsView.findViewById(R.id.Dialog_Split_Notes);
 		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
-		Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List);
+		Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"",Integer.parseInt(Amount));
 		Split_RecyclerView.setAdapter(Adapter);
 
 		Split_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -124,6 +124,7 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+        Log.d("onActivityResult: ",requestCode+"");
 		if (requestCode == 0 && resultCode == RESULT_OK) {
 			if (data != null) {
 				Uri contactData = data.getData();
@@ -168,6 +169,11 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 					RecyclerView_Adapter.notifyDataSetChanged();
 				}
 			}
+		}else if (resultCode==-1){
+			Contact_RecyclerView.setVisibility(View.VISIBLE);
+			Item_list.addAll((List<Custom_Contact_items>) data.getSerializableExtra("ADDED"));
+			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 		}
 	}
 
@@ -183,14 +189,15 @@ public class Group_Form extends AppCompatActivity implements UserIdInterface {
 		}
 		return check;
 	}
-public void initUser(){
+
+     public void initUser(){
 		USERS="";
 		List<Custom_Contact_items> itemsList=RecyclerView_Adapter.getList();
 		for(int i=0;i<itemsList.size();i++){
 			if (i<itemsList.size()-1){
-			USERS=USERS+itemsList.get(i).getContact_Person_Name()+",";
+			USERS=USERS+itemsList.get(i).getId()+",";
 			}else if (i==(itemsList.size()-1)){
-				USERS=USERS+itemsList.get(i).getContact_Person_Name();
+				USERS=USERS+itemsList.get(i).getId();
 			}
 		}
 }
