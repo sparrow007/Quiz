@@ -2,9 +2,9 @@ package com.zersey.roz;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
+import io.fabric.sdk.android.services.concurrency.AsyncTask;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -20,7 +20,7 @@ public class ServerUtil {
 		mDbHelper = TransactionDbHelper.getInstance(context);
 	}
 
-	public void createGroup(final GroupModel groupModel) {
+	public void createGroup(final GroupModel groupModel, final List<ContactModel> itemList) {
 		Call<JsonObject> result = JsonHandler.createGroup(context, groupModel);
 		result.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
@@ -29,7 +29,14 @@ public class ServerUtil {
 				long id = object.get("id").getAsLong();
 				groupModel.setGroupId(id);
 				mDbHelper.addOnlineId(groupModel);
-				//NetworkUtil.shareNote(context, Long.toString(id), groupModel.getGroupName());
+				if (itemList != null) {
+					for (ContactModel m : itemList) {
+						if (m.getUserId() == 0) {
+							NetworkUtil.shareNote(context, Long.toString(id),
+								groupModel.getGroupName(), m.getNumber());
+						}
+					}
+				}
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
@@ -83,32 +90,50 @@ public class ServerUtil {
 		});
 	}
 
-	public void getUserIdFromServer(String keyword, String code) {
+	public void getUserIdFromServer(final long rowId, final String keyword, final String code) {
 
-		final Custom_Contact_items customContactItem = new Custom_Contact_items();
+		AsyncTask.execute(new Runnable() {
+			@Override public void run() {
+				final ContactModel customContactItem = new ContactModel();
 
-		Call<List<Custom_Contact_items>> result =
-			NetworkUtil.getRestAdapter(context).getUserIdFromServer(keyword, code);
+				Call<List<ContactModel>> result =
+					NetworkUtil.getRestAdapter(context).getUserIdFromServer(keyword, code);
 
-		final UserIdInterface userIdInterface = (UserIdInterface) context;
+				result.enqueue(new Callback<List<ContactModel>>() {
 
-		result.enqueue(new Callback<List<Custom_Contact_items>>() {
+					@Override public void onResponse(@NonNull Call<List<ContactModel>> call,
+						@NonNull Response<List<ContactModel>> response) {
 
-			@Override public void onResponse(@NonNull Call<List<Custom_Contact_items>> call,
-				@NonNull Response<List<Custom_Contact_items>> response) {
-				List<Custom_Contact_items> item = response.body();
-				if (item != null && item.size() > 0) {
-					customContactItem.setId(item.get(0).getId());
-					customContactItem.setContact_Person_Name(item.get(0).getContact_Person_Name());
-					customContactItem.setContact_Person_Number(
-						item.get(0).getContact_Person_Number());
-					userIdInterface.updateUserId(customContactItem.getId());
-				}
+						List<ContactModel> item = response.body();
+						if (item != null && item.size() > 0) {
+							customContactItem.setId(item.get(0).getId());
+							customContactItem.setName(item.get(0).getName());
+							customContactItem.setNumber(item.get(0).getNumber());
+							customContactItem.setUserId(item.get(0).getUserId());
+							mDbHelper.updateUserId(rowId, customContactItem);
+						}
+					}
+
+					@Override public void onFailure(@NonNull Call<List<ContactModel>> call,
+						@NonNull Throwable t) {
+						t.printStackTrace();
+					}
+				});
+			}
+		});
+	}
+
+	public void inviteContact(String link, String mobile, String code) {
+		Call<JsonObject> call =
+			NetworkUtil.getRestAdapter(context).inviteContact(link, mobile, code);
+		call.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+
 			}
 
-			@Override public void onFailure(@NonNull Call<List<Custom_Contact_items>> call,
-				@NonNull Throwable t) {
-				t.printStackTrace();
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+
 			}
 		});
 	}

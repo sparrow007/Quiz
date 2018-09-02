@@ -127,7 +127,7 @@ public class TransactionDbContract {
 			+ COLUMN_NAME
 			+ " TEXT, "
 			+ COLUMN_NUMBER
-			+ " TEXT, "
+			+ " TEXT UNIQUE, "
 			+ COLUMN_USER_ID
 			+ " INTEGER);";
 	}

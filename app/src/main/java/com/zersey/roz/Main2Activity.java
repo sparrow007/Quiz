@@ -1,8 +1,8 @@
 package com.zersey.roz;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -19,7 +19,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -60,7 +59,6 @@ public class Main2Activity extends BaseActivity
 	private List<GroupModel> list;
 	private TransactionDbHelper mDbHelper;
 
-
 	public FragmentRefreshListener getFragmentRefreshListener() {
 		return fragmentRefreshListener;
 	}
@@ -71,7 +69,7 @@ public class Main2Activity extends BaseActivity
 
 	private FragmentRefreshListener fragmentRefreshListener;
 
-	public interface FragmentRefreshListener{
+	public interface FragmentRefreshListener {
 		void onRefresh(List<GroupModel> list);
 	}
 
@@ -260,28 +258,48 @@ public class Main2Activity extends BaseActivity
 			dismissProgress();
 		}
 	}
-	public void Fetch_Contacts() {
 
-		thread.run();}
-	Thread thread=new Thread(new Runnable() {
-		@Override
-		public void run() {
+	public void Fetch_Contacts() {
+		thread.start();
+	}
+
+	Thread thread = new Thread(new Runnable() {
+		@Override public void run() {
 			int count = mDbHelper.getContactCount();
-			if (count <=0) {
-				//Contact_list = new ArrayList<>();
-				//ContentResolver cr = MainActivity.this.getContentResolver();
-				//Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-				//phones.moveToFirst();
-				Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
-				while (phones.moveToNext())
-				{
-					String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-					String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-					Log.d( "run: ",phoneNumber);
-					ContactModel model=new ContactModel();
+			List<ContactModel> contactModelList = new ArrayList<>();
+			if (count <= 0) {
+				Cursor phones =
+					getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+						null, null, null, null);
+				while (phones.moveToNext()) {
+					String name = phones.getString(
+						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+					String hasPhone = phones.getString(
+						phones.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+					String cNumber = null, code = null;
+					if (hasPhone.equalsIgnoreCase("1")) {
+
+						cNumber = phones.getString(
+							phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+						cNumber = cNumber.replace(" ", "").replace("+", "");
+						if (cNumber.length() > 10) {
+							code = cNumber.substring(0, cNumber.length() - 10);
+							cNumber = cNumber.substring(cNumber.length() - 10);
+						} else {
+							code = "91";
+						}
+					}
+
+					ContactModel model = new ContactModel();
 					model.setName(name);
-					model.setNumber(phoneNumber);
-					mDbHelper.addContact(model);
+					model.setNumber(cNumber);
+					contactModelList.add(model);
+					long rowId = mDbHelper.addContact(model);
+					if (rowId != -1) {
+						new ServerUtil(Main2Activity.this).getUserIdFromServer(rowId, cNumber,
+							code);
+					}
 				}
 				phones.close();
 			}

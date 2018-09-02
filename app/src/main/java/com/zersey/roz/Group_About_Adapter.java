@@ -7,50 +7,47 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import java.util.List;
 
 public class Group_About_Adapter extends RecyclerView.Adapter<Group_About_Adapter.AboutViewHolder> {
-private List<String> list,list2;
-public Group_About_Adapter(List<String> list,List<String> list2){
-    this.list=list;
-    this.list2=list2;
-}
+	private List<ContactModel> list;
 
-    @NonNull
-    @Override
-    public AboutViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater=LayoutInflater.from(parent.getContext());
-        View view=inflater.inflate(R.layout.group_about_layout,parent,false);
-        return new AboutViewHolder(view);
-    }
+	public Group_About_Adapter(List<ContactModel> list) {
+		this.list = list;
+	}
 
-    @Override
-    public void onBindViewHolder(@NonNull AboutViewHolder holder, int position) {
-      holder.About_TextView.setText(list.get(position));
-      holder.textView2.setText(" ");
-    }
+	@NonNull @Override
+	public AboutViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+		View view = inflater.inflate(R.layout.group_about_layout, parent, false);
+		return new AboutViewHolder(view);
+	}
 
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
+	@Override public void onBindViewHolder(@NonNull AboutViewHolder holder, int position) {
+		holder.About_TextView.setText(list.get(position).getName());
+		holder.textView2.setText(" ");
+	}
 
-    public Boolean CheckItem(String Name){
-        for(int i=0;i<list.size();i++){
-            if (TextUtils.equals(list.get(i).toString(),Name)){
-                return true;
-            }
-        }
-        return false;
-    }
+	@Override public int getItemCount() {
+		return list.size();
+	}
 
-    public class AboutViewHolder extends RecyclerView.ViewHolder{
-   TextView About_TextView,textView2;
-     public AboutViewHolder(View itemView) {
-         super(itemView);
-         About_TextView=(TextView)itemView.findViewById(R.id.Group_About_TextView);
-         textView2=(TextView)itemView.findViewById(R.id.Group_About2_TextView);
-     }
- }
+	public Boolean CheckItem(String number) {
+		for (int i = 0; i < list.size(); i++) {
+			if (TextUtils.equals(list.get(i).getNumber(), number)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public class AboutViewHolder extends RecyclerView.ViewHolder {
+		TextView About_TextView, textView2;
+
+		public AboutViewHolder(View itemView) {
+			super(itemView);
+			About_TextView = itemView.findViewById(R.id.Group_About_TextView);
+			textView2 = itemView.findViewById(R.id.Group_About2_TextView);
+		}
+	}
 }

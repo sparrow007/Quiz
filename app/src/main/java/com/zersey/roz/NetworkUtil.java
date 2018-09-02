@@ -1,15 +1,12 @@
 package com.zersey.roz;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
-import com.crashlytics.android.answers.Answers;
-import com.crashlytics.android.answers.ShareEvent;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -123,16 +120,17 @@ public class NetworkUtil {
 	}
 
 	private static boolean isNetworkAvailable(Context context) {
-		ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		ConnectivityManager connectivityManager =
+			(ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo acNetworkInfo = connectivityManager.getActiveNetworkInfo();
 		return acNetworkInfo != null;
 	}
 
-
 	public static boolean hasInternetConnection(Context context) {
 		if (isNetworkAvailable(context)) {
 			try {
-				HttpURLConnection urlc = (HttpURLConnection) (new URL("http://client3.google.com/generate_204").openConnection());
+				HttpURLConnection urlc = (HttpURLConnection) (new URL(
+					"http://client3.google.com/generate_204").openConnection());
 				urlc.setRequestProperty("User-Agent", "Test");
 				urlc.setRequestProperty("Connection", "close");
 				urlc.setReadTimeout(1500);
@@ -147,16 +145,16 @@ public class NetworkUtil {
 		}
 	}
 
-	public static void shareNote(Context context, String onlineId, String title) {
-		String text = "Hey! Found something interesting on Cerebro, check it out. You will simply love it!\n\n";
+	public static void shareNote(Context context, String onlineId, String title, String mobile) {
+		String text =
+			"Hey! Found something interesting on Roz, check it out. You will simply love it!\n\n";
 
-		Toast.makeText(context, "preparing share...", Toast.LENGTH_SHORT).show();
+		Toast.makeText(context, "Inviting members", Toast.LENGTH_SHORT).show();
 		String extra = text + title + "\n\n";
 		String domain = "https://k24ek.app.goo.gl/";
 		String apn = "?apn=com.zersey.roz";
 
-
-		String link = "&link=" + RestAdapterAPI.END_POINT_ZERSEY + "/" + onlineId;
+		String link = "&link=" + RestAdapterAPI.END_POINT_ROZ + "/" + onlineId;
 
 		String shareUrl = domain + apn + link;
 		//shortLink(extra, context, shareUrl);
@@ -167,10 +165,6 @@ public class NetworkUtil {
 		//	.putContentType("Anything shared")
 		//	.putContentId(onlineId + ""));
 
-		Intent i2 = new Intent(Intent.ACTION_SEND);
-		i2.setType("text/plain");
-		i2.putExtra(Intent.EXTRA_TEXT, shareUrl);
-		context.startActivity(i2);
+		new ServerUtil(context).inviteContact(shareUrl, mobile, "91");
 	}
-
 }

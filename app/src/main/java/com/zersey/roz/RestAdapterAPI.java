@@ -12,6 +12,7 @@ import retrofit2.http.Query;
 
 public interface RestAdapterAPI {
 	String END_POINT_ZERSEY = "https://zersey.com";
+	String END_POINT_ROZ = "http://okroz.com";
 
 	//login
 	@FormUrlEncoded @POST("/authentication/check") Call<JsonObject> doLogin(
@@ -69,9 +70,13 @@ public interface RestAdapterAPI {
 	@GET("/Split_bills/delete_income_expense/{id}") Call<JsonObject> deleteSpecificUserEntry(
 		@Path("id") long id);
 
-	@GET("Split_bills/search_contacts") Call<List<Custom_Contact_items>> getUserIdFromServer(
+	@GET("/Split_bills/search_contacts") Call<List<ContactModel>> getUserIdFromServer(
 		@Query("keyword") String keyword, @Query("code") String code);
 
 	@FormUrlEncoded @POST("/Split_bills/report_income_expense_by_filter")
 	Call<JsonObject> reportIncomeExpense(@Field("payer_id") String payerId);
+
+	@GET("/Invites/send_income_expense_invite") Call<JsonObject> inviteContact(
+		@Query("link") String link, @Query("mobile_no") String mobile,
+		@Query("country_code") String code);
 }

@@ -1,10 +1,14 @@
 package com.zersey.roz;
 
-public class ContactModel {
+import com.google.gson.annotations.SerializedName;
+import java.io.Serializable;
 
-	private long id, userId;
-	private String name;
-	private String number;
+public class ContactModel implements Serializable {
+
+	private long id;
+	@SerializedName("userId") private long userId;
+	@SerializedName("fullname") private String name;
+	@SerializedName("mobile") private String number;
 
 	public void setId(long id) {
 		this.id = id;
@@ -38,4 +42,18 @@ public class ContactModel {
 		return number;
 	}
 
+	@Override public String toString() {
+		return "ContactModel{"
+			+ "id="
+			+ id
+			+ ", userId="
+			+ userId
+			+ ", name='"
+			+ name
+			+ '\''
+			+ ", number='"
+			+ number
+			+ '\''
+			+ '}';
+	}
 }

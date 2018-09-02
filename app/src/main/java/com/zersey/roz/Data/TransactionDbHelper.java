@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import com.zersey.roz.ContactModel;
 import com.zersey.roz.GroupModel;
@@ -15,6 +14,8 @@ import com.zersey.roz.Groups;
 import com.zersey.roz.IncomeModel;
 import com.zersey.roz.Temp;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TransactionDbHelper extends SQLiteOpenHelper {
@@ -30,7 +31,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public static synchronized TransactionDbHelper getInstance(Context context) {
 		// Use the application context, which will ensure that you don't accidentally leak an Activity's context.
 		if (mInstance == null) {
-			mInstance = new TransactionDbHelper(context.getApplicationContext());//todo source of error context as null
+			mInstance = new TransactionDbHelper(
+				context.getApplicationContext());//todo source of error context as null
 		}
 		return mInstance;
 	}
@@ -437,11 +439,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public long addContact(ContactModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
-		cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, model.getUserId());
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_NAME, model.getName());
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_NUMBER, model.getNumber());
-		return db.insert(TransactionDbContract.ContactEntry.TABLE_NAME, null, cv);
+		long id = db.insert(TransactionDbContract.ContactEntry.TABLE_NAME, null, cv);
+		return id;
 	}
+
 	public int getContactCount() {
 		String countQuery = "SELECT * FROM " + TransactionDbContract.ContactEntry.TABLE_NAME;
 		SQLiteDatabase db = getReadableDatabase();
@@ -456,6 +459,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public List<ContactModel> getContacts() {
 		SQLiteDatabase db = getReadableDatabase();
 		List<ContactModel> list = new ArrayList<>();
+		List<ContactModel> listWithoutId = new ArrayList<>();
 		Cursor cursor =
 			db.query(TransactionDbContract.ContactEntry.TABLE_NAME, null, null, null, null, null,
 				null, null);
@@ -469,7 +473,67 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
 			model.setUserId(cursor.getLong(
 				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
+
+			if (model.getUserId() == 0) {
+				listWithoutId.add(model);
+			} else {
+				list.add(model);
+			}
+		}
+		cursor.close();
+
+		Collections.sort(list, new Comparator<ContactModel>() {
+			@Override public int compare(ContactModel contactModel, ContactModel t1) {
+				return contactModel.getName().compareTo(t1.getName());
+			}
+		});
+
+		Collections.sort(listWithoutId, new Comparator<ContactModel>() {
+			@Override public int compare(ContactModel contactModel, ContactModel t1) {
+				return contactModel.getName().compareTo(t1.getName());
+			}
+		});
+
+		list.addAll(listWithoutId);
+		return list;
+	}
+
+	public void updateUserId(long rowId, ContactModel model) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, model.getUserId());
+		db.update(TransactionDbContract.ContactEntry.TABLE_NAME, cv,
+			TransactionDbContract.ContactEntry._ID + "=?", new String[] { Long.toString(rowId) });
+	}
+
+	public List<ContactModel> getUserWithUserId(String[] userIds) {
+		SQLiteDatabase db = getReadableDatabase();
+		List<ContactModel> list = new ArrayList<>();
+
+		StringBuilder query = new StringBuilder(userIds[0]);
+		for (int i = 1; i < userIds.length; i++) {
+			query.append(",").append(userIds[i]);
+		}
+
+		Cursor cursor = db.rawQuery("SELECT * FROM "
+			+ TransactionDbContract.ContactEntry.TABLE_NAME
+			+ " WHERE "
+			+ TransactionDbContract.ContactEntry.COLUMN_USER_ID
+			+ " IN (" + query.toString() + ");",null);
+
+		while (cursor.moveToNext()) {
+			ContactModel model = new ContactModel();
+			model.setId(
+				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.ContactEntry._ID)));
+			model.setName(cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NAME)));
+			model.setNumber(cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
+			model.setUserId(cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
+
 			list.add(model);
+
 		}
 		cursor.close();
 		return list;

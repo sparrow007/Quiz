@@ -124,7 +124,7 @@ import java.util.List;
 	//		Health_checkbox, Salary_checkbox, More_checkbox;
 
 	private ListView Add_Member_ListView;
-	private ArrayList<Custom_Contact_items> Item_list;
+	private ArrayList<ContactModel> Item_list;
 	private List<Split_Contact_model> Split_List;
 	private Spinner Split_Spinner;
 	public static TextView Split_Notes;
@@ -460,7 +460,7 @@ import java.util.List;
 			Split_List = new ArrayList<>();
 			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
 			for (int i = 0; i < Item_list.size(); i++) {
-				Split_List.add(new Split_Contact_model(Item_list.get(i).getId(), Specific_Amount));
+				Split_List.add(new Split_Contact_model(Long.toString(Item_list.get(i).getId()), Specific_Amount));
 			}
 		}
 		/*if (Split_List.size() > 0) {
@@ -732,7 +732,7 @@ import java.util.List;
 		Log.d("onActivityResult: ",requestCode+"");
         if (resultCode==-1){
 			Contact_RecyclerView.setVisibility(View.VISIBLE);
-			Item_list.addAll((List<Custom_Contact_items>) data.getSerializableExtra("ADDED"));
+			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
 			Log.d("onActivityResult: ",Item_list.size()+"");
 			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
 			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
@@ -774,9 +774,11 @@ import java.util.List;
 					} else {
 						code = "91";
 					}
-					//System.out.println("number is:"+cNumber);
 				}
-				Custom_Contact_items CCItem = new Custom_Contact_items(name, cNumber);
+				ContactModel CCItem = new ContactModel();
+				CCItem.setNumber(cNumber);
+				CCItem.setName(name);
+
 				if (!Check_Contact_List(cNumber)) {
 					Item_list.add(CCItem);
 					Log.d("onActivityResult: ", Item_list.size() + "");
@@ -795,7 +797,7 @@ import java.util.List;
 	public boolean Check_Contact_List(String Number) {
 		Boolean check = false;
 		for (int i = 0; i < Item_list.size(); i++) {
-			if (TextUtils.equals(Item_list.get(i).getContact_Person_Number(), Number)) {
+			if (TextUtils.equals(Item_list.get(i).getNumber(), Number)) {
 				check = true;
 				//return true;
 			} else {
@@ -958,7 +960,7 @@ import java.util.List;
 						//groupModel.setGroupDesc();
 						groupModel2.setUsers(users);
 						long newrowId = mDbHelper.createGroup(groupModel2);
-						new ServerUtil(MainActivity.this).createGroup(groupModel2);
+						new ServerUtil(MainActivity.this).createGroup(groupModel2, null);
 						groupModel2.setId(newrowId);
 					}
 					expenseModel.setType(Category_text);
