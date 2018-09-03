@@ -13,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 public class Specific_Group extends AppCompatActivity
 	implements Group_Balances.OnFragmentInteractionListener,
@@ -20,14 +21,15 @@ public class Specific_Group extends AppCompatActivity
 	private ViewPager mViewPager;
 	private TabLayout tab_layout;
 	private PagerAdapter adapter;
+	private TextView Group_Name;
 	public GroupModel model;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_specific_group);
-
+        Group_Name=(TextView)findViewById(R.id.Group_Name_TextView);
 		model = (GroupModel) getIntent().getSerializableExtra("group");
-
+        Group_Name.setText(model.getGroupName());
 		initTabLayout();
 		initViewPager();
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
