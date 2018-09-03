@@ -45,6 +45,12 @@
             </LinearLayout>
 
         </LinearLayout>
-
+<LinearLayout
+    android:orientation="vertical"
+    android:visibility="gone"
+    android:id="@+id/Line_Divider"
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="#B0BEC5"/>
 
 </LinearLayout>

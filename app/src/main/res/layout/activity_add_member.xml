@@ -17,13 +17,48 @@
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/AppTheme.PopupOverlay" >
-            <Button
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:orientation="horizontal">
+                <android.support.v7.widget.CardView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginTop="7dp"
+                    android:layout_marginBottom="7dp"
+                    android:background="#ffffff"
+                    android:gravity="center_vertical"
+                    app:cardCornerRadius="10dp">
+                <EditText
+                    android:id="@+id/search_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="#ffffff"
+                    android:gravity="center_vertical"
+                    android:hint="Search"
+                    android:imeOptions="actionSearch"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:paddingLeft="2dp"
+                    android:singleLine="true"
+                    android:textColor="#000000"
+                    android:textColorHint="#000000" />
+                </android.support.v7.widget.CardView>
+            <TextView
                 android:layout_gravity="right"
+                android:gravity="center_vertical"
                 android:onClick="Add_Members"
                 android:layout_width="wrap_content"
                 android:background="@color/colorPrimary"
-                android:text="submit"
-                android:layout_height="wrap_content" />
+                android:text="SUBMIT"
+                android:textColor="#ffffff"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="10dp"
+                android:layout_height="match_parent" />
+            </LinearLayout>
         </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
