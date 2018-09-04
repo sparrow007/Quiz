@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,10 +26,12 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
  private int lastSelectedPosition = -1;
  private String lastCategory="";
  private Context context;
+ private String Category;
 
-    public CategoryAdapter(Context context, List<String> list){
+    public CategoryAdapter(Context context, List<String> list,String Category){
         this.context=context;
      this.list=list;
+     this.Category=Category;
      //SelectedItems=new ArrayList<>();
 
  }
@@ -43,8 +46,23 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 
     @Override
     public void onBindViewHolder(@NonNull final CategoryViewHolder holder, final int position) {
-    holder.category.setText(list.get(position));
-   holder.category.setChecked(lastSelectedPosition == position);
+
+
+        holder.category.setText(list.get(position));
+        holder.category.setChecked(lastSelectedPosition == position);
+        if(!TextUtils.isEmpty(Category)){
+            if(TextUtils.equals(Category,"expense")){
+                //Log.d( "onBindViewHolder: ",Category);
+                holder.category.setChecked(position==0);
+                //Category="";
+            }else {
+                //Log.d( "onBindViewHolder: ",Category);
+                holder.category.setChecked(position == 1);
+                //Category="";
+            }
+        }
+
+
     }
 
     @Override
@@ -66,6 +84,7 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
         category.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Category="";
                 lastSelectedPosition = getAdapterPosition();
                 notifyDataSetChanged();
                 //category.setBackgroundColor(Color.parseColor("#000000"));

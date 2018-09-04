@@ -156,6 +156,25 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		});
 	}
 
+	public void Update_GroupMembers(final int pos, final IncomeModel model){
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT, model.getTotalAmount());
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+		//	model.getPaidAtDate());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
+		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
+				TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
+		new Handler(Looper.getMainLooper()).post(new Runnable() {
+			public void run() {
+				//Transactions.adapter.updateItem(pos, model);
+				Groups.adapter.updateItem(pos, model);
+			}
+		});
+	}
+
 	public void deleteEntry(final int pos, long id) {
 		SQLiteDatabase db = getWritableDatabase();
 		db.delete(TransactionDbContract.Transaction_Entry.TABLE_NAME,

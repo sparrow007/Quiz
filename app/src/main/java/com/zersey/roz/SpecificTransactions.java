@@ -1,5 +1,6 @@
 package com.zersey.roz;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -10,8 +11,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import java.util.Locale;
 
 public class SpecificTransactions extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
@@ -26,7 +30,11 @@ public class SpecificTransactions extends AppCompatActivity implements AppBarLay
     private AppBarLayout mAppBarLayout;
     private Toolbar mToolbar;
     private String Amount,Date,Title;
+    private String Updated_Category,Updated_Type,CardClicked;
+    private int Updated_Id;
     private TextView Amount_TextView,Date_TextView,Title_TextView;
+    private Button Settle_Button;
+    private IncomeModel model;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,10 +44,19 @@ public class SpecificTransactions extends AppCompatActivity implements AppBarLay
         setSupportActionBar(mToolbar);
         Amount_TextView=(TextView)findViewById(R.id.Specific_Amount);
         Date_TextView=(TextView)findViewById(R.id.Specific_Date);
+        Settle_Button=(Button)findViewById(R.id.Settle_Button);
         //Title_TextView=(TextView)findViewById(R.id.toolbar_text);
-       Amount=getIntent().getStringExtra("Amount");
-        Title=getIntent().getStringExtra("Title");
-        Date=getIntent().getStringExtra("DateCreated");
+      // Amount=getIntent().getStringExtra("Amount");
+        //Title=getIntent().getStringExtra("Title");
+        //Date=getIntent().getStringExtra("DateCreated");
+        model = (IncomeModel) getIntent().getSerializableExtra("model");
+        CardClicked = getIntent().getStringExtra("CardClicked");
+        Updated_Category = getIntent().getStringExtra("Category");
+        Amount = getIntent().getStringExtra("Amount");
+        Title = getIntent().getStringExtra("Title");
+        Date = getIntent().getStringExtra("DateCreated");
+        Updated_Type = getIntent().getStringExtra("Type");
+        Updated_Id = getIntent().getIntExtra("_ID", 0);
         if(!TextUtils.isEmpty(Amount) && !TextUtils.isEmpty(Date) && !TextUtils.isEmpty(Title) ){
             Amount_TextView.setText("Rs "+Amount);
             Date_TextView.setText(Date);
@@ -51,6 +68,22 @@ public class SpecificTransactions extends AppCompatActivity implements AppBarLay
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+            }
+        });
+        Settle_Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                //i.putExtra("pos", getAdapterPosition());
+                i.putExtra("_ID", Updated_Id);
+                i.putExtra("CardClicked", "Yes");
+                i.putExtra("Title", Title);
+                i.putExtra("Type", Updated_Type);
+                i.putExtra("Category", Updated_Category);
+                i.putExtra("Amount", Amount);
+                i.putExtra("DateCreated", Date);
+                i.putExtra("model", model);
+                startActivity(i);
             }
         });
     }

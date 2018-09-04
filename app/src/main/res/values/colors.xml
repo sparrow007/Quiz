@@ -12,4 +12,6 @@
     <color name="Yellow">#FFD600</color>
     <color name="Orange">#E65100</color>
     <color name="Red">#DD2C00</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

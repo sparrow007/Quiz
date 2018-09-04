@@ -367,7 +367,11 @@ import java.util.List;
 			new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL,
 				false));
 		//View view=Category_Recycler_View.findViewHolderForAdapterPosition(0);
-		adapter = new CategoryAdapter(getApplicationContext(), Category_list);
+		if(TextUtils.isEmpty(Updated_Type)){
+		adapter = new CategoryAdapter(getApplicationContext(), Category_list,"");
+		}else {
+			adapter = new CategoryAdapter(getApplicationContext(), Category_list,Updated_Type);
+		}
 		Category_Recycler_View.setLayoutManager(
 			new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL,
 				false));
@@ -949,7 +953,7 @@ import java.util.List;
 					//Custom_items items = new Custom_items(Category_text,
 					//      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
 					//customlist.add(items);
-
+					Log.d( "Submit: ",CardClicked);
 					SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
 					GroupModel groupModel2 = new GroupModel();
 
@@ -1031,6 +1035,7 @@ import java.util.List;
 					model.setTotalAmount(Updated_Amount);
 					model.setTitle(Updated_Title);
 					model.setCatId(Updated_Category);
+					model.setGroupId(Updated_Id);
 
 					mDbHelper.updateEntry(pos, model);
 					if (NetworkUtil.hasInternetConnection(MainActivity.this)) {

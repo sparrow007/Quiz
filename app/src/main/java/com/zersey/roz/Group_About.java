@@ -38,6 +38,7 @@ public class Group_About extends Fragment {
 	private ArrayList<ContactModel> Item_list;
 	public static Group_About_Adapter RecyclerView_Adapter;
 	private TransactionDbHelper mDbHelper;
+	private static final int REQUEST_CODE_ADD_MEMBER = 1;
 
 	private GroupModel mParam1;
 
@@ -94,12 +95,12 @@ public class Group_About extends Fragment {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_group__about, container, false);
 		TextView desc = fragmentLayout.findViewById(R.id.group_desc);
 		Add_Member = fragmentLayout.findViewById(R.id.Add_Group_Member_Layout);
-		/*Add_Member.setOnClickListener(new View.OnClickListener() {
+		Add_Member.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(getContext(), Add_Members_Activity.class);
-				startActivityForResult(intent, 1);
+				startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
 			}
-		}); */
+		});
 		desc.setText(mParam1.getGroupDesc());
 		fragmentLayout = initRecyclerView(fragmentLayout);
 		return fragmentLayout;
@@ -138,7 +139,7 @@ public class Group_About extends Fragment {
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		Log.d("onActivityResult: ", resultCode + "");
-		if (resultCode == -1) {
+		if (requestCode == REQUEST_CODE_ADD_MEMBER) {
 			recyclerView.setVisibility(View.VISIBLE);
 			Item_list = new ArrayList<>();
 			if (TextUtils.equals(list.get(0).toString(), "No Members")) {
@@ -149,7 +150,11 @@ public class Group_About extends Fragment {
 			Log.d("onActivityResult: ", list.size() + "");
 			RecyclerView_Adapter = new Group_About_Adapter(list);
 			recyclerView.setAdapter(RecyclerView_Adapter);
+			/*for (ContactModel contactModel : list) {
+				users.append(",").append(contactModel.getUserId());
+			}*/
 		}
+
 	}
 
 	/**

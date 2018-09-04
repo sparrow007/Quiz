@@ -83,7 +83,8 @@
         <activity
             android:name=".Spererate_Group_Transaction"
             android:label="@string/title_activity_spererate__group__transaction"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".OnBoarding_Screens"></activity>
     </application>
 
 </manifest>

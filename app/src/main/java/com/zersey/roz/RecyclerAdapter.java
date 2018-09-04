@@ -172,9 +172,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			if (Plus_Button==null) {
 				String temp = list.get(getAdapterPosition()).getCatId();
 				//Log.d( "onClick: ",temp);
-				Intent i = new Intent(view.getContext(), Specific_Group_Transaction.class);
+				Intent i = new Intent(view.getContext(), SpecificTransactions.class);
 				i.putExtra("pos", getAdapterPosition());
-				i.putExtra("_ID", list.get(getAdapterPosition()).getId());
+				i.putExtra("_ID", list.get(getAdapterPosition()).getGroupId());
 				i.putExtra("CardClicked", "Yes");
 				i.putExtra("Title", list.get(getAdapterPosition()).getTitle());
 				i.putExtra("Type", list.get(getAdapterPosition()).getType());
