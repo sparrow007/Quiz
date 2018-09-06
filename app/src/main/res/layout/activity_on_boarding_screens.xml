@@ -1,24 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:orientation="vertical"
+    android:id="@+id/Boarding_Screen_Relative"
     tools:context=".OnBoarding_Screens">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/Slider_ViewPager"
         android:layout_width="match_parent"
-        android:layout_height="453dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true" />
-
+        android:layout_height="340dp"
+        />
     <LinearLayout
-        android:layout_width="50dp"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@+id/Slider_ViewPager"
-        android:layout_centerHorizontal="true" />
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/First_Dot"
+            android:layout_marginRight="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/notepad"/>
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/Second_Dot"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/cardiogram"/>
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/Third_Dot"
+            android:layout_marginLeft="10dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/cardiogramone"/>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/login_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="10dp"
+        android:paddingRight="24dp"
+        android:visibility="visible"
+        >
 
-</RelativeLayout>
+        <AutoCompleteTextView
+            android:id="@+id/country_code"
+            android:layout_width="60dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="5dp"
+            android:background="@drawable/edit_text_background"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
+            android:gravity="center"
+            android:inputType="phone"
+            android:text="IN 91"
+            android:backgroundTint="#66BB6A"
+            android:textCursorDrawable="@drawable/cursor_white"
+            />
+
+        <EditText
+            android:id="@+id/phone"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="@drawable/edit_text_background"
+            android:hint="Phone"
+            android:imeOptions="actionNext"
+            android:inputType="phone"
+            android:paddingStart="16dp"
+            android:singleLine="true"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
+            android:backgroundTint="@color/colorPrimary"
+            android:textCursorDrawable="@drawable/cursor_white"
+            />
+    </LinearLayout>
+    <Button
+        android:textSize="15sp"
+        android:background="@color/colorPrimary"
+        android:textColor="#ffffff"
+        android:text="Sign IN"
+        android:id="@+id/Sign_Up_Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>

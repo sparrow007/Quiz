@@ -145,7 +145,8 @@ public class Group_About extends Fragment {
 			if (TextUtils.equals(list.get(0).toString(), "No Members")) {
 				list = new ArrayList<>();
 			}
-			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
+			if((List<ContactModel>) data.getSerializableExtra("ADDED")!=null){
+			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));}
 			list.addAll(Item_list);
 			Log.d("onActivityResult: ", list.size() + "");
 			RecyclerView_Adapter = new Group_About_Adapter(list);

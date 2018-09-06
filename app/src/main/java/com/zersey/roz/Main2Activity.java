@@ -335,6 +335,8 @@ public class Main2Activity extends BaseActivity
 	@Override public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.action_settings:
+				Intent i = new Intent(getApplicationContext(), OnBoarding_Screens.class);
+				startActivity(i);
 				return true;
 
 			case android.R.id.home:

@@ -2,6 +2,9 @@ package com.zersey.roz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.SumPathEffect;
+import android.inputmethodservice.Keyboard;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
@@ -11,8 +14,15 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.zersey.roz.Data.TransactionDbHelper;
 import java.util.ArrayList;
@@ -22,18 +32,54 @@ public class Add_Members_Activity extends AppCompatActivity {
 	private List<ContactModel> Contact_List = new ArrayList<>();
 	public static Contact_RecyclerView_Adapter Add_Member_Adapter;
 	public static List<ContactModel> Added_Members;
+	TextView Submit;
 	public EditText Search_Edit;
 	private int count=0;
+	private ImageButton back;
 	public static Contact_List_RecyclerView_Adapter Adapter;
+	private InputMethodManager IMM;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_member);
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+		IMM=(InputMethodManager)this.getSystemService(Activity.INPUT_METHOD_SERVICE);
 		initContactList();
 		initRecyclerView();
-
+		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		Submit=(TextView)findViewById(R.id.Add_Member_Submit);
+		back=(ImageButton)findViewById(R.id.back_Button);
+		Search_Edit.clearFocus();
+		Search_Edit.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Submit.setVisibility(View.GONE);
+				back.setVisibility(View.VISIBLE);
+			}
+		});
+		back.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Search_Edit.clearFocus();
+				Submit.requestFocus();
+				View view=Add_Members_Activity.this.getCurrentFocus();
+				IMM.hideSoftInputFromWindow(view.getWindowToken(),0);
+				Submit.setVisibility(View.VISIBLE);
+				back.setVisibility(View.GONE);
+			}
+		});
+		Search_Edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+			@Override
+			public void onFocusChange(View v, boolean hasFocus) {
+				if(hasFocus){
+					//Submit.setVisibility(View.GONE);
+					//back.setVisibility(View.VISIBLE);
+				}else {
+					//Submit.setVisibility(View.VISIBLE);
+				}
+			}
+		});
 		Search_Edit.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -88,5 +134,11 @@ public class Add_Members_Activity extends AppCompatActivity {
 		intent.putExtra("ADDED", (ArrayList<ContactModel>) Added_Members);
 		setResult(Activity.RESULT_OK, intent);
 		finish();
+	}
+
+	@Override
+	public void onBackPressed() {
+		View view= new View(this);
+		Add_Members(view);
 	}
 }
