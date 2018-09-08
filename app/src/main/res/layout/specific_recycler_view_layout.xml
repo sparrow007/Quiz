@@ -34,7 +34,7 @@
             android:id="@+id/Pay_Button"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:textColor="#ffffff"
@@ -42,7 +42,7 @@
             android:minWidth="50dp"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:text="PAY"/>
+            android:text="Amount Due"/>
     </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"

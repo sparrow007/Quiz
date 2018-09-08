@@ -18,14 +18,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
-            android:id="@+id/Amount_TextView"
+
             android:layout_gravity="center_horizontal"
             android:gravity="center"
             android:textSize="20sp"
             android:textColor="#ffffff"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rs 500"/>
+            android:text="     "/>
         <TextView
             android:id="@+id/Date_TextView"
             android:layout_gravity="center_horizontal"
@@ -42,6 +42,18 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
+        <TextView
+            android:layout_marginBottom="10dp"
+            android:layout_marginRight="5dp"
+            android:layout_above="@+id/Transaction_Line"
+            android:layout_alignRight="@+id/Title_TexTVew"
+            android:id="@+id/Amount_TextView"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:textSize="20sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rs 500"/>
         <TextView
             android:id="@+id/Category_TextView"
             android:layout_marginLeft="20dp"
@@ -66,7 +78,7 @@
             android:id="@+id/Title_TexTVew"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
-
+            android:textStyle="bold"
             android:layout_marginLeft="20dp"
             android:textSize="20sp"
             android:layout_width="match_parent"

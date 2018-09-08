@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".Task_Form_Activity"
+    tools:showIn="@layout/activity_task_form"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:layout_marginTop="10dp"
+        android:id="@+id/Task_Material_Title"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mtf_labelColor="#666"
+        >
+        <EditText
+            android:inputType="text"
+            android:id="@+id/Task_Title_Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Title"
+            android:backgroundTint="#000000"/>
+    </com.github.florent37.materialtextfield.MaterialTextField>
+
+    <com.github.florent37.materialtextfield.MaterialTextField
+        android:layout_marginTop="10dp"
+        android:id="@+id/Task_Material_Description"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:mtf_labelColor="#666"
+        >
+        <EditText
+            android:inputType="text"
+            android:id="@+id/Task_Description_Edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Description"
+            android:backgroundTint="#000000"/>
+    </com.github.florent37.materialtextfield.MaterialTextField>
+        <ImageView
+            android:id="@+id/Task_Image_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"/>
+
+    </LinearLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="1dp"
+    android:background="#90A4AE"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:padding="5dp"
+            android:src="@drawable/calendar"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+        <TextView
+            android:onClick="OnclickDate"
+            android:textSize="20sp"
+            android:background="@android:color/transparent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"
+            android:id="@+id/Task_Date_Edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:hint="Date"
+            android:backgroundTint="#000000"/>
+        <LinearLayout
+
+            android:padding="5dp"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="#B0BEC5"/>
+
+
+        <ImageButton
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="10dp"
+            android:id="@+id/Fab_Camera_Button"
+            android:background="@android:color/transparent"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/cameragreen"
+            android:onClick="Onclick_Image_button"
+            android:layout_width="40dp"
+            android:layout_height="40dp" />
+        <LinearLayout
+            android:padding="5dp"
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="#B0BEC5"/>
+    </LinearLayout>
+</LinearLayout>

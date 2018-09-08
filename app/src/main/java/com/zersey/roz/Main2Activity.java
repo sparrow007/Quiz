@@ -107,6 +107,10 @@ public class Main2Activity extends BaseActivity
 						Intent i = new Intent(Main2Activity.this, Contact_List_Activity.class);
 						startActivity(i);
 					}
+					if (menuItem.getItemId() == R.id.nav_slideshow) {
+						Intent i = new Intent(Main2Activity.this, Task_Manager_Activity.class);
+						startActivity(i);
+					}
 					// close drawer when item is tapped
 					mDrawerLayout.closeDrawers();
 

@@ -11,6 +11,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BILL LIST >"/>
+            <TextView
+                android:id="@+id/Second_More"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical|right"
+                android:text="MORE"/>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/Second_Slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -24,7 +53,7 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Groups >"/>
+            android:text="GROUPS >"/>
         <TextView
             android:id="@+id/First_More"
             android:textColor="@color/colorPrimary"
@@ -42,34 +71,6 @@
         app:stackFromEnd="true"
         app:reverseLayout="true"
         />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:textSize="20dp"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="BILL LIST >"/>
-        <TextView
-            android:id="@+id/Second_More"
-            android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:layout_gravity="center_vertical|right"
-            android:text="MORE"/>
-    </LinearLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/Second_Slider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
     </LinearLayout>
 </ScrollView>

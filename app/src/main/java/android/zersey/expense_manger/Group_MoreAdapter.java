@@ -28,8 +28,8 @@ public class Group_MoreAdapter extends RecyclerView.Adapter<Group_MoreAdapter.Mo
 
     @Override
     public void onBindViewHolder(@NonNull MoreVieHolder holder, int position) {
-        holder.Category.setText(list.get(position).getGroupDesc());
-        holder.Amount.setText("    ");
+        holder.Category.setText("5 MEMBERS");
+        holder.Amount.setText("Rs 500");
         holder.Title.setText(list.get(position).getGroupName());
         holder.Date.setText("     ");
     }

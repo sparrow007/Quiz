@@ -953,7 +953,7 @@ import java.util.List;
 					//Custom_items items = new Custom_items(Category_text,
 					//      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
 					//customlist.add(items);
-					Log.d( "Submit: ",CardClicked);
+					//Log.d( "Submit: ",CardClicked);
 					SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
 					GroupModel groupModel2 = new GroupModel();
 

@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,6 +42,7 @@ public class Specific_Group_Transaction extends AppCompatActivity {
         Amount=getIntent().getStringExtra("Amount");
         Title=getIntent().getStringExtra("Title");
         Date=getIntent().getStringExtra("DateCreated");
+        Log.d("onCreate: ",Amount+"");
         AMOUNT.setText("Rs "+Amount);
         DATE.setText(Date);
         TITLE.setText(Title);

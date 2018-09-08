@@ -53,6 +53,15 @@ public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transa
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(v.getContext(),Spererate_Group_Transaction.class);
+                intent.putExtra("pos", getAdapterPosition());
+                intent.putExtra("_ID", list.get(getAdapterPosition()).getGroupId());
+                intent.putExtra("CardClicked", "Yes");
+                intent.putExtra("Title", list.get(getAdapterPosition()).getTitle());
+                intent.putExtra("Type", list.get(getAdapterPosition()).getType());
+                intent.putExtra("Category", list.get(getAdapterPosition()).getCatId());
+                intent.putExtra("Amount", list.get(getAdapterPosition()).getTotalAmount());
+                intent.putExtra("DateCreated", list.get(getAdapterPosition()).getPaidAtDate());
+                intent.putExtra("model", list.get(getAdapterPosition()));
                 v.getContext().startActivity(intent);
             }
         });
