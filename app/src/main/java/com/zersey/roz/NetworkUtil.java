@@ -7,6 +7,9 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
+import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -86,8 +89,12 @@ public class NetworkUtil {
 			.addInterceptor(header)
 			.addInterceptor(logging);
 
+		Gson gson = new GsonBuilder()
+			.setLenient()
+			.create();
+
 		Retrofit retrofit = new Retrofit.Builder().baseUrl(RestAdapterAPI.END_POINT_ZERSEY)
-			.addConverterFactory(GsonConverterFactory.create())
+			.addConverterFactory(GsonConverterFactory.create(gson))
 			.client(enableTls12OnPreLollipop(httpClient).build())
 			.build();
 
@@ -145,7 +152,7 @@ public class NetworkUtil {
 		}
 	}
 
-	public static void shareNote(Context context, String onlineId, String title, String mobile) {
+	public static void inviteLink(Context context, String onlineId, String title, String mobile) {
 		String text =
 			"Hey! Found something interesting on Roz, check it out. You will simply love it!\n\n";
 

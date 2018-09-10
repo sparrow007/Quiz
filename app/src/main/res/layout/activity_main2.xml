@@ -41,7 +41,7 @@
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        android:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"

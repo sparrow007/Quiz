@@ -16,6 +16,7 @@ import com.zersey.roz.Temp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class TransactionDbHelper extends SQLiteOpenHelper {
@@ -24,15 +25,17 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	private static final int DATABASE_VERSION = 1;
 	private static TransactionDbHelper mInstance;
 
-	public TransactionDbHelper(Context context) {
+	private TransactionDbHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
-	public static synchronized TransactionDbHelper getInstance(Context context) {
-		// Use the application context, which will ensure that you don't accidentally leak an Activity's context.
+	public static TransactionDbHelper getInstance(Context context) {
 		if (mInstance == null) {
-			mInstance = new TransactionDbHelper(
-				context.getApplicationContext());//todo source of error context as null
+			synchronized (TransactionDbHelper.class) {
+				if (mInstance == null) {
+					mInstance = new TransactionDbHelper(context.getApplicationContext());
+				}
+			}
 		}
 		return mInstance;
 	}
@@ -41,6 +44,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		db.execSQL(TransactionDbContract.Transaction_Entry.SQL_CREATE_TRANSACTIONS_TABLE);
 		db.execSQL(TransactionDbContract.GroupEntry.SQL_CREATE_GROUP_TABLE);
 		db.execSQL(TransactionDbContract.ContactEntry.SQL_CREATE_CONTACTS_TABLE);
+		db.execSQL(TransactionDbContract.NoteEntry.SQL_CREATE_NOTES_TABLE);
 		db.execSQL(TransactionDbContract.TempEntry.SQL_CREATE_TEMP_TABLE);
 	}
 
@@ -57,6 +61,19 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
 		return db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
+	}
+
+	public long updateGroup(GroupModel model) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID, model.getGroupId());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME, model.getGroupName());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC, model.getGroupDesc());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
+		return db.update(TransactionDbContract.GroupEntry.TABLE_NAME, cv,
+			TransactionDbContract.GroupEntry._ID + "=?",
+			new String[] { Long.toString(model.getId()) });
 	}
 
 	public void addGroups(List<GroupModel> list) {
@@ -156,7 +173,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		});
 	}
 
-	public void Update_GroupMembers(final int pos, final IncomeModel model){
+	public void Update_GroupMembers(final int pos, final IncomeModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
@@ -166,7 +183,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		//	model.getPaidAtDate());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
-				TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
+			TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
 				//Transactions.adapter.updateItem(pos, model);
@@ -538,7 +555,9 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			+ TransactionDbContract.ContactEntry.TABLE_NAME
 			+ " WHERE "
 			+ TransactionDbContract.ContactEntry.COLUMN_USER_ID
-			+ " IN (" + query.toString() + ");",null);
+			+ " IN ("
+			+ query.toString()
+			+ ");", null);
 
 		while (cursor.moveToNext()) {
 			ContactModel model = new ContactModel();
@@ -552,9 +571,18 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
 
 			list.add(model);
-
 		}
 		cursor.close();
 		return list;
+	}
+
+	public void updateUserIds(HashMap<String, Long> map) {
+		SQLiteDatabase db = getWritableDatabase();
+		for (String key : map.keySet()) {
+			ContentValues cv = new ContentValues();
+			cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, map.get(key));
+			db.update(TransactionDbContract.ContactEntry.TABLE_NAME, cv,
+				TransactionDbContract.ContactEntry.COLUMN_NUMBER + "=?", new String[] { key });
+		}
 	}
 }

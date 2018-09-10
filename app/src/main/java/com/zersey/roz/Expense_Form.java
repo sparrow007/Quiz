@@ -1398,8 +1398,7 @@ public class Expense_Form extends Fragment {
 				LayoutInflater LI = LayoutInflater.from(getContext());
 				View PromptsView = LI.inflate(R.layout.image_dialog, null);
 				Contact_number = (EditText) PromptsView.findViewById(R.id.Contact_Number);
-				cNumber = cNumber.replace("+", "");
-				cNumber = cNumber.replace(" ", "");
+				cNumber = cNumber.replaceAll("[^0-9]", "");
 				Contact_number.setText(cNumber);
 				Image_Link = (EditText) PromptsView.findViewById(R.id.Image_Link);
 				Image_Link.setText(name);

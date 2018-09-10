@@ -131,4 +131,42 @@ public class TransactionDbContract {
 			+ COLUMN_USER_ID
 			+ " INTEGER);";
 	}
+
+	public static final class NoteEntry implements BaseColumns {
+		public static final String TABLE_NAME = "group_notes";
+		public static final String COLUMN_GROUP_ID = "group_id";
+		public static final String COLUMN_TITLE = "note_title";
+		public static final String COLUMN_DESCRIPTION = "note_description";
+		public static final String COLUMN_DATE_CREATED = "note_created_date";
+		public static final String COLUMN_DATE_REMINDER = "note_reminder_date";
+		public static final String COLUMN_NOTE_CREATOR = "note_creator";
+		public static final String COLUMN_NOTE_ASSIGNED = "note_assigned";
+
+		public static final String SQL_CREATE_NOTES_TABLE = "CREATE TABLE "
+			+ NoteEntry.TABLE_NAME
+			+ " ( "
+			+ NoteEntry._ID
+			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_TITLE
+			+ " TEXT, "
+			+ COLUMN_DESCRIPTION
+			+ " TEXT, "
+			+ COLUMN_NOTE_CREATOR
+			+ " INTEGER, "
+			+ COLUMN_NOTE_ASSIGNED
+			+ " INTEGER, "
+			+ COLUMN_DATE_CREATED
+			+ " DATE, "
+			+ COLUMN_DATE_REMINDER
+			+ " DATE, "
+			+ COLUMN_GROUP_ID
+			+ " INTEGER, "
+			+ "FOREIGN KEY ("
+			+ COLUMN_GROUP_ID
+			+ ") REFERENCES "
+			+ GroupEntry.TABLE_NAME
+			+ "("
+			+ GroupEntry._ID
+			+ "));";
+	}
 }

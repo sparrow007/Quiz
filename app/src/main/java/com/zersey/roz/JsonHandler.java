@@ -1,7 +1,6 @@
 package com.zersey.roz;
 
 import android.content.Context;
-import android.util.Log;
 import com.google.gson.JsonObject;
 import retrofit2.Call;
 
@@ -11,11 +10,9 @@ public class JsonHandler {
 		return NetworkUtil.getRestAdapter(context)
 			.createEntry(incomeModel.getType(), incomeModel.getTitle(), incomeModel.getGroupId(),
 				incomeModel.getDescription(), incomeModel.getUuid(),
-				new String[] { incomeModel.getPayerId() },
-				new String[] { incomeModel.getTotalAmount() },
-				new String[] { incomeModel.getAmountDue() },
-				new String[] { incomeModel.getPaidAtDate() },
-				new String[] { incomeModel.getInvoiceId() });
+				incomeModel.getPayerId().split(","), incomeModel.getTotalAmount().split(","),
+				incomeModel.getAmountDue().split(","), incomeModel.getPaidAtDate().split(","),
+				incomeModel.getInvoiceId().split(","), incomeModel.getAmountPaid().split(","));
 	}
 
 	//public static Call<JsonObject> updateEntry(Context context, IncomeModel incomeModel) {
@@ -29,7 +26,7 @@ public class JsonHandler {
 	public static Call<JsonObject> createGroup(Context context, GroupModel groupModel) {
 		return NetworkUtil.getRestAdapter(context)
 			.createGroup(groupModel.getGroupName(), groupModel.getGroupDesc(),
-				groupModel.getUsers(), groupModel.getTypeId());
+				groupModel.getUsers(), groupModel.getTypeId(), null);
 	}
 
 	public static Call<JsonObject> deleteEntry(Context context, long id) {

@@ -19,10 +19,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
 import java.io.Serializable;
@@ -108,8 +110,6 @@ public class Main2Activity extends BaseActivity
 						startActivity(i);
 					}
 					if (menuItem.getItemId() == R.id.nav_slideshow) {
-						Intent i = new Intent(Main2Activity.this, Task_Manager_Activity.class);
-						startActivity(i);
 					}
 					// close drawer when item is tapped
 					mDrawerLayout.closeDrawers();
@@ -269,8 +269,10 @@ public class Main2Activity extends BaseActivity
 
 	Thread thread = new Thread(new Runnable() {
 		@Override public void run() {
+			String phone = getSharedPreferences("login", MODE_PRIVATE).getString("phone", null);
+			phone = phone.substring(phone.length() - 10, phone.length());
 			int count = mDbHelper.getContactCount();
-			List<ContactModel> contactModelList = new ArrayList<>();
+			List<String> contactModelList = new ArrayList<>();
 			if (count <= 0) {
 				Cursor phones =
 					getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
@@ -279,14 +281,14 @@ public class Main2Activity extends BaseActivity
 					String name = phones.getString(
 						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
 					String hasPhone = phones.getString(
-						phones.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
 
 					String cNumber = null, code = null;
 					if (hasPhone.equalsIgnoreCase("1")) {
 
 						cNumber = phones.getString(
 							phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-						cNumber = cNumber.replace(" ", "").replace("+", "");
+						cNumber = cNumber.replaceAll("[^0-9]", "");
 						if (cNumber.length() > 10) {
 							code = cNumber.substring(0, cNumber.length() - 10);
 							cNumber = cNumber.substring(cNumber.length() - 10);
@@ -295,16 +297,17 @@ public class Main2Activity extends BaseActivity
 						}
 					}
 
-					ContactModel model = new ContactModel();
-					model.setName(name);
-					model.setNumber(cNumber);
-					contactModelList.add(model);
-					long rowId = mDbHelper.addContact(model);
-					if (rowId != -1) {
-						new ServerUtil(Main2Activity.this).getUserIdFromServer(rowId, cNumber,
-							code);
+					if (cNumber != null && !cNumber.equals(phone)) {
+						ContactModel model = new ContactModel();
+						model.setName(name);
+						model.setNumber(cNumber);
+						contactModelList.add(cNumber);
+						long rowId = mDbHelper.addContact(model);
 					}
 				}
+
+				new ServerUtil(Main2Activity.this).verifyContacts(
+					contactModelList.toArray(new String[contactModelList.size()]));
 				phones.close();
 			}
 		}

@@ -1,5 +1,6 @@
 package com.zersey.roz;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,6 +43,7 @@ public class Group_About extends Fragment {
 	private GroupModel mParam1;
 
 	private OnFragmentInteractionListener mListener;
+	private String newUsers = "";
 
 	public Group_About() {
 		// Required empty public constructor
@@ -140,12 +141,20 @@ public class Group_About extends Fragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		Log.d("onActivityResult: ", resultCode + "");
 		if (requestCode == REQUEST_CODE_ADD_MEMBER) {
-			recyclerView.setVisibility(View.VISIBLE);
-			Item_list = new ArrayList<>();
-			if (TextUtils.equals(list.get(0).toString(), "No Members")) {
-				list = new ArrayList<>();
+			if (resultCode == Activity.RESULT_OK) {
+				Item_list = new ArrayList<>();
+				Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
+				list.addAll(Item_list);
+				RecyclerView_Adapter.notifyDataSetChanged();
+				for (ContactModel contactModel : Item_list) {
+					newUsers = "," + contactModel.getUserId();
+				}
+				mParam1.setUsers(mParam1.getUsers() + newUsers);
+				mDbHelper.updateGroup(mParam1);
+				new ServerUtil(getContext()).editGroup(mParam1, Item_list);
+
 			}
-			if((List<ContactModel>) data.getSerializableExtra("ADDED")!=null){
+			if(data.getSerializableExtra("ADDED") !=null){
 			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));}
 			list.addAll(Item_list);
 			Log.d("onActivityResult: ", list.size() + "");
@@ -155,7 +164,6 @@ public class Group_About extends Fragment {
 				users.append(",").append(contactModel.getUserId());
 			}*/
 		}
-
 	}
 
 	/**

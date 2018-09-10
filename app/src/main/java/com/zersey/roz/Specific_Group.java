@@ -11,7 +11,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,9 +26,9 @@ public class Specific_Group extends AppCompatActivity
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_specific_group);
-        Group_Name=(TextView)findViewById(R.id.Group_Name_TextView);
+		Group_Name = findViewById(R.id.Group_Name_TextView);
 		model = (GroupModel) getIntent().getSerializableExtra("group");
-        Group_Name.setText(model.getGroupName());
+		Group_Name.setText(model.getGroupName());
 		initTabLayout();
 		initViewPager();
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -96,24 +95,11 @@ public class Specific_Group extends AppCompatActivity
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
 	/*		if (resultCode == Activity.RESULT_OK){
 				Group_Transactions.adapter.addItem((IncomeModel) data.getSerializableExtra("model"));
 			}*/
 
 	}
-
-	/*TextView tv=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
-        tv.setText("Transactions");
-        TextView tv1=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
-        tv1.setText("Balances");
-        TextView tv2=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
-        tv2.setText("About");
-        mTypeface = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Roboto-Regular.ttf");
-        tv.setTypeface(mTypeface);
-        tab_layout.getTabAt(0).setCustomView(tv);
-        tab_layout.getTabAt(1).setCustomView(tv1);
-        tab_layout.getTabAt(2).setCustomView(tv2);*/
 
 	public class PagerAdapter extends FragmentPagerAdapter {
 		int mnooftabes;
@@ -147,7 +133,6 @@ public class Specific_Group extends AppCompatActivity
 		}
 
 		@Override public int getCount() {
-			// Show 3 total pages.
 			return mnooftabes;
 		}
 

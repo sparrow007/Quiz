@@ -155,7 +155,6 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
 
 			//Custom_items csitem=new Custom_items(category,title,amount,dateCreated);
 			//Item_list.add(new PieEntry());
-			amount = amount.replace("Rs ", "");
 			Float number = Float.parseFloat(amount);
 			if ("Expense".equals(Type)) {
 

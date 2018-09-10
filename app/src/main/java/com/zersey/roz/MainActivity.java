@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,7 +20,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -45,7 +43,6 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.github.florent37.materialtextfield.MaterialTextField;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -64,25 +61,6 @@ import java.util.List;
 @SuppressLint("NewApi") public class MainActivity extends AppCompatActivity
 	implements UserIdInterface {
 
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link FragmentPagerAdapter} derivative, which will keep every
-	 * loaded fragment in memory. If MainActivity.this becomes too memory intensive, it
-	 * may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
-
-    /*ImageView Img_File;
-    private TextView More_Button;
-    private ImageButton Delete_Button;
-    private AutoCompleteTextView AutoCompleteContacts;
-    private ArrayAdapter<String> ContactAdapter;
-    private MaterialTextField Material_Title, Material_Amount, Material_Date, Material_Notes, Material_Amount_Due;
-    public View layout_view = null;
-    private List<IncomeModel> customlist;
-    private ArrayList<String> Contact_list;
-    private TextView Category_text_view;*/
 	private CategoryAdapter adapter;
 	private boolean person_added = false;
 	private RecyclerView Category_Recycler_View;
@@ -118,8 +96,9 @@ import java.util.List;
 	private String[] Months = {
 		"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
 	}, Contact_Names;
-	private String USER="";
-	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout,Add_Member_Layout;
+	private String USER = "";
+	private LinearLayout Clothing, Entertainment, Food, Fuel, Health, Salary, More, Notes_Layout,
+		Add_Member_Layout;
 	//private CheckBox Clothing_checkbox, Entertainment_checkbox, Food_checkbox, Fuel_checkbox,
 	//		Health_checkbox, Salary_checkbox, More_checkbox;
 
@@ -139,8 +118,8 @@ import java.util.List;
 	private int pos;
 	private TransactionDbHelper mDbHelper;
 	private IncomeModel model;
-	private Boolean check=true;
-    private String Amount;
+	private Boolean check = true;
+	private String Amount;
 	//private pageradapter adapter;
 	private String Updated_Type = "";
 	private GroupModel groupModel;
@@ -150,12 +129,10 @@ import java.util.List;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//getSupportActionBar().setTitle("Roz");
 		setContentView(R.layout.activity_main);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		mDbHelper = TransactionDbHelper.getInstance(this);
-		//Fetch_Contacts();
 		Category_list = new ArrayList<>();
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
@@ -195,31 +172,31 @@ import java.util.List;
 		//Category_Recycler_View.setVisibility(View.VISIBLE);
 		initRecyclerView();
 		//customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
-		Material_Title = (MaterialTextField) findViewById(R.id.Material_Title);
+		Material_Title = findViewById(R.id.Material_Title);
 		Material_Title.setHasFocus(true);
-		Material_Amount = (MaterialTextField) findViewById(R.id.Material_Amount);
+		Material_Amount = findViewById(R.id.Material_Amount);
 		Material_Amount.setHasFocus(true);
-		Material_Amount_Due = (MaterialTextField) findViewById(R.id.Material_Amount_Due);
+		Material_Amount_Due = findViewById(R.id.Material_Amount_Due);
 		Material_Amount_Due.setVisibility(View.GONE);
-		More_TextButton = (TextView) findViewById(R.id.MoreButton);
+		More_TextButton = findViewById(R.id.MoreButton);
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
 		month_x = cal.get(Calendar.MONTH);
-		More_TextButton = (TextView) findViewById(R.id.MoreButton);
-		Delete_Button = (ImageButton) findViewById(R.id.Delete_Button);
+		More_TextButton = findViewById(R.id.MoreButton);
+		Delete_Button = findViewById(R.id.Delete_Button);
 		Delete_Button.setVisibility(View.GONE);
 		//Contact_Button = (ImageButton) findViewById(R.id.Contact_Button);
 		//Camera_Button=(ImageButton)findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
-		Img_File = (ImageView) findViewById(R.id.Img_file);
+		Img_File = findViewById(R.id.Img_file);
 		Img_File.setVisibility(View.GONE);
-		dateEdit = (TextView) findViewById(R.id.Date_Edit);
+		dateEdit = findViewById(R.id.Date_Edit);
 		dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
-		TitleEdit = (EditText) findViewById(R.id.Title_Edit);
-		AmountEdit = (EditText) findViewById(R.id.Amount_Edit);
-		Amount_Due_Edit = (EditText) findViewById(R.id.Amount_Due_Edit);
-		Add_Member_Layout=(LinearLayout)findViewById(R.id.Add_Member_Layout);
+		TitleEdit = findViewById(R.id.Title_Edit);
+		AmountEdit = findViewById(R.id.Amount_Edit);
+		Amount_Due_Edit = findViewById(R.id.Amount_Due_Edit);
+		Add_Member_Layout = findViewById(R.id.Add_Member_Layout);
 		//AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
 		Item_list = new ArrayList<>();
 		Split_List = new ArrayList<>();
@@ -229,36 +206,10 @@ import java.util.List;
 			Add_Member_Layout.setVisibility(View.GONE);
 			More_TextButton.setVisibility(View.GONE);
 			findViewById(R.id.Category_text_view).setVisibility(View.GONE);
-            check=false;
-		}else if (TextUtils.equals(getIntent().getStringExtra("Activity"),"Transactions")){
-			check=true;
+			check = false;
+		} else if (TextUtils.equals(getIntent().getStringExtra("Activity"), "Transactions")) {
+			check = true;
 		}
-
-/*		Clothing = (LinearLayout) findViewById(R.id.Clothing_layout);
-		Entertainment = (LinearLayout) findViewById(R.id.Entertainment_layout);
-		Food = (LinearLayout) findViewById(R.id.food_layout);
-		Fuel = (LinearLayout) findViewById(R.id.fuel_layout);
-		Health = (LinearLayout) findViewById(R.id.Health_layout);
-		Salary = (LinearLayout) findViewById(R.id.Salary_layout);
-		More = (LinearLayout) findViewById(R.id.More_layout);
-	Clothing_checkbox = (CheckBox) findViewById(R.id.Clothing_checkbox);
-		Entertainment_checkbox =
-				(CheckBox) findViewById(R.id.Entertainment_checkbox);
-		Food_checkbox = (CheckBox) findViewById(R.id.Food_checkbox);
-		Fuel_checkbox = (CheckBox) findViewById(R.id.Fuel_checkbox);
-		Health_checkbox = (CheckBox) findViewById(R.id.Health_checkbox);
-		Salary_checkbox = (CheckBox) findViewById(R.id.Salary_checkbox);
-		More_checkbox = (CheckBox) findViewById(R.id.More_checkbox);
-		Category_text_view = (TextView) findViewById(R.id.Category_text_view);
-
-		Clothing_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		Entertainment_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		Food_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		Fuel_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		Health_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		Salary_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-		More_checkbox.setOnCheckedChangeListener(checkedChangeListener);
-*/
 
 		// Amount_Edit=(EditText)findViewById(R.id.Group_Amount_Edit);
 		//Description_Edit=(EditText)findViewById(R.id.Group_Description_Edit);
@@ -267,7 +218,7 @@ import java.util.List;
 		//Add_Member_Layout=(LinearLayout)findViewById(R.id.Add_Member_Layout);
 		//Add_Member_ListView=(ListView)findViewById(R.id.Add_Member_ListView);
 
-		Submit_button = (TextView) findViewById(R.id.Submit_Button);
+		Submit_button = findViewById(R.id.Submit_Button);
 		dateEdit.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				onclick_date();
@@ -305,7 +256,7 @@ import java.util.List;
 				cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
 		datePicker.setTitle("Select Date");
-		fab = (ImageButton) findViewById(R.id.Fab_Camera_Button);
+		fab = findViewById(R.id.Fab_Camera_Button);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
                 /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -319,39 +270,6 @@ import java.util.List;
 			Delete_Button.setVisibility(View.VISIBLE);
 			Material_Title.setHasFocus(true);
 			Material_Amount.setHasFocus(true);
-			//Material_Date.setHasFocus(true);
-
-            /*
-            Updated_Category = getIntent().getStringExtra("Category");
-            Updated_Amount = getIntent().getStringExtra("Amount");
-            Updated_Title = getIntent().getStringExtra("Title");
-            Updated_Date = getIntent().getStringExtra("DateCreated");
-            Updated_Id = getIntent().getIntExtra("_ID", 0);*/
-			/*if ("Clothing".equals(Updated_Category)) {
-				Clothing.setBackgroundTintList(
-						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-				Category_text = "Clothing";
-			} else if ("Entertainment".equals(Updated_Category)) {
-				Entertainment.setBackgroundTintList(
-						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-				Category_text = "Entertainment";
-			} else if ("Food".equals(Updated_Category)) {
-				Food.setBackgroundTintList(
-						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-				Category_text = "Food";
-			} else if ("Fuel".equals(Updated_Category)) {
-				Fuel.setBackgroundTintList(
-						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-				Category_text = "Fuel";
-			} else if ("Health".equals(Updated_Category)) {
-				Health.setBackgroundTintList(
-						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-				Category_text = "Health";
-			} else if ("Salary".equals(Updated_Category)) {
-				Salary.setBackgroundTintList(
-						MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-				Category_text = "Salary";
-			}*/
 			Updated_Amount = Updated_Amount.replace("Rs ", "");
 			AmountEdit.setText(Updated_Amount);
 			TitleEdit.setText(Updated_Title);
@@ -362,15 +280,15 @@ import java.util.List;
 	private void initRecyclerView() {
 		//Category_Recycler_View=new RecyclerView(this);
 		Contact_RecyclerView = new RecyclerView(this);
-		Contact_RecyclerView = (RecyclerView) findViewById(R.id.Add_Member_RecyclerView);
+		Contact_RecyclerView = findViewById(R.id.Add_Member_RecyclerView);
 		Contact_RecyclerView.setLayoutManager(
 			new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL,
 				false));
 		//View view=Category_Recycler_View.findViewHolderForAdapterPosition(0);
-		if(TextUtils.isEmpty(Updated_Type)){
-		adapter = new CategoryAdapter(getApplicationContext(), Category_list,"");
-		}else {
-			adapter = new CategoryAdapter(getApplicationContext(), Category_list,Updated_Type);
+		if (TextUtils.isEmpty(Updated_Type)) {
+			adapter = new CategoryAdapter(getApplicationContext(), Category_list, "");
+		} else {
+			adapter = new CategoryAdapter(getApplicationContext(), Category_list, Updated_Type);
 		}
 		Category_Recycler_View.setLayoutManager(
 			new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL,
@@ -386,7 +304,7 @@ import java.util.List;
 		final EditText Notes_Edit;
 		LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
 		View notes_view = inflater.inflate(R.layout.notes_dialogue_layout, null);
-		Notes_Edit = (EditText) notes_view.findViewById(R.id.Notes_EditText);
+		Notes_Edit = notes_view.findViewById(R.id.Notes_EditText);
 		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
 			new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
 		alertDialogBuilder.setView(notes_view);
@@ -401,8 +319,8 @@ import java.util.List;
 
 			@Override public void onShow(DialogInterface dialogInterface) {
 
-				Button button = ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_POSITIVE);
-				Button Negative = ((AlertDialog) alertDialog).getButton(AlertDialog.BUTTON_NEUTRAL);
+				Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				Button Negative = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
 				Negative.setTextColor(getColor(R.color.colorPrimary));
 				button.setTextColor(getColor(R.color.colorPrimary));
 				Negative.setOnClickListener(new View.OnClickListener() {
@@ -431,26 +349,29 @@ import java.util.List;
 
 	public void Dialog(View view) {
 		Amount = AmountEdit.getText().toString();
-		if (TextUtils.isEmpty(Amount)){
-			Amount="0";
+		if (TextUtils.isEmpty(Amount)) {
+			Amount = "0";
 		}
 		if (!check) {
 			String[] names = groupModel.getUsers().split(",");
-			//String Amount = AmountEdit.getText().toString();
-			int no_of_Person = Item_list.size();
-			String Specific_Amount="";
+			List<ContactModel> userList = mDbHelper.getUserWithUserId(names);
+			String Specific_Amount;
 			if (TextUtils.isEmpty(Amount)) {
 				Specific_Amount = "0";
 			} else {
-				Specific_Amount = "" + Integer.parseInt(Amount) / (names.length+1);
+				Specific_Amount = "" + Integer.parseInt(Amount) / (userList.size() + 1);
 			}
 			Log.d("Dialog: ", Item_list.size() + "");
 			Split_List = new ArrayList<>();
-			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
-			for (int i = 0; i < names.length; i++) {
-				Split_List.add(new Split_Contact_model(names[i], Specific_Amount));
+
+			ContactModel you = new ContactModel();
+			you.setName("You");
+			Split_List.add(new Split_Contact_model(you, Specific_Amount));
+
+			for (int i = 0; i < userList.size(); i++) {
+				Split_List.add(new Split_Contact_model(userList.get(i), Specific_Amount));
 			}
-		}else if(check){
+		} else if (check) {
 			//String[] names = Item_list.get;
 
 			int no_of_Person = Item_list.size();
@@ -458,51 +379,49 @@ import java.util.List;
 			if (TextUtils.isEmpty(Amount)) {
 				Specific_Amount = "0";
 			} else {
-				Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size()+1);
+				Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
 			}
 			Log.d("Dialog: ", Item_list.size() + "");
 			Split_List = new ArrayList<>();
-			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
+			ContactModel you = new ContactModel();
+			you.setName("You");
+			Split_List.add(new Split_Contact_model(you, Specific_Amount));
+			if (Item_list.isEmpty()) {
+				Toast.makeText(this, "Add members ", Toast.LENGTH_SHORT).show();
+				return;
+			}
 			for (int i = 0; i < Item_list.size(); i++) {
-				Split_List.add(new Split_Contact_model(Long.toString(Item_list.get(i).getId()), Specific_Amount));
+				Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
 			}
 		}
-		/*if (Split_List.size() > 0) {
-			Split_List = new ArrayList<>();
-			for (int i = 0; i < Item_list.size(); i++) {
-
-				Split_List.add(new Split_Contact_model(Item_list.get(i).getContact_Person_Name(),
-					Specific_Amount));
-			}
-		} else {
-			//Split_List = new ArrayList<>();
-			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
-		}*/
 		Log.d("Dialog: ", Split_List.size() + "");
 		LayoutInflater LI = LayoutInflater.from(MainActivity.this);
 		View PromptsView = LI.inflate(R.layout.split_dialog_layout, null);
-		Split_Spinner = (Spinner) PromptsView.findViewById(R.id.Split_Spinner);
-		Split_RecyclerView = (RecyclerView) PromptsView.findViewById(R.id.Dialog_RecyclerView);
-		Split_Notes = (TextView) PromptsView.findViewById(R.id.Dialog_Split_Notes);
+		Split_Spinner = PromptsView.findViewById(R.id.Split_Spinner);
+		Split_RecyclerView = PromptsView.findViewById(R.id.Dialog_RecyclerView);
+		Split_Notes = PromptsView.findViewById(R.id.Dialog_Split_Notes);
 		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
-		Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"",Integer.parseInt(Amount));
+		Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "", Integer.parseInt(Amount));
 		Split_RecyclerView.setAdapter(Adapter);
 
 		Split_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            if(position==2){
-	            Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"ratio",Integer.parseInt(Amount));
-	            Split_RecyclerView.setAdapter(Adapter);
-            }
-                if(position==1){
-                    Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"",Integer.parseInt(Amount));
-                    Split_RecyclerView.setAdapter(Adapter);
-                }
-                if(position==0){
-                    Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List,"Equally",Integer.parseInt(Amount));
-                    Split_RecyclerView.setAdapter(Adapter);
-                }
+				if (position == 2) {
+					Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "ratio",
+						Integer.parseInt(Amount));
+					Split_RecyclerView.setAdapter(Adapter);
+				}
+				if (position == 1) {
+					Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "",
+						Integer.parseInt(Amount));
+					Split_RecyclerView.setAdapter(Adapter);
+				}
+				if (position == 0) {
+					Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "Equally",
+						Integer.parseInt(Amount));
+					Split_RecyclerView.setAdapter(Adapter);
+				}
 			}
 
 			@Override public void onNothingSelected(AdapterView<?> parent) {
@@ -515,7 +434,7 @@ import java.util.List;
 		alertDialogBuilder.setCancelable(true);
 		alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override public void onClick(DialogInterface dialog, int which) {
-
+				Split_List = Adapter.getList();
 			}
 		});
 		Dialog dialog = alertDialogBuilder.create();
@@ -524,223 +443,19 @@ import java.util.List;
 		dialog.getWindow()
 			.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-
 	}
-
-
-
-	/*Thread th = new Thread() {
-		@Override public void run() {
-
-			ArrayAdapter<String> contactAdapter = new ArrayAdapter<String>(MainActivity.this,
-				android.R.layout.simple_dropdown_item_1line, Contact_Names);
-			AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
-			AutoCompleteContacts.setThreshold(1);
-			AutoCompleteContacts.setAdapter(contactAdapter);
-		}
-	};
-
-	private CheckBox.OnCheckedChangeListener checkedChangeListener =
-			new CheckBox.OnCheckedChangeListener() {
-				 @Override public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					if (isChecked == true) {
-						if (buttonView.getParent().equals(Clothing)) {
-							Category_text = "Expense";
-							Clothing.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-							Entertainment.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Food.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							/*Fuel.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Health.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Salary.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-						}
-						if (buttonView.getParent().equals(Entertainment)) {
-							Category_text = "Income";
-							Entertainment.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-							Clothing.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Food.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							/*Fuel.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Health.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Salary.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-						}
-						if (buttonView.getParent().equals(Food)) {
-							Category_text = "Group Expense";
-							Food.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-							Entertainment.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Clothing.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Fuel.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Health.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Salary.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-						}
-						/*if (buttonView.getParent().equals(Fuel)) {
-							Category_text = "Fuel";
-							Fuel.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-							Entertainment.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Food.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Clothing.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Health.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Salary.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-						}*/
-						/*if (buttonView.getParent().equals(Health)) {
-							Category_text = "Health";
-							Health.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-							Entertainment.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Food.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Fuel.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Clothing.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							Salary.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-							More.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-						}*/
-
-                        /*if(buttonView.getParent().equals(Salary)){
-                            Category_text="Salary";
-                            Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(More)){
-
-                            More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-					} else {
-						if (buttonView.getParent().equals(Clothing)) {
-							Category_text = "";
-							Clothing.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                     /*  Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-						}
-						if (buttonView.getParent().equals(Entertainment)) {
-							Category_text = "";
-							Entertainment.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                      /* Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-						}
-						if (buttonView.getParent().equals(Food)) {
-							Category_text = "";
-							Food.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       /*Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-						}
-						/*if (buttonView.getParent().equals(Fuel)) {
-							Category_text = "";
-							Fuel.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-						}*/
-						/*if (buttonView.getParent().equals(Health)) {
-							Category_text = "";
-							Health.setBackgroundTintList(
-									MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-						}*/
-                        /*if(buttonView.getParent().equals(Salary)){
-                            Category_text="";
-                            Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       /*Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-	//}
-                        /*if(buttonView.getParent().equals(More)){
-                            Category_text="";
-                            More.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                      /* Entertainment.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-						//}
-					}
-				}
-			};*/
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		//callbackManager.onActivityResult(requestCode, resultCode, data);
-		Log.d("onActivityResult: ",requestCode+"");
-        if (resultCode==-1){
+		Log.d("onActivityResult: ", requestCode + "");
+		if (resultCode == -1) {
 			Contact_RecyclerView.setVisibility(View.VISIBLE);
 			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
-			Log.d("onActivityResult: ",Item_list.size()+"");
+			Log.d("onActivityResult: ", Item_list.size() + "");
 			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
 			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
-		}else if (requestCode == 2 && resultCode == RESULT_OK) {
+		} else if (requestCode == 2 && resultCode == RESULT_OK) {
 
 			//Bitmap photo = (Bitmap) data.getExtras().get("data");
 			Uri uri = data.getData();
@@ -771,7 +486,7 @@ import java.util.List;
 
 					cNumber = c.getString(
 						c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-					cNumber = cNumber.replace(" ", "").replace("+", "");
+					cNumber = cNumber.replaceAll("[^0-9]", "");
 					if (cNumber.length() > 10) {
 						code = cNumber.substring(0, cNumber.length() - 10);
 						cNumber = cNumber.substring(cNumber.length() - 10);
@@ -801,12 +516,8 @@ import java.util.List;
 	public boolean Check_Contact_List(String Number) {
 		Boolean check = false;
 		for (int i = 0; i < Item_list.size(); i++) {
-			if (TextUtils.equals(Item_list.get(i).getNumber(), Number)) {
-				check = true;
-				//return true;
-			} else {
-				check = false;
-			}
+			//return true;
+			check = TextUtils.equals(Item_list.get(i).getNumber(), Number);
 		}
 		return check;
 	}
@@ -853,16 +564,6 @@ import java.util.List;
 		alertDialog.show();
 	}
 
-
-  /*  @Override
-    protected Dialog onCreateDialog(int id){
-        if(id==DIALOG_ID){
-            return new DatePickerDialog(MainActivity.this,dateSetListener,year_x,month_x,day_x);
-        }
-        return null;
-    }
-*/
-
 	private DatePickerDialog.OnDateSetListener dateSetListener =
 		new DatePickerDialog.OnDateSetListener() {
 			@Override public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
@@ -870,16 +571,6 @@ import java.util.List;
 				month_x = month + 1;
 				day_x = dayOfMonth;
 				Selected_date = dayOfMonth;
-				/*year_x = cal.get(Calendar.YEAR);
-				day_x = cal.get(Calendar.DAY_OF_MONTH);
-				month_x = cal.get(Calendar.MONTH);
-                     if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH) ){
-                         dateEdit.setText("Today");
-                     } else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)+1 ){
-                         dateEdit.setText("Tomorrow");
-                     }else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)-1 ){
-                         dateEdit.setText("Yesterday");
-                     }else{ dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);}*/
 				dateEdit.setText(year_x + "-" + month_x + "-" + day_x);
 			}
 		};
@@ -954,6 +645,7 @@ import java.util.List;
 					//      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
 					//customlist.add(items);
 					//Log.d( "Submit: ",CardClicked);
+
 					SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
 					GroupModel groupModel2 = new GroupModel();
 
@@ -967,11 +659,29 @@ import java.util.List;
 						new ServerUtil(MainActivity.this).createGroup(groupModel2, null);
 						groupModel2.setId(newrowId);
 					}
+
+					StringBuilder totalAmounts = new StringBuilder();
+					StringBuilder payerIds = new StringBuilder();
+					StringBuilder amountsPaid = new StringBuilder();
+
+					for (Split_Contact_model s : Split_List) {
+						totalAmounts.append(s.getSplit_Amount()).append(",");
+						if (s.getContact_Name().getName().equalsIgnoreCase("you")) {
+							payerIds.append(prefs.getString("userid", null)).append(",");
+						} else {
+							payerIds.append(s.getContact_Name().getUserId()).append(",");
+						}
+						amountsPaid.append("0.00").append(",");
+					}
+
 					expenseModel.setType(Category_text);
 					expenseModel.setTitle(Title_text);
-					expenseModel.setTotalAmount(Amount_text);
+					expenseModel.setTotalAmount(totalAmounts.toString());
 					expenseModel.setPaidAtDate(DateEdit_text);
-					expenseModel.setAmountDue(Amount_text);
+					expenseModel.setAmountPaid(amountsPaid.toString());
+					expenseModel.setAmountDue(totalAmounts.toString());
+					expenseModel.setPayerId(payerIds.toString());
+					expenseModel.setInvoiceId("");
 					expenseModel.setGroupId(groupModel2.getId());
 					try {
 						expenseModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
@@ -980,7 +690,6 @@ import java.util.List;
 					} catch (NoSuchAlgorithmException e) {
 						e.printStackTrace();
 					}
-					expenseModel.setPayerId(payerId);
 
 					if (groupModel != null) {
 						expenseModel.setGroupId(groupModel.getGroupId());
@@ -1031,8 +740,8 @@ import java.util.List;
 					Updated_Amount = AmountEdit.getText().toString();
 					Updated_Date = dateEdit.getText().toString();
 
-					model.setPaidAtDate(Updated_Date);
-					model.setTotalAmount(Updated_Amount);
+					//model.setPaidAtDate(Updated_Date);
+					//model.setTotalAmount(Updated_Amount);
 					model.setTitle(Updated_Title);
 					model.setCatId(Updated_Category);
 					model.setGroupId(Updated_Id);
@@ -1086,46 +795,6 @@ import java.util.List;
 	}
 
 	public void MoreButton() {
-		/*Fetch_Contacts();
-		//th.run();
-		if (Notes_Layout.getVisibility() == View.GONE) {
-			Notes_Layout.setVisibility(View.VISIBLE);
-			Material_Amount_Due.setVisibility(View.VISIBLE);
-			if (!TextUtils.isEmpty(AmountEdit.getText().toString())) {
-				Amount_Due_Edit.setText(AmountEdit.getText().toString());
-			} else {
-				Amount_Due_Edit.setText("");
-			}
-
-            /*YoYo.with(Techniques.SlideInLeft)
-                    .duration(1000)
-                    .repeat(0)
-                    .playOn(Notes_Layout);*
-			Material_Notes.setHasFocus(true);
-			Material_Amount_Due.setHasFocus(true);
-			// More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
-
-		} else {
-			Material_Notes.setHasFocus(false);
-			Material_Amount_Due.setHasFocus(false);
-			Notes_Layout.setVisibility(View.GONE);
-			Material_Amount_Due.setVisibility(View.GONE);
-			//More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
-           /* YoYo.with(Techniques.SlideOutLeft)
-                    .duration(1000)
-                    .repeat(0)
-                    .playOn(Notes_Layout);
-            final Handler handler3 = new Handler();
-            handler3.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    Notes_Layout.setVisibility(View.GONE);
-                    More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
-                }
-            }, 500);
-
-		}*/
 	}
 
 	public void OnBackPressed(View view) {
@@ -1137,8 +806,8 @@ import java.util.List;
 		/*Intent intent =
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 3);*/
-		Intent intent=new Intent(this,Add_Members_Activity.class);
-		startActivityForResult(intent,1);
+		Intent intent = new Intent(this, Add_Members_Activity.class);
+		startActivityForResult(intent, 1);
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String permissions[],
@@ -1146,55 +815,41 @@ import java.util.List;
 		switch (requestCode) {
 			case 100: {
 
-				// If request is cancelled, the result arrays are empty.
 				if (grantResults.length > 0
 					&& grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-					// permission was granted, yay! Do the
-					// contacts-related task you need to do.
 				} else {
-
-					// permission denied, boo! Disable the
-					// functionality that depends on MainActivity.this permission.
 					Toast.makeText(MainActivity.this,
 						"Permission denied to read your External storage", Toast.LENGTH_SHORT)
 						.show();
 				}
 				return;
 			}
-
-			// other 'case' lines to check for other
-			// permissions MainActivity.this app might request
 		}
 	}
 
 	public void Fetch_Contacts() {
 
-	thread.run();}
-		/*Contact_Names = new String[Contact_list.size()];
-		for (int i = 0; i < Contact_Names.length; i++) {
-			Contact_Names[i] = Contact_list.get(i);
-		}*/
-		// Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
-		//Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
+		thread.run();
+	}
 
-
-	Thread thread=new Thread(new Runnable() {
-		@Override
-		public void run() {
+	Thread thread = new Thread(new Runnable() {
+		@Override public void run() {
 			int count = mDbHelper.getContactCount();
-			if (count <=0) {
+			if (count <= 0) {
 				Contact_list = new ArrayList<>();
 				//ContentResolver cr = MainActivity.this.getContentResolver();
 				//Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
 				//phones.moveToFirst();
-				Cursor phones = getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,null,null, null);
-				while (phones.moveToNext())
-				{
-					String name=phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-					String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-					Log.d( "run: ",phoneNumber);
-					ContactModel model=new ContactModel();
+				Cursor phones =
+					getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+						null, null, null, null);
+				while (phones.moveToNext()) {
+					String name = phones.getString(
+						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+					String phoneNumber = phones.getString(
+						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+					Log.d("run: ", phoneNumber);
+					ContactModel model = new ContactModel();
 					model.setName(name);
 					model.setNumber(phoneNumber);
 					mDbHelper.addContact(model);
@@ -1306,501 +961,4 @@ import java.util.List;
 		payerId = userId;
 		users += "," + userId;
 	}
-
-
-
-
-
-
-
-
-
-
-/*
-    Thread th= new Thread(){
-        @Override
-        public void run() {
-            final String[] COUNTRIES = new String[]{
-                    "balanced", "high-protein", "high-fiber", "low-fat", "low-carb", "low-sodium"};
-            ArrayAdapter<String> contactAdapter=new ArrayAdapter<String>(MainActivity.MainActivity.this,android.R.layout.simple_dropdown_item_1line,Contact_Names);
-            AutoCompleteTextView autoCompleteContacts=(AutoCompleteTextView)findViewById(R.id.Notes_Edit);
-
-            autoCompleteContacts.setThreshold(1);
-            autoCompleteContacts.setAdapter(contactAdapter);
-        }
-    };
-
-    private CheckBox.OnCheckedChangeListener checkedChangeListener=
-            new CheckBox.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    if (isChecked==true){
-                        if(buttonView.getParent().equals(Clothing)){
-                            Category_text="Clothing";
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(Entertainment)){
-                            Category_text="Entertainment";
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(Food)){
-                            Category_text="Food";
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(Fuel)){
-                            Category_text="Fuel";
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(Health)){
-                            Category_text="Health";
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(Salary)){
-                            Category_text="Salary";
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                        if(buttonView.getParent().equals(More)){
-
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                        }
-                    }else{
-                        if(buttonView.getParent().equals(Clothing)){
-                            Category_text="";
-                            Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                     /*  Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-
-                      /*  if(buttonView.getParent().equals(Entertainment)){
-                            Category_text="";
-                            Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                      /* Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                       /* }
-                        if(buttonView.getParent().equals(Food)){
-                            Category_text="";
-                            Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       /*Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                       /* }
-                        if(buttonView.getParent().equals(Fuel)){
-                            Category_text="";
-                            Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                  /*     Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                       /* }
-                        if(buttonView.getParent().equals(Health)){
-                            Category_text="";
-                            Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       /*Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                      /*  }
-                        if(buttonView.getParent().equals(Salary)){
-                            Category_text="";
-                            Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                       /*Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                      /*  }
-                        if(buttonView.getParent().equals(More)){
-                            Category_text="";
-                            More.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newlightblue));
-                      /* Entertainment.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Food.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Fuel.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Health.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Salary.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));
-                       Clothing.setBackgroundTintList(MainActivity.MainActivity.this.getResources().getColorStateList(R.color.newdarkblue));*/
-                     /*   }
-                    }
-
-
-                }
-            };
-
-    @Override
-    protected void onActivityResult(int requestCode,int resultCode,Intent data){
-        super.onActivityResult(requestCode, resultCode, data);
-        //callbackManager.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 2 && resultCode==RESULT_OK) {
-
-            //Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri uri = data.getData();
-            Img_File.setVisibility(View.VISIBLE);
-            Img_File.setImageURI(uri);
-            Image_uri=uri;
-        }else if (requestCode == 1 && resultCode==RESULT_OK) {
-            //Bitmap photo = (Bitmap) data.getExtras().get("data");
-            Uri uri = data.getData();
-            Img_File.setVisibility(View.VISIBLE);
-            Image_uri=uri;
-            Img_File.setVisibility(View.VISIBLE);
-            Img_File.setImageURI(uri);
-
-        }else if (requestCode == 3 && resultCode==RESULT_OK) {
-            //Bitmap photo = (Bitmap) data.getExtras().get("data");
-           // Uri uri = data.getData();
-            Uri contactData = data.getData();
-            Cursor c = managedQuery(contactData, null, null, null, null);
-            if (c.moveToFirst()) {
-                String name = c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                if(TextUtils.isEmpty(AutoCompleteContacts.getText().toString())){
-                    AutoCompleteContacts.setText(name);
-                    //Material_Notes.setHasFocus(true);
-                }else {
-                    AutoCompleteContacts.append(" , " + name);
-                    //Material_Notes.setHasFocus(true);}
-                }
-            }
-        }
-    }
-
-
-    public void onclick_date(View view){
-
-        showDialog(DIALOG_ID);
-    }
-
-    public void Onclick_Image_button(View view){
-        final EditText Image_Link;
-
-        LayoutInflater LI=LayoutInflater.from(MainActivity.MainActivity.this);
-        //View PromptsView=LI.inflate(R.layout.image_dialog,null);
-
-        //Image_Link=(EditText)PromptsView.findViewById(R.id.);
-
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.MainActivity.this);
-
-        //alertDialogBuilder.setView(PromptsView);
-
-        alertDialogBuilder.setCancelable(true)
-                .setTitle(Html.fromHtml("<font color='#3F51B5'>Choose an Image from</font>"))
-                .setPositiveButton(Html.fromHtml("<font color='#3F51B5'>camera</font>"), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        startActivityForResult(intent,2);
-                        //mEditor.insertImage(Image_Link.getText().toString(),"Image");
-                        //mEditor.insertLink(Href_Link.getText().toString(), Href_Title.getText().toString());
-
-                    }
-                })
-                .setNegativeButton(Html.fromHtml("<font color='#3F51B5'>Gallery</font>"), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent i = new Intent(
-                                Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                        startActivityForResult(i, 1);
-                    }
-                });
-
-        AlertDialog alertDialog=alertDialogBuilder.create();
-        alertDialog.show();
-    }
-
-     @Override
-     protected Dialog onCreateDialog(int id){
-        if(id==DIALOG_ID){
-            return new DatePickerDialog(MainActivity.this,dateSetListener,year_x,month_x,day_x);
-        }
-        return null;
-     }
-
-
-
-     private DatePickerDialog.OnDateSetListener dateSetListener =
-             new DatePickerDialog.OnDateSetListener() {
-                 @Override
-                 public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                     year_x=year;
-                     month_x=month+1;
-                     day_x=dayOfMonth;
-                     Selected_date=dayOfMonth;
-                     year_x=cal.get(Calendar.YEAR);
-                     day_x=cal.get(Calendar.DAY_OF_MONTH);
-                     month_x=cal.get(Calendar.MONTH);
-                     /*if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH) ){
-                         dateEdit.setText("Today");
-                     } else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)+1 ){
-                         dateEdit.setText("Tomorrow");
-                     }else if(year==cal.get(Calendar.YEAR) && month==cal.get(Calendar.MONTH) && dayOfMonth==cal.get(Calendar.DAY_OF_MONTH)-1 ){
-                         dateEdit.setText("Yesterday");
-                     }else{ dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);}*/
-                    /* dateEdit.setText(dayOfMonth+" "+Months[month]+" "+year);
-                     }
-             };
-
-
-
-
-
-
-
-
-
-
-
-
-    public void Submit(View view){
-        Amount_text=AmountEdit.getText().toString();
-        Add_Person_text=AutoCompleteContacts.getText().toString();
-        Title_text=TitleEdit.getText().toString();
-        View focus=null;
-        Boolean cancel=false;
-        if(TextUtils.isEmpty(Category_text)){
-            Snackbar.make(view, "Category can't be empty", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-        }else {
-            if (day_x == 0) {
-                dateEdit.setError("Date can't be empty");
-                focus = dateEdit;
-                cancel = true;
-            }
-            if (!TextUtils.isDigitsOnly(Amount_text)) {
-                AmountEdit.setError("Amount can't be empty");
-                focus = AmountEdit;
-                cancel = true;
-            }
-            if(TextUtils.isEmpty(Title_text)){
-                TitleEdit.setError("Title can't be empty");
-                focus=TitleEdit;
-                cancel=true;
-            }
-
-            if (cancel == true) {
-                focus.requestFocus();
-
-            } else {
-                if (TextUtils.isEmpty(CardClicked)) {
-                    String DateEdit_text = dateEdit.getText().toString();
-                    //Custom_items items = new Custom_items(Category_text,
-                      //      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
-                    //customlist.add(items);
-                    TransactionDbHelper mdbhelper = new TransactionDbHelper(MainActivity.this);
-                    SQLiteDatabase db = mdbhelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    //values.put(recipe_entry.Column_Recipe_Image,byteimage);
-                    values.put(Transaction_Entry.COLUMN_TITLE, Title_text);
-                    values.put(Transaction_Entry.COLUMN_CATEGORY, Category_text);
-                    values.put(Transaction_Entry.COLUMN_AMOUNT, "Rs " + Amount_text);
-                    values.put(Transaction_Entry.COLUMN_DATE_CREATED, DateEdit_text);
-                    //values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
-                    //values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
-                    long newRowId = db.insert(Transaction_Entry.TABLE_NAME, null, values);
-                    if (newRowId == -1) {
-                        // If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
-                        Toast.makeText(MainActivity.this, "Error with saving pet", Toast.LENGTH_SHORT).show();
-                    } else {
-                        // Otherwise, the insertion was successful and we can display a toast with the row COLUMN_ONLINE_ID.
-                        Toast.makeText(MainActivity.this, "Recipe saved with row id: " + newRowId, Toast.LENGTH_SHORT).show();
-                    }
-                    Bundle args = new Bundle();
-                    //args.putParcelableArrayList("ARRAYLIST",(ArrayList<? extends Parcelable>) customlist);
-                    Toast.makeText(MainActivity.MainActivity.this, "Success", Toast.LENGTH_LONG).show();
-
-                }else{
-                    Updated_Title=TitleEdit.getText().toString();
-                    Updated_Category=Category_text;
-                    Updated_Amount=AmountEdit.getText().toString();
-                    Updated_Date=dateEdit.getText().toString();
-
-                    TransactionDbHelper mdbhelper = new TransactionDbHelper(MainActivity.this);
-                    SQLiteDatabase db = mdbhelper.getWritableDatabase();
-                    ContentValues values = new ContentValues();
-                    //values.put(recipe_entry.Column_Recipe_Image,byteimage);
-                    values.put(Transaction_Entry.COLUMN_TITLE, Updated_Title);
-                    values.put(Transaction_Entry.COLUMN_CATEGORY, Updated_Category);
-                    values.put(Transaction_Entry.COLUMN_AMOUNT, "Rs " + Updated_Amount);
-                    values.put(Transaction_Entry.COLUMN_DATE_CREATED, Updated_Date);
-                    db.update(Transaction_Entry.TABLE_NAME,values,Transaction_Entry._id+"="+Updated_Id,null);
-
-                }
-
-                Intent intent = new Intent(MainActivity.MainActivity.this, Main2Activity.class);
-                startActivity(intent);
-
-            }
-        }
-    }
-
-
-    public void Delete_Button(View view){
-        TransactionDbHelper mdbhelper = new TransactionDbHelper(MainActivity.this);
-        SQLiteDatabase db = mdbhelper.getWritableDatabase();
-       // ContentValues values = new ContentValues();
-        db.delete(Transaction_Entry.TABLE_NAME, Transaction_Entry._id + " = ?", new String[]{""+Updated_Id});
-        Intent intent = new Intent(MainActivity.MainActivity.this, Main2Activity.class);
-        startActivity(intent);
-
-    }
-
-
-
- public void MoreButton(View view){
-     Fetch_Contacts();
-     th.run();
-        if(Notes_Layout.getVisibility()==View.GONE){
-            Notes_Layout.setVisibility(View.VISIBLE);
-            Material_Amount_Due.setVisibility(View.VISIBLE);
-            if(!TextUtils.isEmpty(AmountEdit.getText().toString())) {
-                Amount_Due_Edit.setText(AmountEdit.getText().toString());
-            }else{Amount_Due_Edit.setText("");}
-            /*YoYo.with(Techniques.SlideInLeft)
-                    .duration(1000)
-                    .repeat(0)
-                    .playOn(Notes_Layout);*/
-           /* Material_Notes.setHasFocus(true);
-            Material_Amount_Due.setHasFocus(true);
-           // More_Button.setImageDrawable(getResources().getDrawable(R.drawable.uparrow));
-
-        }else{
-            Material_Notes.setHasFocus(false);
-            Material_Amount_Due.setHasFocus(false);
-            Notes_Layout.setVisibility(View.GONE);
-            Material_Amount_Due.setVisibility(View.GONE);
-            //More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
-           /* YoYo.with(Techniques.SlideOutLeft)
-                    .duration(1000)
-                    .repeat(0)
-                    .playOn(Notes_Layout);
-            final Handler handler3 = new Handler();
-            handler3.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-
-                    Notes_Layout.setVisibility(View.GONE);
-                    More_Button.setImageDrawable(getResources().getDrawable(R.drawable.downarrow));
-                }
-            }, 500);*/
-
-	/* }
-}
-
-
-public void Contact_Button(View view){
-  Intent intent= new Intent(Intent.ACTION_PICK,  ContactsContract.Contacts.CONTENT_URI);
-
-  startActivityForResult(intent, 3);
-}
-
- @Override
- public void onRequestPermissionsResult(int requestCode,
-										String permissions[], int[] grantResults) {
-	 switch (requestCode) {
-		 case 100: {
-
-			 // If request is cancelled, the result arrays are empty.
-			 if (grantResults.length > 0
-					 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-				 // permission was granted, yay! Do the
-				 // contacts-related task you need to do.
-			 } else {
-
-				 // permission denied, boo! Disable the
-				 // functionality that depends on MainActivity.this permission.
-				 Toast.makeText(MainActivity.MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
-			 }
-			 return;
-		 }
-
-		 // other 'case' lines to check for other
-		 // permissions MainActivity.this app might request
-	 }
- }
-
-
-
- public void Fetch_Contacts(){
-	 ContentResolver cr = getContentResolver();
-  Cursor phones = cr.query(ContactsContract.Contacts.CONTENT_URI, null,null,null, null);
-  //phones.moveToFirst();
-  while (phones.moveToNext())
-  {
-	  String name=phones.getString(phones.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-	  //String phoneNumber = phones.getString(phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-	  //Toast.makeText(getApplicationContext(),name, Toast.LENGTH_LONG).show();
-	  Contact_list.add(name);
-	  phones.moveToNext();
-  }
-  phones.close();
-
-  Contact_Names=new String[200];
-  for(int i=0;i<200;i++){
-	  Contact_Names[i]=Contact_list.get(i);
-  }
-	// Toast.makeText(getApplicationContext(),"Number of contacts present "+Contact_list.size(), Toast.LENGTH_LONG).show();
-  //Toast.makeText(getApplicationContext(),"last contact :"+Contact_Names[199], Toast.LENGTH_LONG).show();
-
-}
-
-
-*/
 }

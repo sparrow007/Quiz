@@ -11,48 +11,43 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Specific_Group_Transaction extends AppCompatActivity {
-    AppBarLayout mAppBarLayout;
-    private List<String> list;
-    private RecyclerView Specific_recyclerView;
-    private Toolbar toolbar;
-    private TextView DATE,AMOUNT,TITLE;
-    private String Amount,Date,Title;
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_specific_group_transaction);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        list=new ArrayList<>();
-        list.add("Bharat");
-        list.add("Amrit");
-        list.add("Rahul");
-        mAppBarLayout = findViewById(R.id.appbar);
-        DATE=(TextView)findViewById(R.id.DATE_TextView);
-        AMOUNT=(TextView)findViewById(R.id.AMOUNT_TextView);
-        TITLE=(TextView)findViewById(R.id.toolbar_TextView);
-        Amount=getIntent().getStringExtra("Amount");
-        Title=getIntent().getStringExtra("Title");
-        Date=getIntent().getStringExtra("DateCreated");
-        Log.d("onCreate: ",Amount+"");
-        AMOUNT.setText("Rs "+Amount);
-        DATE.setText(Date);
-        TITLE.setText(Title);
-        //toolbar.setTitle("Big Gift");
-        //toolbar.setSubtitle("20 Aug");
-        //getSupportActionBar().setDisplayShowTitleEnabled(true   );
-        //setSupportActionBar(toolbar);
-        mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
-            @Override
-            public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+	AppBarLayout mAppBarLayout;
+	private List<String> list;
+	private RecyclerView Specific_recyclerView;
+	private Toolbar toolbar;
+	private TextView DATE, AMOUNT, TITLE;
+	private String Amount, Date, Title;
+
+	@Override protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_specific_group_transaction);
+		toolbar = (Toolbar) findViewById(R.id.toolbar);
+		setSupportActionBar(toolbar);
+		list = new ArrayList<>();
+		list.add("Bharat");
+		list.add("Amrit");
+		list.add("Rahul");
+		mAppBarLayout = findViewById(R.id.appbar);
+		DATE = (TextView) findViewById(R.id.DATE_TextView);
+		AMOUNT = (TextView) findViewById(R.id.AMOUNT_TextView);
+		TITLE = (TextView) findViewById(R.id.toolbar_TextView);
+		Amount = getIntent().getStringExtra("Amount");
+		Title = getIntent().getStringExtra("Title");
+		Date = getIntent().getStringExtra("DateCreated");
+		Log.d("onCreate: ", Amount + "");
+		AMOUNT.setText("Rs " + Amount);
+		DATE.setText(Date);
+		TITLE.setText(Title);
+		//toolbar.setTitle("Big Gift");
+		//toolbar.setSubtitle("20 Aug");
+		//getSupportActionBar().setDisplayShowTitleEnabled(true   );
+		//setSupportActionBar(toolbar);
+		mAppBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+			@Override public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
                 /*if (verticalOffset == 0) {
                     getSupportActionBar().setTitle(" ");
                     Toast.makeText(getApplicationContext(),"Expanded",Toast.LENGTH_LONG).show();
@@ -67,24 +62,23 @@ public class Specific_Group_Transaction extends AppCompatActivity {
                     //Toast.makeText(getApplicationContext(),"Idle",Toast.LENGTH_LONG).show();
                 }*/
 
-            }
-        });
-initRecyclerView();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-    }
+			}
+		});
+		initRecyclerView();
+		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+		fab.setOnClickListener(new View.OnClickListener() {
+			@Override public void onClick(View view) {
+				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+					.setAction("Action", null)
+					.show();
+			}
+		});
+	}
 
-    public void initRecyclerView(){
-        Specific_recyclerView=new RecyclerView(this);
-        Specific_recyclerView=findViewById(R.id.Specific_Recycler_View);
-        Specific_recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        Specific_recyclerView.setAdapter(new Specific_Group_transaction_Adapter(list));
-    }
-
+	public void initRecyclerView() {
+		Specific_recyclerView = new RecyclerView(this);
+		Specific_recyclerView = findViewById(R.id.Specific_Recycler_View);
+		Specific_recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		//Specific_recyclerView.setAdapter(new Specific_Group_transaction_Adapter(list));
+	}
 }

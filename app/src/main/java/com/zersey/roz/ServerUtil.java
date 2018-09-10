@@ -2,9 +2,13 @@ package com.zersey.roz;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,7 +36,33 @@ public class ServerUtil {
 				if (itemList != null) {
 					for (ContactModel m : itemList) {
 						if (m.getUserId() == 0) {
-							NetworkUtil.shareNote(context, Long.toString(id),
+							NetworkUtil.inviteLink(context, Long.toString(id),
+								groupModel.getGroupName(), m.getNumber());
+						}
+					}
+				}
+			}
+
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+				t.printStackTrace();
+			}
+		});
+	}
+
+	public void editGroup(final GroupModel groupModel, final List<ContactModel> itemList) {
+		Call<JsonObject> result = NetworkUtil.getRestAdapter(context)
+			.editGroup(groupModel.getGroupId(), groupModel.getGroupName(), groupModel.getGroupDesc(),
+				groupModel.getUsers(), groupModel.getTypeId(), "");
+		result.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+				JsonObject object = response.body();
+				long id = object.get("id").getAsLong();
+				groupModel.setGroupId(id);
+				if (itemList != null) {
+					for (ContactModel m : itemList) {
+						if (m.getUserId() == 0) {
+							NetworkUtil.inviteLink(context, Long.toString(id),
 								groupModel.getGroupName(), m.getNumber());
 						}
 					}
@@ -110,7 +140,7 @@ public class ServerUtil {
 							customContactItem.setName(item.get(0).getName());
 							customContactItem.setNumber(item.get(0).getNumber());
 							customContactItem.setUserId(item.get(0).getUserId());
-							mDbHelper.updateUserId(rowId, customContactItem);
+							//mDbHelper.updateUserId(rowId, customContactItem);
 						}
 					}
 
@@ -134,6 +164,36 @@ public class ServerUtil {
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 
+			}
+		});
+	}
+
+	public void verifyContacts(final String[] numbers) {
+
+		final HashMap<String, Long> map = new HashMap<>();
+
+		Call<JsonObject> call = NetworkUtil.getRestAdapter(context).verifyContacts(numbers);
+		call.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+				JsonObject jsonObject = response.body();
+				Crashlytics.log(jsonObject.toString());
+				for (String number1 : numbers) {
+					JsonObject number = jsonObject.getAsJsonObject(number1);
+					if (number.has("userId")) {
+						long userId = number.get("userId").getAsLong();
+						map.put(number1, userId);
+					}
+				}
+				mDbHelper.updateUserIds(map);
+			}
+
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+				StringWriter sw = new StringWriter();
+				t.printStackTrace(new PrintWriter(sw));
+				String exceptionAsString = sw.toString();
+				Crashlytics.log(exceptionAsString);
+				t.printStackTrace();
 			}
 		});
 	}

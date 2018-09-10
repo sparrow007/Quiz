@@ -53,11 +53,17 @@ public interface RestAdapterAPI {
 		@Field("description") String description, @Field("uuid") String uuid,
 		@Field("payer_id[]") String[] payerId, @Field("total_amount[]") String[] totalAmount,
 		@Field("amount_due[]") String[] amountDue, @Field("paid_at[]") String[] paidAt,
-		@Field("invoice_id[]") String[] invoiceId);
+		@Field("invoice_id[]") String[] invoiceId, @Field("amount_paid[]") String[] amountPaid);
 
 	@FormUrlEncoded @POST("/Split_bills/create_edit_group") Call<JsonObject> createGroup(
 		@Field("group_name") String groupName, @Field("group_description") String groupDescription,
-		@Field("users") String users, @Field("type_id") int typeId);
+		@Field("users") String users, @Field("type_id") int typeId,
+		@Field("group_image") String groupImage);
+
+	@FormUrlEncoded @POST("/Split_bills/create_edit_group/{id}") Call<JsonObject> editGroup(
+		@Path("id") long id, @Field("group_name") String groupName,
+		@Field("group_description") String groupDescription, @Field("users") String users,
+		@Field("type_id") int typeId, @Field("group_image") String groupImage);
 
 	@GET("/Split_bills/fetch_groups") Call<JsonObject> fetchGroups(@Query("userid") String userId,
 		@Query("id") String id);
@@ -79,4 +85,7 @@ public interface RestAdapterAPI {
 	@GET("/Invites/send_income_expense_invite") Call<JsonObject> inviteContact(
 		@Query("link") String link, @Query("mobile_no") String mobile,
 		@Query("country_code") String code);
+
+	@FormUrlEncoded @POST("/mobile/contacts/verify_contact_list") Call<JsonObject> verifyContacts(
+		@Field("contact[]") String contact[]);
 }

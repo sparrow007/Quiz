@@ -5,33 +5,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".Add_Members_Activity"
     tools:showIn="@layout/activity_add_member"
-    android:orientation="vertical">
+    >
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:text="Added Members"
-        android:padding="10dp"/>
+        />
     <android.support.v7.widget.RecyclerView
-        android:background="#ffffff"
         android:id="@+id/ADD_Members_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#ffffff"
         />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="1dp"
-    android:background="#CFD8DC"
-    android:layout_marginBottom="5dp"/>
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/Contacts_List_RecyclerView"
-            android:layout_width="match_parent"
-            android:scrollbars="vertical"
-            android:fadeScrollbars="false"
-            android:scrollbarAlwaysDrawVerticalTrack="true"
-            android:layout_height="match_parent"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginBottom="5dp"
+        android:background="#CFD8DC"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/Contacts_List_RecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadeScrollbars="false"
+        android:scrollbarAlwaysDrawVerticalTrack="true"
+        android:scrollbars="vertical"
+        />
 
 
 </LinearLayout>

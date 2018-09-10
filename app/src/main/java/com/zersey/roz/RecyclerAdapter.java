@@ -4,12 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
@@ -17,11 +15,12 @@ import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
 	List<IncomeModel> list;
-	int ViewType=0;
+	int ViewType = 0;
 	Context context;
 	private String[] Months = {
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 	};
+
 	public RecyclerAdapter(List<IncomeModel> list) {
 		this.list = new ArrayList<>();
 		this.list.addAll(list);
@@ -29,16 +28,16 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	@NonNull @Override
 	public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-		context=parent.getContext();
-		if(viewType==1){
+		context = parent.getContext();
+		if (viewType == 1) {
 			View view = LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.add_button, parent, false);
 			return new ViewHolder(view);
-		}else if(viewType==2){
+		} else if (viewType == 2) {
 			View view = LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.dummy_layout, parent, false);
 			return new ViewHolder(view);
-		}else{
+		} else {
 			View view = LayoutInflater.from(parent.getContext())
 				.inflate(R.layout.copy_of_firstslider, parent, false);
 			return new ViewHolder(view);
@@ -48,21 +47,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 	@Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
 		IncomeModel customitems = new IncomeModel();
-		if (list.size()==0){
+		if (list.size() == 0) {
 			holder.Dummy_Layout.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent=new Intent(context,MainActivity.class);
-					intent.putExtra("Activity","Transactions");
+				@Override public void onClick(View v) {
+					Intent intent = new Intent(context, MainActivity.class);
+					intent.putExtra("Activity", "Transactions");
 					context.startActivity(intent);
 				}
 			});
-		}else if(list.size()>position && list.size()!=0){
+		} else if (list.size() > position && list.size() != 0) {
 			customitems = list.get(position);
-		}else if(list.size()!=0){
-			customitems=null;
+		} else if (list.size() != 0) {
+			customitems = null;
 		}
-		if (customitems != null && list.size()!=0) {
+		if (customitems != null && list.size() != 0) {
 
 			if (holder.customcategory != null) {
 				//holder.category_logo.setImageResource(R.drawable.salary);
@@ -72,44 +70,49 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 				holder.customtitle.setText(customitems.getTitle());
 			}
 			if (holder.customamount != null) {
-				holder.customamount.setText("INR "+customitems.getTotalAmount());
+				String[] amounts = list.get(position).getTotalAmount().split(",");
+				double sum = 0;
+				for (String s : amounts) {
+					sum += Double.parseDouble(s);
+				}
+				holder.customamount.setText("INR " + sum);
 			}
 			if (holder.customdate != null) {
-				holder.customdate.setText(customitems.getIncome_day()+" "+Months[customitems.getIncome_month()-1]
-					+" "+customitems.getIncome_year());
+				holder.customdate.setText(customitems.getIncome_day()
+					+ " "
+					+ Months[customitems.getIncome_month() - 1]
+					+ " "
+					+ customitems.getIncome_year());
 			}
 		}
-		if (position == list.size() && list.size()!=0) {
+		if (position == list.size() && list.size() != 0) {
 
 			//holder.Add_Group_TextView.setText("Add transactions");
 			holder.Plus_Button.setOnClickListener(new View.OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					Intent intent=new Intent(context,MainActivity.class);
+				@Override public void onClick(View v) {
+					Intent intent = new Intent(context, MainActivity.class);
 					context.startActivity(intent);
 				}
 			});
-
-
 		}
 	}
 
 	@Override public int getItemCount() {
-		return list.size()+1;
+		return list.size() + 1;
 	}
 
-	@Override
-	public int getItemViewType(int position) {
+	@Override public int getItemViewType(int position) {
 
-		if (list.size()==0){
-			ViewType=2;
+		if (list.size() == 0) {
+			ViewType = 2;
 			return 2;
-		} else if(position==list.size()){
-			ViewType=1;
+		} else if (position == list.size()) {
+			ViewType = 1;
 			return 1;
-		}else{
-			ViewType=0;
-			return 0;}
+		} else {
+			ViewType = 0;
+			return 0;
+		}
 	}
 
 	public void addItem(IncomeModel model) {
@@ -117,7 +120,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		notifyDataSetChanged();
 	}
 
-	public void addAll(List<IncomeModel> transactionList){
+	public void addAll(List<IncomeModel> transactionList) {
 		list.clear();
 		list.addAll(transactionList);
 		notifyDataSetChanged();
@@ -145,18 +148,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 		public ViewHolder(View itemView) {
 			super(itemView);
-			if (list.size()==0){
-				Dummy_Layout=(LinearLayout)itemView.findViewById(R.id.Dummy_Layout);
-			}else if(ViewType==1) {
+			if (list.size() == 0) {
+				Dummy_Layout = (LinearLayout) itemView.findViewById(R.id.Dummy_Layout);
+			} else if (ViewType == 1) {
 				//Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
 				Plus_Button = (ImageButton) itemView.findViewById(R.id.Add_Group_Plus_Button);
 				Plus_Button.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View v) {
+					@Override public void onClick(View v) {
 
 					}
 				});
-			}else{
+			} else {
 				customcategory = (TextView) itemView.findViewById(R.id.Copy_Category_TextView);
 				customamount = (TextView) itemView.findViewById(R.id.Copy_Amount_TextView);
 				customdate = (TextView) itemView.findViewById(R.id.Copy_Date_TextView);
@@ -169,10 +171,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		@Override public void onClick(View view) {
 			//String temp=list.get(getAdapterPosition()).getCatId();
 			//Log.d( "onClick: ",temp);
-			if (Plus_Button==null) {
+			if (Plus_Button == null) {
 				String temp = list.get(getAdapterPosition()).getCatId();
 				//Log.d( "onClick: ",temp);
-				Intent i = new Intent(view.getContext(), Spererate_Group_Transaction.class);
+				Intent i = new Intent(view.getContext(), SeparateGroupTransaction.class);
 				i.putExtra("pos", getAdapterPosition());
 				i.putExtra("_ID", list.get(getAdapterPosition()).getGroupId());
 				i.putExtra("CardClicked", "Yes");

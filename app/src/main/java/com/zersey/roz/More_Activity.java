@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.zersey.expense_manger.Group_MoreAdapter;
 
 import com.zersey.roz.Data.TransactionDbHelper;
 import java.util.ArrayList;

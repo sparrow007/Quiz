@@ -8,7 +8,7 @@ public class IncomeModel implements Serializable {
 	private int Income_day,Income_month,Income_year;
 	private long id, onlineId, groupId;
 	private String type, title, description, uuid, catId;
-	private String totalAmount, paidAtDate, amountDue, payerId, invoiceId;
+	private String totalAmount, paidAtDate, amountDue, payerId, invoiceId, amountPaid;
 	private List<IncomeModel> subList;
 
 
@@ -42,10 +42,12 @@ public class IncomeModel implements Serializable {
 
 	public void setPaidAtDate(String paidAtDate) {
 		this.paidAtDate = paidAtDate;
-		String[] temp=paidAtDate.split("-");
-		Income_day=Integer.parseInt(temp[2]);
-		Income_month=Integer.parseInt(temp[1]);
-		Income_year=Integer.parseInt(temp[0]);
+		if (!Util.isEmpty(paidAtDate)) {
+			String[] temp = paidAtDate.split(",")[0].split("-");
+			Income_day = Integer.parseInt(temp[2]);
+			Income_month = Integer.parseInt(temp[1]);
+			Income_year = Integer.parseInt(temp[0]);
+		}
 	}
 
 	public int getIncome_day() {
@@ -181,5 +183,13 @@ public class IncomeModel implements Serializable {
 			+ ", subList="
 			+ subList
 			+ '}';
+	}
+
+	public String getAmountPaid() {
+		return amountPaid;
+	}
+
+	public void setAmountPaid(String amountPaid) {
+		this.amountPaid = amountPaid;
 	}
 }
