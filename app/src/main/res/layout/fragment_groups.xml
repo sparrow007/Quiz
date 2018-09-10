@@ -11,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -23,7 +24,7 @@
                 android:layout_margin="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BILL LIST >"/>
+                android:text="Bill list >"/>
             <TextView
                 android:id="@+id/Second_More"
                 android:textColor="@color/colorPrimary"
@@ -32,7 +33,7 @@
                 android:layout_margin="10dp"
                 android:textStyle="bold"
                 android:layout_gravity="center_vertical|right"
-                android:text="MORE"/>
+                android:text="More"/>
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -53,7 +54,7 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="GROUPS >"/>
+            android:text="Groups >"/>
         <TextView
             android:id="@+id/First_More"
             android:textColor="@color/colorPrimary"
@@ -62,7 +63,7 @@
             android:layout_margin="10dp"
             android:textStyle="bold"
             android:layout_gravity="center_vertical|right"
-            android:text="MORE"/>
+            android:text="More"/>
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/First_Slider"
@@ -71,6 +72,34 @@
         app:stackFromEnd="true"
         app:reverseLayout="true"
         />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:textSize="20dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Todo task >"/>
+            <TextView
+                android:id="@+id/Task_More"
+                android:textColor="@color/colorPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:textStyle="bold"
+                android:layout_gravity="center_vertical|right"
+                android:text="More"/>
+        </LinearLayout>
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/Task_Slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            />
     </LinearLayout>
 </ScrollView>

@@ -2,7 +2,9 @@ package com.zersey.roz;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.SumPathEffect;
+import android.graphics.drawable.ColorDrawable;
 import android.inputmethodservice.Keyboard;
 import android.media.Image;
 import android.os.Bundle;
@@ -34,8 +36,9 @@ public class Add_Members_Activity extends AppCompatActivity {
 	public static List<ContactModel> Added_Members;
 	TextView Submit;
 	public EditText Search_Edit;
+	private TextView toolbar_title;
 	private int count=0;
-	private ImageButton back;
+	private ImageButton back,Search_Icon,back_White;
 	public static Contact_List_RecyclerView_Adapter Adapter;
 	private InputMethodManager IMM;
 
@@ -48,25 +51,49 @@ public class Add_Members_Activity extends AppCompatActivity {
 		initContactList();
 		initRecyclerView();
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		toolbar_title=findViewById(R.id.toolbar_Text);
+		toolbar_title.setText("Add Members");
 		Submit=(TextView)findViewById(R.id.Add_Member_Submit);
+		back_White=findViewById(R.id.back_Button_white);
 		back=(ImageButton)findViewById(R.id.back_Button);
+		Search_Icon=findViewById(R.id.Search_Icon);
+		Search_Edit.setVisibility(View.GONE);
+		back.setVisibility(View.GONE);
 		Search_Edit.clearFocus();
 		Search_Edit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Submit.setVisibility(View.GONE);
+				//Submit.setVisibility(View.GONE);
+				//back.setVisibility(View.VISIBLE);
+			}
+		});
+		Search_Icon.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				//Submit.setVisibility(View.GONE);
 				back.setVisibility(View.VISIBLE);
+				Search_Edit.setVisibility(View.VISIBLE);
+				Search_Icon.setVisibility(View.GONE);
+				back_White.setVisibility(View.GONE);
+				toolbar_title.setVisibility(View.GONE);
+				getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#ffffff")));
 			}
 		});
 		back.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Search_Edit.clearFocus();
-				Submit.requestFocus();
+				toolbar_title.setVisibility(View.VISIBLE);
+				toolbar_title.setText("Add Members");
+				//Submit.requestFocus();
 				View view=Add_Members_Activity.this.getCurrentFocus();
 				IMM.hideSoftInputFromWindow(view.getWindowToken(),0);
-				Submit.setVisibility(View.VISIBLE);
+				//Submit.setVisibility(View.VISIBLE);
+				Search_Edit.setVisibility(View.GONE);
 				back.setVisibility(View.GONE);
+				Search_Icon.setVisibility(View.VISIBLE);
+				back_White.setVisibility(View.VISIBLE);
+				getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorPrimary)));
 			}
 		});
 		Search_Edit.setOnFocusChangeListener(new View.OnFocusChangeListener() {

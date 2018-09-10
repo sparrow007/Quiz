@@ -27,7 +27,7 @@ public class Group_Transaction_Adapter extends RecyclerView.Adapter<Group_Transa
 
     @Override
     public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
-		Log.d("hueh", "onBindViewHolder: " + list.get(position).toString());
+		//Log.d("hueh", "onBindViewHolder: " + list.get(position).toString());
     holder.Transaction_TextView.setText(list.get(position).getTitle());
     holder.groupTransactionAmount.setText("Rs " + list.get(position).getTotalAmount());
 

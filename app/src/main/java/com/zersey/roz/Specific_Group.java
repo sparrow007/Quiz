@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class Specific_Group extends AppCompatActivity
 	implements Group_Balances.OnFragmentInteractionListener,
-	Group_Transactions.OnFragmentInteractionListener, Group_About.OnFragmentInteractionListener {
+	Group_Transactions.OnFragmentInteractionListener, Group_About.OnFragmentInteractionListener,Task_Fragment.OnFragmentInteractionListener {
 	private ViewPager mViewPager;
 	private TabLayout tab_layout;
 	private PagerAdapter adapter;
@@ -51,6 +51,7 @@ public class Specific_Group extends AppCompatActivity
 	public void initTabLayout() {
 		tab_layout = findViewById(R.id.Tab_Layout);
 		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
+		tab_layout.addTab(tab_layout.newTab().setText("Todo-Tasks"));
 		tab_layout.addTab(tab_layout.newTab().setText("Balances"));
 		tab_layout.addTab(tab_layout.newTab().setText("About"));
 		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
@@ -87,7 +88,7 @@ public class Specific_Group extends AppCompatActivity
 
 	}
 
-	public void addTransactionInGroup(View view) {
+	public void addTransactionInGroup() {
 		Intent intent = new Intent(this, MainActivity.class);
 		intent.putExtra("group", model);
 		startActivityForResult(intent, 123);
@@ -95,11 +96,11 @@ public class Specific_Group extends AppCompatActivity
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if (requestCode == 123){
-			if (resultCode == Activity.RESULT_OK){
+
+	/*		if (resultCode == Activity.RESULT_OK){
 				Group_Transactions.adapter.addItem((IncomeModel) data.getSerializableExtra("model"));
-			}
-		}
+			}*/
+
 	}
 
 	/*TextView tv=(TextView) LayoutInflater.from(this).inflate(R.layout.custom_tabs,null);
@@ -129,8 +130,10 @@ public class Specific_Group extends AppCompatActivity
 				case 0:
 					return new Group_Transactions();
 				case 1:
-					return new Group_Balances();
+					return new Task_Fragment();
 				case 2:
+					return new Group_Balances();
+				case 3:
 					Fragment frag = new Group_About();
 					Bundle args = new Bundle();
 					args.putSerializable("group", model);
