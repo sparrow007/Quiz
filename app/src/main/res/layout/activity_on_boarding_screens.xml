@@ -11,8 +11,8 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/Slider_ViewPager"
         android:layout_width="match_parent"
-        android:layout_height="340dp"
-        />
+        android:layout_height="340dp"/>
+
     <LinearLayout
         android:layout_weight="1"
         android:layout_height="0dp"
@@ -43,6 +43,7 @@
             android:layout_height="15dp"
             android:src="@drawable/cardiogramone"/>
     </LinearLayout>
+
     <LinearLayout
         android:id="@+id/login_layout"
         android:layout_width="match_parent"
@@ -52,8 +53,7 @@
         android:orientation="horizontal"
         android:paddingLeft="10dp"
         android:paddingRight="24dp"
-        android:visibility="visible"
-        >
+        android:visibility="visible">
 
         <AutoCompleteTextView
             android:id="@+id/country_code"

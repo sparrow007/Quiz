@@ -48,6 +48,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		db.execSQL(TransactionDbContract.TempEntry.SQL_CREATE_TEMP_TABLE);
 	}
 
+
+
 	@Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 	}

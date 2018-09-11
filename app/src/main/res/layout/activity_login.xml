@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_forms_background_b"
     tools:context=".LoginActivity"
+    android:orientation="vertical"
     >
 
     <LinearLayout
+        android:visibility="gone"
         android:id="@+id/name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,7 +50,41 @@
             android:textSize="20sp"
             />
     </LinearLayout>
-
+    <android.support.v4.view.ViewPager
+        android:id="@+id/Slider_ViewPager"
+        android:layout_width="match_parent"
+        android:layout_height="340dp"
+        />
+    <LinearLayout
+        android:layout_weight="1"
+        android:layout_height="0dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:gravity="top"
+        android:orientation="horizontal">
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/First_Dot"
+            android:layout_marginRight="10dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/notepad"/>
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/Second_Dot"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/cardiogram"/>
+        <ImageView
+            android:layout_gravity="center_vertical"
+            android:id="@+id/Third_Dot"
+            android:layout_marginLeft="10dp"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/cardiogramone"/>
+    </LinearLayout>
 
     <!-- first shown in this screen-->
     <LinearLayout
@@ -58,7 +95,9 @@
         android:layout_margin="8dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:padding="24dp"
+        android:paddingLeft="24dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="10dp"
         android:visibility="visible"
         >
 
@@ -68,12 +107,12 @@
             android:layout_height="48dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/edit_text_background"
-            android:backgroundTint="@android:color/white"
+            android:backgroundTint="#66BB6A"
             android:gravity="center"
             android:inputType="phone"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
             android:text="IN 91"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
             android:textCursorDrawable="@drawable/cursor_white"
             />
 
@@ -82,13 +121,15 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:background="@drawable/edit_text_background"
-            android:backgroundTint="@android:color/white"
+
             android:imeOptions="actionNext"
             android:inputType="phone"
             android:paddingStart="16dp"
+            android:textColor="@color/colorPrimary"
+            android:textColorHint="@color/colorPrimary"
+            android:backgroundTint="@color/colorPrimary"
             android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:textColorHint="@android:color/white"
+
             android:textCursorDrawable="@drawable/cursor_white"
             />
     </LinearLayout>
@@ -97,11 +138,12 @@
 
     <TextView
         android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/login_layout"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/login_button_back"
+        android:background="@color/colorPrimary"
+        android:gravity="center_horizontal"
         android:onClick="doLoginFieldCheck"
         android:paddingBottom="12dp"
         android:paddingLeft="36dp"
@@ -113,4 +155,4 @@
         android:textStyle="bold"
         />
 
-</RelativeLayout>
+</LinearLayout>
