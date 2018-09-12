@@ -19,13 +19,18 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.zersey.roz.Data.TransactionDbHelper;
+
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -39,6 +44,13 @@ private TextView Task_Date;
     private DatePickerDialog datePicker;
     private ImageView Img_File;
     private Uri Image_uri;
+    private GroupModel model;
+    private Boolean Updated=false;
+    private Task_Model TaskModel;
+    private Spinner Task_Spinner;
+    private List<GroupModel> list;
+    private TransactionDbHelper mDbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,16 +58,32 @@ private TextView Task_Date;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("");
+        list = new ArrayList<>();
+        mDbHelper = TransactionDbHelper.getInstance(this);
+        list.addAll(mDbHelper.getGroups(0));
+        /*if ((GroupModel) getIntent().getSerializableExtra("Group") != null) {
+            Updated = true;
+            model = (GroupModel) getIntent().getSerializableExtra("Group");
+            TaskModel = (Task_Model) getIntent().getSerializableExtra("Task");
+        }*/
         cal = Calendar.getInstance();
         year_x = cal.get(Calendar.YEAR);
         day_x = cal.get(Calendar.DAY_OF_MONTH);
         month_x = cal.get(Calendar.MONTH);
-        Task_Title=findViewById(R.id.Task_Title_Edit);
-        Task_Des=findViewById(R.id.Task_Description_Edit);
-        Task_Date= findViewById(R.id.Task_Date_Edit);
+        Task_Title = findViewById(R.id.Task_Title_Edit);
+        Task_Des = findViewById(R.id.Task_Description_Edit);
+        Task_Date = findViewById(R.id.Task_Date_Edit);
+        Task_Spinner = findViewById(R.id.Task_Spinner);
         Task_Date.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
-        Img_File=findViewById(R.id.Task_Image_view);
+        Img_File = findViewById(R.id.Task_Image_view);
         Img_File.setVisibility(View.GONE);
+        String[] stringlist = new String[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            stringlist[i] = list.get(i).getGroupName();
+        }
+        ArrayAdapter<String> adapter0 = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, stringlist);
+        adapter0.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        Task_Spinner.setAdapter(adapter0);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +98,27 @@ private TextView Task_Date;
                         cal.get(Calendar.DAY_OF_MONTH));
         datePicker.setCancelable(true);
         datePicker.setTitle("Select Date");
-    }
+        if ((GroupModel) getIntent().getSerializableExtra("Group") != null && (Task_Model) getIntent().getSerializableExtra("Task") != null) {
+            TaskModel = (Task_Model) getIntent().getSerializableExtra("Task");
+            Task_Title.setText(TaskModel.getTask_Title());
+            Task_Des.setText(TaskModel.getTask_Des());
+            Task_Date.setText(TaskModel.getTask_Date());
+            model = (GroupModel) getIntent().getSerializableExtra("Group");
+            Task_Spinner.setSelection(adapter0.getPosition(model.getGroupName()));
+        }else if ((Task_Model) getIntent().getSerializableExtra("Task") != null) {
+            TaskModel = (Task_Model) getIntent().getSerializableExtra("Task");
+            Task_Title.setText(TaskModel.getTask_Title());
+            Task_Des.setText(TaskModel.getTask_Des());
+            Task_Date.setText(TaskModel.getTask_Date());
+            for(int i=0;i<list.size();i++){
+                if (TaskModel.getGroup_Id()==list.get(i).getGroupId()){
+            Task_Spinner.setSelection(adapter0.getPosition(list.get(i).getGroupName()));}}
+        } else if ((GroupModel) getIntent().getSerializableExtra("Group") != null) {
+            model = (GroupModel) getIntent().getSerializableExtra("Group");
+            Task_Spinner.setSelection(adapter0.getPosition(model.getGroupName()));
+        }
 
+    }
 
     public void Submit(View view){
         String Title=Task_Title.getText().toString();
@@ -95,11 +142,20 @@ private TextView Task_Date;
         if(cancel){
             Focus.requestFocus();
         }{ Intent intent=new Intent();
+             if (TaskModel==null){
+                 TaskModel=new Task_Model(Title,Des,Date,false);
+                 TaskModel.setGroup_Id(model.getGroupId());
+             }
+        long id= mDbHelper.addGroupNotes(TaskModel);
+            if(id<0){
+                Toast.makeText(getApplicationContext(),"Task was not saved with "+id,Toast.LENGTH_LONG).show();
+            }else {
+                Toast.makeText(getApplicationContext(),"Task saved with "+id,Toast.LENGTH_LONG).show();
             intent.putExtra("Title",Title);
             intent.putExtra("Date",Date);
             intent.putExtra("Des",Des);
             setResult(Activity.RESULT_OK, intent);
-            finish();
+            finish();}
         }
 
 

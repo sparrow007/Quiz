@@ -1,5 +1,7 @@
 package com.zersey.roz;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import java.util.List;
 
 public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapter.Task_ViewHolder> {
     List<Task_Model> list;
+    private Context context;
     Task_Slider_Adapter(List<Task_Model> list){
         this.list=list;
     }
@@ -21,6 +24,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
     @Override
     public Task_ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
+        context=parent.getContext();
         View view=inflater.inflate(R.layout.task_card,parent,false);
         return new Task_ViewHolder(view);
     }
@@ -55,7 +59,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
             TaskTitle=itemView.findViewById(R.id.Horizontal_Task_Title);
             Des=itemView.findViewById(R.id.Horizontal_Task_Des);
             Check=itemView.findViewById(R.id.Horizontal_Task_Check);
-            itemView.setOnClickListener(new View.OnClickListener() {
+            Check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Task_Model model=list.get(getAdapterPosition());
@@ -69,6 +73,16 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
                         list.set(getAdapterPosition(),model);
                         notifyDataSetChanged();
                     }
+                }
+            });
+
+            TaskTitle.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(context,Task_Form_Activity.class);
+                    intent.putExtra("Task", list.get(getAdapterPosition()));
+                    context.startActivity(intent);
+
                 }
             });
         }

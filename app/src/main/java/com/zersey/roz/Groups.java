@@ -65,9 +65,10 @@ public class Groups extends Fragment {
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		Item_list = new ArrayList<>(mDbHelper.getAllEntries());
 		Task_list=new ArrayList<>();
-		for (int i=0;i<10;i++){
-			Task_list.add(new Task_Model("New Task","New Description",false));
-		}
+		Task_list=mDbHelper.getTask(-1);
+		/*for (int i=0;i<10;i++){
+			Task_list.add(new Task_Model("New Task","New Description","null",false));
+		}*/
 	}
 
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

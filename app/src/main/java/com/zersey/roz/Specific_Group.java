@@ -116,15 +116,19 @@ public class Specific_Group extends AppCompatActivity
 				case 0:
 					return new Group_Transactions();
 				case 1:
-					return new Task_Fragment();
+					Fragment frag = new Task_Fragment();
+				Bundle args = new Bundle();
+				args.putSerializable("group", model);
+				frag.setArguments(args);
+				return frag;
 				case 2:
 					return new Group_Balances();
 				case 3:
-					Fragment frag = new Group_About();
-					Bundle args = new Bundle();
-					args.putSerializable("group", model);
-					frag.setArguments(args);
-					return frag;
+					Fragment frag1 = new Group_About();
+					Bundle args1 = new Bundle();
+					args1.putSerializable("group", model);
+					frag1.setArguments(args1);
+					return frag1;
 				default:
 					return null;
 			}

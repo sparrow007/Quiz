@@ -10,9 +10,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.zersey.roz.Data.TransactionDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +38,14 @@ public class Task_Fragment extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
+    private GroupModel mParam1;
     private String mParam2;
 
     public static Task_Adapter adapter;
     private List<Task_Model> Task_list;
     private RecyclerView Task_RecyclerView;
-
+    private List<GroupModel> groupModels;
+    private TransactionDbHelper mdbHelper;
     private OnFragmentInteractionListener mListener;
 
     public Task_Fragment() {
@@ -70,14 +74,14 @@ public class Task_Fragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = (GroupModel) getArguments().getSerializable("group");
         }
+        mdbHelper=TransactionDbHelper.getInstance(getContext());
         initTaskList();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View fragment=inflater.inflate(R.layout.fragment_task, container, false);
@@ -89,6 +93,7 @@ public class Task_Fragment extends Fragment {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
                 Intent intent=new Intent(getContext(),Task_Form_Activity.class);
+                intent.putExtra("Group",mParam1);
                 startActivityForResult(intent,1);
             }
         });
@@ -98,16 +103,19 @@ public class Task_Fragment extends Fragment {
 
     public void initTaskList(){
         Task_list=new ArrayList<>();
-        for (int i=0;i<10;i++){
-            Task_list.add(new Task_Model("New Task","New Description",false));
-        }
+        /*for (int i=0;i<10;i++){
+            Task_list.add(new Task_Model("New Task","New Description","null",false));
+        }*/
+        Log.d( "initTaskList: ",""+mParam1.getGroupId());
+        Task_list=mdbHelper.getTask(mParam1.getGroupId());
+        Log.d( "initTaskList: ",""+Task_list.size());
     }
 
     public View initRecyclerView(View fragment){
         Task_RecyclerView=new RecyclerView(getContext());
         Task_RecyclerView=(RecyclerView)fragment.findViewById(R.id.Task_Recycler_View);
         Task_RecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        adapter=new Task_Adapter(Task_list);
+        adapter=new Task_Adapter(Task_list,mParam1);
         Task_RecyclerView.setAdapter(adapter);
         return fragment;
     }
@@ -116,7 +124,7 @@ public class Task_Fragment extends Fragment {
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
-            adapter.add(new Task_Model(data.getStringExtra("Title").toString(),data.getStringExtra("Des").toString(),false));
+            adapter.add(new Task_Model(data.getStringExtra("Title").toString(),data.getStringExtra("Des").toString(),data.getStringExtra("Date").toString(),false));
             //adapter.notifyDataSetChanged();
         }
     }

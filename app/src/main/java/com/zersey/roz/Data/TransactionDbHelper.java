@@ -12,6 +12,7 @@ import com.zersey.roz.ContactModel;
 import com.zersey.roz.GroupModel;
 import com.zersey.roz.Groups;
 import com.zersey.roz.IncomeModel;
+import com.zersey.roz.Task_Model;
 import com.zersey.roz.Temp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,6 +78,19 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			TransactionDbContract.GroupEntry._ID + "=?",
 			new String[] { Long.toString(model.getId()) });
 	}
+
+
+	public long addGroupNotes(Task_Model model){
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		Log.d("addGroupNotes: ", model.getTask_Title());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_TITLE, model.getTask_Title());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION, model.getTask_Des());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER, model.getTask_Date());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID, model.getGroup_Id());
+		return db.insert(TransactionDbContract.NoteEntry.TABLE_NAME, null, cv);
+		 }
+
 
 	public void addGroups(List<GroupModel> list) {
 		SQLiteDatabase db = getWritableDatabase();
@@ -242,6 +256,55 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		} else {
 			Log.i("hueh", "NO record found!");
 		}
+	}
+
+
+	public List<Task_Model> getTask(long Group_id) {
+		SQLiteDatabase db1 = getReadableDatabase();
+		List<Task_Model> list = new ArrayList<>();
+		Log.d( "getTask: ",""+getGroupNotesCount());
+		Cursor cursor = null;
+		if(Group_id<0){
+			cursor=db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, null, null,
+					null, null, null);
+		}else  {
+			cursor = db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, TransactionDbContract.NoteEntry.COLUMN_GROUP_ID + "=" + Long.toString(Group_id), null,
+					null, null, null);
+		}
+		while (cursor.moveToNext()) {
+			long currentID =
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry._ID));
+			long groupID =
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID));
+
+			String title = cursor.getString(
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_TITLE));
+			String desc = cursor.getString(
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION));
+
+			String date = cursor.getString(
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER));
+
+			Task_Model model = new Task_Model(title,desc,date,false);
+			model.setTask_Id(currentID);
+			model.setGroup_Id(groupID);
+
+			list.add(model);
+		}
+		Log.d( "getTask: ",""+list.size());
+		cursor.close();
+		return list;
+	}
+
+
+	public int getGroupNotesCount() {
+		String countQuery = "SELECT * FROM " + TransactionDbContract.NoteEntry.TABLE_NAME;
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor cursor = db.rawQuery(countQuery, null);
+		int count = cursor.getCount();
+		cursor.close();
+		//        db.close();
+		return count;
 	}
 
 	public List<GroupModel> getGroups(int type) {
@@ -490,7 +553,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		int count = cursor.getCount();
 		cursor.close();
 		//        db.close();
-
 		return count;
 	}
 

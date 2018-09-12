@@ -9,17 +9,20 @@
     tools:context=".Task_Form_Activity"
     tools:showIn="@layout/activity_task_form"
     android:orientation="vertical">
-
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         android:orientation="vertical">
     <com.github.florent37.materialtextfield.MaterialTextField
         android:layout_marginTop="10dp"
         android:id="@+id/Task_Material_Title"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        app:mtf_hasFocus="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:mtf_labelColor="#666"
@@ -37,6 +40,7 @@
         android:layout_marginTop="10dp"
         android:id="@+id/Task_Material_Description"
         android:layout_marginLeft="10dp"
+        app:mtf_hasFocus="true"
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,6 +54,15 @@
             android:hint="Description"
             android:backgroundTint="#000000"/>
     </com.github.florent37.materialtextfield.MaterialTextField>
+        <Spinner
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/Task_Spinner"
+            android:scrollbarAlwaysDrawVerticalTrack="true"
+            android:entries="@array/Split_Spinner"/>
         <ImageView
             android:id="@+id/Task_Image_view"
             android:layout_width="match_parent"
@@ -57,6 +70,7 @@
             android:scaleType="centerCrop"/>
 
     </LinearLayout>
+</ScrollView>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="1dp"

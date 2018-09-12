@@ -1,5 +1,7 @@
 package com.zersey.roz;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,15 +14,18 @@ import java.util.List;
 
 public class Task_Adapter extends RecyclerView.Adapter<Task_Adapter.Task_View_Holder> {
     private List<Task_Model> list;
-
-    Task_Adapter(List<Task_Model> list){
+    private GroupModel model;
+    private Context context;
+    Task_Adapter(List<Task_Model> list,GroupModel model){
         this.list=list;
+        this.model=model;
     }
 
     @NonNull
     @Override
     public Task_View_Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
+        context=parent.getContext();
         View view=inflater.inflate(R.layout.task_layout,parent,false);
         return new Task_View_Holder(view);
     }
@@ -49,13 +54,23 @@ public class Task_Adapter extends RecyclerView.Adapter<Task_Adapter.Task_View_Ho
     public class Task_View_Holder extends RecyclerView.ViewHolder{
         TextView Task_Title,Task_Description;
         ImageButton Task_Check;
-        public Task_View_Holder(View itemView) {
+        public Task_View_Holder(final View itemView) {
             super(itemView);
             Task_Title=itemView.findViewById(R.id.Task_Title);
             Task_Description=itemView.findViewById(R.id.Task_Description);
             Task_Check=itemView.findViewById(R.id.Task_Check);
+            Task_Title.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(context,Task_Form_Activity.class);
+                    intent.putExtra("Group", model);
+                    intent.putExtra("Task", list.get(getAdapterPosition()));
+                    context.startActivity(intent);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
+                }
+            });
+
+            Task_Check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Task_Model model=list.get(getAdapterPosition());
