@@ -29,7 +29,11 @@ public class Group_Transaction_Adapter
 		String[] amounts = list.get(position).getTotalAmount().split(",");
 		double sum = 0;
 		for (String s : amounts) {
-			sum += Double.parseDouble(s);
+			try {
+				sum += Double.parseDouble(s);
+			} catch(NumberFormatException e){
+				e.printStackTrace();
+			}
 		}
 		holder.groupTransactionAmount.setText("Rs " + sum);
 	}

@@ -251,11 +251,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		int id = db.update(TransactionDbContract.GroupEntry.TABLE_NAME, values,
 			TransactionDbContract.GroupEntry._ID + "=?",
 			new String[] { String.valueOf(model.getId()) });
-		if (id > 0) {
-			Log.i("hueh", "1 record updated!");
-		} else {
-			Log.i("hueh", "NO record found!");
-		}
 	}
 
 
@@ -482,11 +477,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		int id = db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
 			TransactionDbContract.Transaction_Entry._ID + "=?",
 			new String[] { String.valueOf(model.getId()) });
-		if (id > 0) {
-			Log.i("hueh", "1 record updated!");
-		} else {
-			Log.i("hueh", "NO record found!");
-		}
 	}
 
 	public List<IncomeModel> getGroupEntries(long groupId) {

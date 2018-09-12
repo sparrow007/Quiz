@@ -40,6 +40,15 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 		mDbHelper = TransactionDbHelper.getInstance(this);
 		splitList = new ArrayList<>();
 
+		if (Util.isEmpty(model.getPayerId())) {
+			model.setPayerId("");
+		}
+		if (Util.isEmpty(model.getTotalAmount())) {
+			model.setTotalAmount("");
+		}
+		if (Util.isEmpty(model.getAmountDue())) {
+			model.setAmountDue("");
+		}
 		String[] users = model.getPayerId().split(",");
 		String[] totalAmounts = model.getTotalAmount().split(",");
 		String[] amountsDue = model.getAmountDue().split(",");
@@ -54,9 +63,8 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 				m.setNumber(prefs.getString("phone", null));
 				splitList.add(new Split_Contact_model(m, totalAmounts[i]));
 			} else {
-				splitList.add(new Split_Contact_model(
-					mDbHelper.getUserWithUserId(new String[] { users[i] }).get(0),
-					totalAmounts[i]));
+				List<ContactModel> m = mDbHelper.getUserWithUserId(new String[] { users[i] });
+				if (m.size() > 0) splitList.add(new Split_Contact_model(m.get(0), totalAmounts[i]));
 			}
 		}
 

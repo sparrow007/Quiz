@@ -247,7 +247,7 @@ public class LoginActivity extends BaseActivity {
 		startLogin(country, phone);
 	}
 
-	private void startLogin(String country, String phone) {
+	private void startLogin(final String country, final String phone) {
 		showProgress("Checking phone...");
 		RestAdapterAPI api = NetworkUtil.getRestAdapter(this);
 		Call<JsonObject> result = api.doLogin(country, phone);
@@ -274,6 +274,7 @@ public class LoginActivity extends BaseActivity {
 							String navigate = jsonObject.get("navigate").getAsString();
 							Intent intent =
 								new Intent(LoginActivity.this, PasswordOtpActivity.class);
+							intent.putExtra("phone", country+phone);
 
 							switch (navigate) {
 								case "login":

@@ -25,8 +25,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -275,16 +277,15 @@ import java.util.List;
 			TitleEdit.setText(Updated_Title);
 			dateEdit.setText(Updated_Date);
 		}
+
 	}
 
 	private void initRecyclerView() {
-		//Category_Recycler_View=new RecyclerView(this);
 		Contact_RecyclerView = new RecyclerView(this);
 		Contact_RecyclerView = findViewById(R.id.Add_Member_RecyclerView);
 		Contact_RecyclerView.setLayoutManager(
 			new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL,
 				false));
-		//View view=Category_Recycler_View.findViewHolderForAdapterPosition(0);
 		if (TextUtils.isEmpty(Updated_Type)) {
 			adapter = new CategoryAdapter(getApplicationContext(), Category_list, "");
 		} else {
@@ -353,24 +354,7 @@ import java.util.List;
 			Amount = "0";
 		}
 		if (!check) {
-			String[] names = groupModel.getUsers().split(",");
-			List<ContactModel> userList = mDbHelper.getUserWithUserId(names);
-			String Specific_Amount;
-			if (TextUtils.isEmpty(Amount)) {
-				Specific_Amount = "0";
-			} else {
-				Specific_Amount = "" + Integer.parseInt(Amount) / (userList.size() + 1);
-			}
-			Log.d("Dialog: ", Item_list.size() + "");
-			Split_List = new ArrayList<>();
-
-			ContactModel you = new ContactModel();
-			you.setName("You");
-			Split_List.add(new Split_Contact_model(you, Specific_Amount));
-
-			for (int i = 0; i < userList.size(); i++) {
-				Split_List.add(new Split_Contact_model(userList.get(i), Specific_Amount));
-			}
+			groupSplit();
 		} else if (check) {
 			//String[] names = Item_list.get;
 
@@ -443,6 +427,28 @@ import java.util.List;
 		dialog.getWindow()
 			.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+	}
+
+	private void groupSplit() {
+		String[] names = groupModel.getUsers().split(",");
+		List<ContactModel> userList = mDbHelper.getUserWithUserId(names);
+		String Specific_Amount;
+		Amount = Material_Amount.getEditText().getText().toString();
+		if (TextUtils.isEmpty(Amount)) {
+			Specific_Amount = "0";
+		} else {
+			Specific_Amount = "" + Integer.parseInt(Amount) / (userList.size() + 1);
+		}
+		Log.d("Dialog: ", Item_list.size() + "");
+		Split_List = new ArrayList<>();
+
+		ContactModel you = new ContactModel();
+		you.setName("You");
+		Split_List.add(new Split_Contact_model(you, Specific_Amount));
+
+		for (int i = 0; i < userList.size(); i++) {
+			Split_List.add(new Split_Contact_model(userList.get(i), Specific_Amount));
+		}
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -658,6 +664,8 @@ import java.util.List;
 						long newrowId = mDbHelper.createGroup(groupModel2);
 						new ServerUtil(MainActivity.this).createGroup(groupModel2, null);
 						groupModel2.setId(newrowId);
+					} else{
+						groupSplit();
 					}
 
 					StringBuilder totalAmounts = new StringBuilder();

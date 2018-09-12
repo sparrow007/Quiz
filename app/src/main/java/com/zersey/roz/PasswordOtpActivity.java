@@ -681,6 +681,7 @@ public class PasswordOtpActivity extends BaseActivity {
 						editor.putString("type", "signin");
 						editor.putString("username", username);
 						editor.putString("fullname", fullName);
+						editor.putString("phone", getIntent().getStringExtra("phone"));
 						editor.apply();
 
 						Intent intent = new Intent(PasswordOtpActivity.this,Main2Activity.class);

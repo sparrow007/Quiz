@@ -86,10 +86,14 @@ public class Dialog_Split_RecyclerViewAdapter
 				}
 
 				if (TextUtils.equals(Slider, "ratio")) {
-					list.get(position)
-						.setSplit_Amount(Integer.toString(
-							(Integer.parseInt(holder.Split_Amount.getText().toString()) * Amount)
-								/ 100));
+					try {
+						list.get(position)
+							.setSplit_Amount(Integer.toString(
+								(Integer.parseInt(holder.Split_Amount.getText().toString()) * Amount)
+									/ 100));
+					} catch(NumberFormatException ignored){
+
+					}
 				} else {
 					list.get(position).setSplit_Amount(holder.Split_Amount.getText().toString());
 				}

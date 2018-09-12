@@ -97,7 +97,6 @@ public class Groups extends Fragment {
 		((Main2Activity) getActivity()).setFragmentRefreshListener(
 			new Main2Activity.FragmentRefreshListener() {
 				@Override public void onRefresh(List<GroupModel> groups) {
-					// Refresh Your Fragment
 					First_List.clear();
 					First_List.addAll(groups);
 					First_RecyclerView.getAdapter().notifyDataSetChanged();
@@ -118,7 +117,6 @@ public class Groups extends Fragment {
 	//}
 
 	private View initRecyclerView(View fragmentLayout) {
-		Task_RecyclerView=new RecyclerView(getContext());
 		Task_RecyclerView=fragmentLayout.findViewById(R.id.Task_Slider);
 		Task_RecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
         task_slider_adapter=new Task_Slider_Adapter(Task_list);
