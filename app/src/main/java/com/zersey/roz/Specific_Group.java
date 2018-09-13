@@ -11,7 +11,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class Specific_Group extends AppCompatActivity
@@ -21,13 +26,35 @@ public class Specific_Group extends AppCompatActivity
 	private TabLayout tab_layout;
 	private PagerAdapter adapter;
 	private TextView Group_Name;
+	private LinearLayout Search_Layout;
+	private EditText Search_Edit;
+	private ImageButton Back,Search;
 	public GroupModel model;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_specific_group);
 		Group_Name = findViewById(R.id.Group_Name_TextView);
-		model = (GroupModel) getIntent().getSerializableExtra("group");
+		Back=findViewById(R.id.back_Button_group);
+		Search=findViewById(R.id.Search_Icon_group);
+        Search_Edit=findViewById(R.id.Search_Edit);
+        Search_Layout=findViewById(R.id.Search_Layout);
+        Search_Layout.setVisibility(View.GONE);
+        model = (GroupModel) getIntent().getSerializableExtra("group");
+        Search.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Search_Layout.setVisibility(View.VISIBLE);
+				Search.setVisibility(View.GONE);
+			}
+		});
+        Back.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Search_Layout.setVisibility(View.GONE);
+				Search.setVisibility(View.VISIBLE);
+			}
+		});
 		Group_Name.setText(model.getGroupName());
 		initTabLayout();
 		initViewPager();
@@ -45,11 +72,28 @@ public class Specific_Group extends AppCompatActivity
 
 			}
 		});
+		Search_Edit.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				Group_Transactions.adapter.Search(s.toString());
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				Group_Transactions.adapter.Search(s.toString());
+			}
+		});
+
 	}
 
 	public void initTabLayout() {
 		tab_layout = findViewById(R.id.Tab_Layout);
-		tab_layout.addTab(tab_layout.newTab().setText("Transactions"));
+		tab_layout.addTab(tab_layout.newTab().setText("Items"));
 		tab_layout.addTab(tab_layout.newTab().setText("Todo-Tasks"));
 		tab_layout.addTab(tab_layout.newTab().setText("Balances"));
 		tab_layout.addTab(tab_layout.newTab().setText("About"));

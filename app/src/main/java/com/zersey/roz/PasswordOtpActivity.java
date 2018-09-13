@@ -39,6 +39,7 @@ public class PasswordOtpActivity extends BaseActivity {
 	private RelativeLayout background_Layout;
 	private OnBoardingSliderAdapter Slider_Adapter;
 	private ImageView First,Second,Third;
+	private TextView Password_Text;
 
 
 
@@ -74,10 +75,14 @@ public class PasswordOtpActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_password_otp);
 		//initializing shared preferences
+		Password_Text=findViewById(R.id.Password_text);
+		Password_Text.setVisibility(View.GONE);
 		Create_OnBoarding();
+		background_Layout.setBackground(getResources().getDrawable(R.drawable.login_forms_background_b));
 		prefs = getSharedPreferences("login", MODE_PRIVATE);
 		// getting user activity type weather signup or login from intent
 		UserActivity = getIntent().getStringExtra("UserActivity");
+
 
 		rest = findViewById(R.id.rest);
 		Boarding_Layout=findViewById(R.id.Boarding_layout_id);
@@ -119,9 +124,11 @@ public class PasswordOtpActivity extends BaseActivity {
 			@Override public void onClick(View view) {
 				sign_up_layout.setVisibility(View.VISIBLE);
 				login_layout.setVisibility(View.INVISIBLE);
+				Password_Text.setVisibility(View.VISIBLE);
 				resendOtp();
 				isResetPass = true;
 				name.setVisibility(View.INVISIBLE);
+				Boarding_Layout.setVisibility(View.GONE);
 				dob.setVisibility(View.GONE);
 			}
 		});
@@ -131,6 +138,7 @@ public class PasswordOtpActivity extends BaseActivity {
 			login_layout.setVisibility(View.INVISIBLE);
 			Boarding_Layout.setVisibility(View.GONE);
 			Name_layout.setVisibility(View.VISIBLE);
+			Password_Text.setVisibility(View.GONE);
 			//background_Layout.setBackground(getResources().getDrawable(R.drawable.login_forms_background_b));
 			sign_up_layout.setVisibility(View.VISIBLE);
 		}
@@ -321,6 +329,7 @@ public class PasswordOtpActivity extends BaseActivity {
 
 
 	public void Create_OnBoarding(){
+		Password_Text.setVisibility(View.GONE);
 		background_Layout=(RelativeLayout) findViewById(R.id.background);
 		background_Layout.setBackgroundColor(getResources().getColor(R.color.White));
 
@@ -428,6 +437,9 @@ public class PasswordOtpActivity extends BaseActivity {
 
 	@Override protected void onResume() {
 		super.onResume();
+		Create_OnBoarding();
+
+		Password_Text.setVisibility(View.GONE);
 		registerReceiver(smsReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
 	}
 
@@ -506,6 +518,9 @@ public class PasswordOtpActivity extends BaseActivity {
 			isResetPass = false;
 			name.setVisibility(View.VISIBLE);
 			back.setVisibility(View.INVISIBLE);
+			Boarding_Layout.setVisibility(View.VISIBLE);
+			Password_Text.setVisibility(View.GONE);
+			//Create_OnBoarding();
 		} else {
 			startActivity(new Intent(PasswordOtpActivity.this, LoginActivity.class));
 			finish();

@@ -144,7 +144,13 @@ private TextView Task_Date;
         }{ Intent intent=new Intent();
              if (TaskModel==null){
                  TaskModel=new Task_Model(Title,Des,Date,false);
-                 TaskModel.setGroup_Id(model.getGroupId());
+                 String selectedItem=Task_Spinner.getSelectedItem().toString();
+                 for (int i=0;i<list.size();i++){
+                     if(TextUtils.equals(selectedItem,list.get(i).getGroupName())){
+                         TaskModel.setGroup_Id(list.get(i).getGroupId());
+                     }
+                 }
+
              }
         long id= mDbHelper.addGroupNotes(TaskModel);
             if(id<0){
@@ -154,7 +160,8 @@ private TextView Task_Date;
             intent.putExtra("Title",Title);
             intent.putExtra("Date",Date);
             intent.putExtra("Des",Des);
-            setResult(Activity.RESULT_OK, intent);
+            setResult(52, intent);
+                Groups.task_slider_adapter.add(new Task_Model(Title,Des,Date,false));
             finish();}
         }
 

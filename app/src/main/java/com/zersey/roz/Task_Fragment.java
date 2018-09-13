@@ -123,7 +123,7 @@ public class Task_Fragment extends Fragment {
 
     @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode==RESULT_OK){
+        if(resultCode==52){
             adapter.add(new Task_Model(data.getStringExtra("Title").toString(),data.getStringExtra("Des").toString(),data.getStringExtra("Date").toString(),false));
             //adapter.notifyDataSetChanged();
         }

@@ -16,6 +16,7 @@ import java.util.List;
 public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapter.Task_ViewHolder> {
     List<Task_Model> list;
     private Context context;
+    int ViewType=0;
     Task_Slider_Adapter(List<Task_Model> list){
         this.list=list;
     }
@@ -25,24 +26,53 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
     public Task_ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater=LayoutInflater.from(parent.getContext());
         context=parent.getContext();
+        if(viewType==1){
+            View view = inflater.inflate(R.layout.add_button, parent, false);
+            return new Task_ViewHolder(view);
+        } else {
         View view=inflater.inflate(R.layout.task_card,parent,false);
         return new Task_ViewHolder(view);
+        }
+
     }
 
     @Override
     public void onBindViewHolder(@NonNull Task_ViewHolder holder, int position) {
-        holder.TaskTitle.setText(list.get(position).getTask_Title());
+
         //holder.Des.setText(list.get(position).getTask_Des());
-        if (list.get(position).getTask_Checked()){
+        if (position == list.size()) {
+            holder.Plus_Button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent=new Intent(context,Task_Form_Activity.class);
+                    context.startActivity(intent);
+                }
+            });
+        } else {
+            holder.TaskTitle.setText(list.get(position).getTask_Title());
+            if (list.get(position).getTask_Checked()) {
             holder.Check.setImageResource(R.drawable.checked);
-        }else {
+        } else {
             holder.Check.setImageResource(R.drawable.unchecked);
+        }
+
         }
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return list.size()+1;
+    }
+
+
+    @Override
+    public int getItemViewType(int position) {
+       if(position==list.size()){
+            ViewType=1;
+            return 1;
+        }else {
+            ViewType=0;
+            return 0;}
     }
 
     public void add(Task_Model model){
@@ -53,24 +83,35 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
 
     public class Task_ViewHolder extends RecyclerView.ViewHolder{
      TextView TaskTitle,Des;
-     ImageButton Check;
+     ImageButton Check,Plus_Button;
         public Task_ViewHolder(View itemView) {
             super(itemView);
-            TaskTitle=itemView.findViewById(R.id.Horizontal_Task_Title);
-            Des=itemView.findViewById(R.id.Horizontal_Task_Des);
-            Check=itemView.findViewById(R.id.Horizontal_Task_Check);
+
+            if (ViewType == 1 && list.size() != 0) {                //Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
+                Plus_Button = (ImageButton) itemView.findViewById(R.id.Add_Group_Plus_Button);
+                Plus_Button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                    }
+                });
+            } else {
+                TaskTitle = itemView.findViewById(R.id.Horizontal_Task_Title);
+                Des = itemView.findViewById(R.id.Horizontal_Task_Des);
+                Check = itemView.findViewById(R.id.Horizontal_Task_Check);
+
             Check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Task_Model model=list.get(getAdapterPosition());
+                    Task_Model model = list.get(getAdapterPosition());
 
-                    if(list.get(getAdapterPosition()).getTask_Checked()){
+                    if (list.get(getAdapterPosition()).getTask_Checked()) {
                         model.setTask_Checked(false);
-                        list.set(getAdapterPosition(),model);
+                        list.set(getAdapterPosition(), model);
                         notifyDataSetChanged();
-                    }else {
+                    } else {
                         model.setTask_Checked(true);
-                        list.set(getAdapterPosition(),model);
+                        list.set(getAdapterPosition(), model);
                         notifyDataSetChanged();
                     }
                 }
@@ -79,12 +120,13 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
             TaskTitle.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent=new Intent(context,Task_Form_Activity.class);
+                    Intent intent = new Intent(context, Task_Form_Activity.class);
                     intent.putExtra("Task", list.get(getAdapterPosition()));
                     context.startActivity(intent);
 
                 }
             });
+        }
         }
     }
 }

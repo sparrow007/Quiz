@@ -174,6 +174,10 @@ public class Groups extends Fragment {
 				First_List.add(model);
 				First_RecyclerView.getAdapter().notifyItemInserted(First_List.size() - 1);
 			}
-		}
+		}else if (resultCode==52){
+
+			}
+
+
 	}
 }

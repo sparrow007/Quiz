@@ -3,18 +3,22 @@ package com.zersey.roz;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class Group_Transaction_Adapter
 	extends RecyclerView.Adapter<Group_Transaction_Adapter.TransactionViewHolder> {
-	private List<IncomeModel> list;
+	private List<IncomeModel> list,temp_list,Permanent_list;
 
 	public Group_Transaction_Adapter(List<IncomeModel> list) {
 		this.list = list;
+		this.Permanent_list = list;
 	}
 
 	@NonNull @Override
@@ -42,6 +46,34 @@ public class Group_Transaction_Adapter
 		list.add(model);
 		notifyItemInserted(list.size() - 1);
 	}
+
+
+	public void Search(String str){
+		temp_list=new ArrayList<>();
+
+		if(!TextUtils.isEmpty(str)) {
+			for (int i = 0; i < Permanent_list.size(); i++) {
+				if (Permanent_list.get(i).getTitle().toLowerCase().contains(str.toLowerCase())) {
+					temp_list.add(Permanent_list.get(i));
+				}
+			}
+
+			if(temp_list.size()>0){
+				list=temp_list;
+			}else {
+				list=new ArrayList<>();
+
+			}
+		}else {
+			//list=new ArrayList<>();
+			list=Permanent_list;
+		}
+
+
+		notifyDataSetChanged();
+
+	}
+
 
 	@Override public int getItemCount() {
 		return list.size();
