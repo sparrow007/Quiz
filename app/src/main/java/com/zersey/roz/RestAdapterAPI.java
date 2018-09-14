@@ -68,10 +68,11 @@ public interface RestAdapterAPI {
 	@GET("/Split_bills/fetch_groups") Call<JsonObject> fetchGroups(@Query("userid") String userId,
 		@Query("id") String id);
 
-	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry();
+	@GET("/Split_bills/fetch_income_expense") Call<JsonObject> fetchAllUserEntry(
+		@Query("id") String id, @Query("group_id") String groupId);
 
-	@GET("/Split_bills/fetch_income_expense/{id}") Call<JsonObject> fetchSpecificUserEntry(
-		@Path("id") long id);
+	/*@GET("/Split_bills/fetch_income_expense/{id}") Call<JsonObject> fetchSpecificUserEntry(
+		@Path("id") long id);*/
 
 	@GET("/Split_bills/delete_income_expense/{id}") Call<JsonObject> deleteSpecificUserEntry(
 		@Path("id") long id);
@@ -88,4 +89,12 @@ public interface RestAdapterAPI {
 
 	@FormUrlEncoded @POST("/mobile/contacts/verify_contact_list") Call<JsonObject> verifyContacts(
 		@Field("contact[]") String contact[]);
+
+	@FormUrlEncoded @POST("/Split_bills/create_edit_group_item") Call<JsonObject> createGroupNote(
+		@Field("item_title") String itemTitle, @Field("item_description") String itemDescription,
+		@Field("group_id") long groupId, @Field("assigned_to") long assignedTo,
+		@Field("reminder_date") String reminderDate);
+
+	@GET("/Split_bills/fetch_group_items") Call<JsonObject> fetchGroupNotes(@Query("id") String id,
+		@Query("group_id") String groupId);
 }

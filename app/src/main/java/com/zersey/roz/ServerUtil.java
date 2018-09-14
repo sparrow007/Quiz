@@ -51,8 +51,8 @@ public class ServerUtil {
 
 	public void editGroup(final GroupModel groupModel, final List<ContactModel> itemList) {
 		Call<JsonObject> result = NetworkUtil.getRestAdapter(context)
-			.editGroup(groupModel.getGroupId(), groupModel.getGroupName(), groupModel.getGroupDesc(),
-				groupModel.getUsers(), groupModel.getTypeId(), "");
+			.editGroup(groupModel.getGroupId(), groupModel.getGroupName(),
+				groupModel.getGroupDesc(), groupModel.getUsers(), groupModel.getTypeId(), "");
 		result.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
@@ -194,6 +194,70 @@ public class ServerUtil {
 				String exceptionAsString = sw.toString();
 				Crashlytics.log(exceptionAsString);
 				t.printStackTrace();
+			}
+		});
+	}
+
+	public void createSingleGroup(final GroupModel groupModel, final IncomeModel expenseModel,
+		final List<ContactModel> itemList) {
+		Call<JsonObject> result = JsonHandler.createGroup(context, groupModel);
+		result.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+				JsonObject object = response.body();
+				long id = object.get("id").getAsLong();
+				groupModel.setGroupId(id);
+				expenseModel.setGroupId(id);
+				mDbHelper.addOnlineId(groupModel);
+				long row = mDbHelper.createEntry(expenseModel);
+				expenseModel.setId(row);
+				Groups.adapter.addItem(expenseModel);
+				Call<JsonObject> res = JsonHandler.createEntry(context, expenseModel);
+				res.enqueue(new Callback<JsonObject>() {
+					@Override public void onResponse(@NonNull Call<JsonObject> call,
+						@NonNull Response<JsonObject> response) {
+						JsonObject object = response.body();
+						long id = object.get("id").getAsLong();
+						expenseModel.setOnlineId(id);
+						mDbHelper.addTransactionOnlineId(expenseModel);
+					}
+
+					@Override
+					public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+						t.printStackTrace();
+					}
+				});
+				if (itemList != null) {
+					for (ContactModel m : itemList) {
+						if (m.getUserId() == 0) {
+							NetworkUtil.inviteLink(context, Long.toString(id),
+								groupModel.getGroupName(), m.getNumber());
+						}
+					}
+				}
+			}
+
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+				t.printStackTrace();
+			}
+		});
+	}
+
+	public void createGroupTask(final Task_Model taskModel) {
+		Call<JsonObject> result = NetworkUtil.getRestAdapter(context)
+			.createGroupNote(taskModel.getTask_Title(), taskModel.getTask_Des(),
+				taskModel.getGroup_Id(), taskModel.getAssignedTo(), taskModel.getTask_Date());
+		result.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+				JsonObject jsonObject = response.body();
+				long id = jsonObject.get("id").getAsLong();
+				taskModel.setTask_Id(id);
+				mDbHelper.addOnlineIdForNote(taskModel);
+			}
+
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+
 			}
 		});
 	}

@@ -25,16 +25,17 @@ public class Groups extends Fragment {
 	private TextView First_More, Second_More;
 	private String mParam1;
 	private String mParam2;
-	private RecyclerView First_RecyclerView, Second_RecyclerView,Task_RecyclerView;
+	private RecyclerView First_RecyclerView, Second_RecyclerView, Task_RecyclerView;
 	private List<GroupModel> First_List, Second_List;
 	private OnFragmentInteractionListener mListener;
-	public static	 First_Slider_Adapter ADAPTER;
+	public static First_Slider_Adapter ADAPTER;
 	private TransactionDbHelper mDbHelper;
 	private List<IncomeModel> Item_list;
 	private List<Task_Model> Task_list;
 	private List<GroupModel> list;
 	public static RecyclerAdapter adapter;
-    public static Task_Slider_Adapter task_slider_adapter;
+	public static Task_Slider_Adapter task_slider_adapter;
+
 	public Groups() {
 		// Required empty public constructor
 	}
@@ -57,15 +58,12 @@ public class Groups extends Fragment {
 		//mDbHelper = new TransactionDbHelper(getContext());
 		First_List = new ArrayList<>(list);
 		Second_List = new ArrayList<>();
-		First_RecyclerView = new RecyclerView(getContext());
-		Second_RecyclerView = new RecyclerView(getContext());
-		Task_RecyclerView = new RecyclerView(getContext());
 
 		//initList();
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		Item_list = new ArrayList<>(mDbHelper.getAllEntries());
-		Task_list=new ArrayList<>();
-		Task_list=mDbHelper.getTask(-1);
+		Task_list = new ArrayList<>();
+		Task_list = mDbHelper.getTask(-1);
 		/*for (int i=0;i<10;i++){
 			Task_list.add(new Task_Model("New Task","New Description","null",false));
 		}*/
@@ -104,6 +102,12 @@ public class Groups extends Fragment {
 					Item_list.addAll(mDbHelper.getAllEntries());
 					Second_RecyclerView.getAdapter().notifyDataSetChanged();
 				}
+
+				@Override public void onTaskRefresh(List<Task_Model> taskList) {
+					Task_list.clear();
+					Task_list.addAll(taskList);
+					Task_RecyclerView.getAdapter().notifyDataSetChanged();
+				}
 			});
 
 		return fragmentLayout;
@@ -117,17 +121,17 @@ public class Groups extends Fragment {
 	//}
 
 	private View initRecyclerView(View fragmentLayout) {
-		Task_RecyclerView=fragmentLayout.findViewById(R.id.Task_Slider);
-		Task_RecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
-        task_slider_adapter=new Task_Slider_Adapter(Task_list);
-        Task_RecyclerView.setAdapter(task_slider_adapter);
-
+		Task_RecyclerView = fragmentLayout.findViewById(R.id.Task_Slider);
+		Task_RecyclerView.setLayoutManager(
+			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+		task_slider_adapter = new Task_Slider_Adapter(Task_list);
+		Task_RecyclerView.setAdapter(task_slider_adapter);
 
 		First_RecyclerView = fragmentLayout.findViewById(R.id.First_Slider);
 		First_RecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 		//new CardSnapHelper().attachToRecyclerView(First_RecyclerView);
-		ADAPTER=new First_Slider_Adapter(getContext(), First_List);
+		ADAPTER = new First_Slider_Adapter(getContext(), First_List);
 		First_RecyclerView.setAdapter(ADAPTER);
 		//First_RecyclerView.smoothScrollToPosition(0);
 
@@ -174,10 +178,8 @@ public class Groups extends Fragment {
 				First_List.add(model);
 				First_RecyclerView.getAdapter().notifyItemInserted(First_List.size() - 1);
 			}
-		}else if (resultCode==52){
+		} else if (resultCode == 52) {
 
-			}
-
-
+		}
 	}
 }

@@ -72,17 +72,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 			if (holder.customamount != null) {
 				String[] amounts = list.get(position).getTotalAmount().split(",");
 				double sum = 0;
-				for (String s : amounts) {
-					sum += Double.parseDouble(s);
+				try {
+					for (String s : amounts) {
+						sum += Double.parseDouble(s);
+					}
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
 				}
 				holder.customamount.setText("INR " + sum);
 			}
 			if (holder.customdate != null) {
-				holder.customdate.setText(customitems.getIncome_day()
-					+ " "
-					+ Months[customitems.getIncome_month() - 1]
-					+ " "
-					+ customitems.getIncome_year());
+				try {
+
+					holder.customdate.setText(customitems.getIncome_day()
+						+ " "
+						+ Months[customitems.getIncome_month() - 1]
+						+ " "
+						+ customitems.getIncome_year());
+				} catch(Exception ignored){
+
+				}
 			}
 		}
 		if (position == list.size() && list.size() != 0) {

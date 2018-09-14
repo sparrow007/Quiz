@@ -1,28 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Group_Transactions">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/Group_Transaction_RecyclerView"
+    tools:context=".Group_Transactions"
+    >
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/Group_Transaction_RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </LinearLayout>
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_Transaction"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/plus"
-        android:id="@+id/fab_Transaction"
-        android:backgroundTint="#cddc39"
-        android:tint="@android:color/white"
         android:layout_gravity="bottom|end"
         android:layout_marginBottom="155dp"
-        android:layout_marginRight="24dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/plus"
+        android:tint="@android:color/white"
+        app:backgroundTint="#cddc39"
         />
 </android.support.design.widget.CoordinatorLayout>

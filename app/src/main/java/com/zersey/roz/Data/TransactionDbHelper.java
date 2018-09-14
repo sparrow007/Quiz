@@ -49,8 +49,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		db.execSQL(TransactionDbContract.TempEntry.SQL_CREATE_TEMP_TABLE);
 	}
 
-
-
 	@Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 	}
@@ -78,19 +76,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			TransactionDbContract.GroupEntry._ID + "=?",
 			new String[] { Long.toString(model.getId()) });
 	}
-
-
-	public long addGroupNotes(Task_Model model){
-		SQLiteDatabase db = getWritableDatabase();
-		ContentValues cv = new ContentValues();
-		Log.d("addGroupNotes: ", model.getTask_Title());
-		cv.put(TransactionDbContract.NoteEntry.COLUMN_TITLE, model.getTask_Title());
-		cv.put(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION, model.getTask_Des());
-		cv.put(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER, model.getTask_Date());
-		cv.put(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID, model.getGroup_Id());
-		return db.insert(TransactionDbContract.NoteEntry.TABLE_NAME, null, cv);
-		 }
-
 
 	public void addGroups(List<GroupModel> list) {
 		SQLiteDatabase db = getWritableDatabase();
@@ -161,12 +146,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			model.getPaidAtDate());
 		long newRowId = db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
 		model.setId(newRowId);
-		new Handler(Looper.getMainLooper()).post(new Runnable() {
-			public void run() {
-				//Transactions.adapter.addItem(model);
-				Groups.adapter.addItem(model);
-			}
-		});
 		return newRowId;
 	}
 
@@ -253,44 +232,90 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			new String[] { String.valueOf(model.getId()) });
 	}
 
+	public long addGroupNotes(Task_Model model) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_TITLE, model.getTask_Title());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION, model.getTask_Des());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER, model.getTask_Date());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID, model.getGroup_Id());
+		cv.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_ASSIGNED, model.getAssignedTo());
+		return db.insert(TransactionDbContract.NoteEntry.TABLE_NAME, null, cv);
+	}
+
+	public void addTasks(List<Task_Model> taskList) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		db.beginTransaction();
+
+		for(Task_Model model: taskList) {
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_TITLE, model.getTask_Title());
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION, model.getTask_Des());
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER, model.getTask_Date());
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID, model.getGroup_Id());
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_ASSIGNED, model.getAssignedTo());
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID, model.getTask_Id());
+			cv.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_CREATOR, model.getAssignedBy());
+			db.insert(TransactionDbContract.NoteEntry.TABLE_NAME, null, cv);
+			cv.clear();
+		}
+
+		db.setTransactionSuccessful();
+		db.endTransaction();
+
+	}
 
 	public List<Task_Model> getTask(long Group_id) {
 		SQLiteDatabase db1 = getReadableDatabase();
 		List<Task_Model> list = new ArrayList<>();
-		Log.d( "getTask: ",""+getGroupNotesCount());
-		Cursor cursor = null;
-		if(Group_id<0){
-			cursor=db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, null, null,
-					null, null, null);
-		}else  {
-			cursor = db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, TransactionDbContract.NoteEntry.COLUMN_GROUP_ID + "=" + Long.toString(Group_id), null,
-					null, null, null);
+		Cursor cursor;
+		if (Group_id < 0) {
+			cursor =
+				db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, null, null, null, null,
+					null);
+		} else {
+			cursor = db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null,
+				TransactionDbContract.NoteEntry.COLUMN_GROUP_ID + "=" + Long.toString(Group_id),
+				null, null, null, null);
 		}
 		while (cursor.moveToNext()) {
 			long currentID =
-					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry._ID));
-			long groupID =
-					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID));
+				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry._ID));
+			long groupID = cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID));
+
 
 			String title = cursor.getString(
-					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_TITLE));
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_TITLE));
 			String desc = cursor.getString(
-					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION));
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION));
 
 			String date = cursor.getString(
-					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER));
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER));
 
-			Task_Model model = new Task_Model(title,desc,date,false);
+			Task_Model model = new Task_Model();
+			model.setTask_Title(title);
+			model.setTask_Des(desc);
+			model.setTask_Date(date);
+			model.setTask_Checked(false);
+
 			model.setTask_Id(currentID);
 			model.setGroup_Id(groupID);
 
+			model.setTask_Id(cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID)));
+			model.setAssignedTo(cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ASSIGNED)));
+			model.setAssignedBy(cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_CREATOR)));
+
+
 			list.add(model);
 		}
-		Log.d( "getTask: ",""+list.size());
+		Log.d("getTask: ", "" + list.size());
 		cursor.close();
 		return list;
 	}
-
 
 	public int getGroupNotesCount() {
 		String countQuery = "SELECT * FROM " + TransactionDbContract.NoteEntry.TABLE_NAME;
@@ -345,7 +370,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		//	TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID);
 		//
 		Cursor cursor = db1.rawQuery(
-			"SELECT * FROM expenses, groups WHERE groups._id=expenses.group_id AND groups.type_id=1",
+			"SELECT * FROM expenses, groups WHERE groups.group_id=expenses.group_id AND groups.type_id=1",
 			null);
 
 		while (cursor.moveToNext()) {
@@ -532,7 +557,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_NAME, model.getName());
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_NUMBER, model.getNumber());
-		long id = db.insert(TransactionDbContract.ContactEntry.TABLE_NAME, null, cv);
+		long id = 0;
+		try {
+			id = db.insertOrThrow(TransactionDbContract.ContactEntry.TABLE_NAME, null, cv);
+		} catch (Exception ignored) {
+
+		}
 		return id;
 	}
 
@@ -639,4 +669,15 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				TransactionDbContract.ContactEntry.COLUMN_NUMBER + "=?", new String[] { key });
 		}
 	}
+
+	public void addOnlineIdForNote(Task_Model model) {
+		SQLiteDatabase db = this.getWritableDatabase();
+		ContentValues values = new ContentValues();
+		values.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID, model.getTask_Id());
+		int id = db.update(TransactionDbContract.NoteEntry.TABLE_NAME, values,
+			TransactionDbContract.NoteEntry._ID + "=?",
+			new String[] { String.valueOf(model.getId()) });
+	}
+
+
 }

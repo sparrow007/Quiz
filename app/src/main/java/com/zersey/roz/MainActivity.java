@@ -25,10 +25,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.Html;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -277,7 +275,6 @@ import java.util.List;
 			TitleEdit.setText(Updated_Title);
 			dateEdit.setText(Updated_Date);
 		}
-
 	}
 
 	private void initRecyclerView() {
@@ -358,25 +355,7 @@ import java.util.List;
 		} else if (check) {
 			//String[] names = Item_list.get;
 
-			int no_of_Person = Item_list.size();
-			String Specific_Amount;
-			if (TextUtils.isEmpty(Amount)) {
-				Specific_Amount = "0";
-			} else {
-				Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
-			}
-			Log.d("Dialog: ", Item_list.size() + "");
-			Split_List = new ArrayList<>();
-			ContactModel you = new ContactModel();
-			you.setName("You");
-			Split_List.add(new Split_Contact_model(you, Specific_Amount));
-			if (Item_list.isEmpty()) {
-				Toast.makeText(this, "Add members ", Toast.LENGTH_SHORT).show();
-				return;
-			}
-			for (int i = 0; i < Item_list.size(); i++) {
-				Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
-			}
+			singleSplit();
 		}
 		Log.d("Dialog: ", Split_List.size() + "");
 		LayoutInflater LI = LayoutInflater.from(MainActivity.this);
@@ -427,6 +406,29 @@ import java.util.List;
 		dialog.getWindow()
 			.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 				| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+	}
+
+	private void singleSplit() {
+		int no_of_Person = Item_list.size();
+		String Specific_Amount;
+		Amount = Material_Amount.getEditText().getText().toString();
+		if (TextUtils.isEmpty(Amount)) {
+			Specific_Amount = "0";
+		} else {
+			Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
+		}
+		Log.d("Dialog: ", Item_list.size() + "");
+		Split_List = new ArrayList<>();
+		ContactModel you = new ContactModel();
+		you.setName("You");
+		Split_List.add(new Split_Contact_model(you, Specific_Amount));
+		if (Item_list.isEmpty()) {
+			Toast.makeText(this, "Add members ", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		for (int i = 0; i < Item_list.size(); i++) {
+			Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
+		}
 	}
 
 	private void groupSplit() {
@@ -647,25 +649,12 @@ import java.util.List;
 
 				if (TextUtils.isEmpty(CardClicked)) {
 					String DateEdit_text = dateEdit.getText().toString();
-					//Custom_items items = new Custom_items(Category_text,
-					//      Title_text, "Rs " + Amount_text, day_x + " " + Months[month_x - 1] + " " + year_x);
-					//customlist.add(items);
-					//Log.d( "Submit: ",CardClicked);
-
 					SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
-					GroupModel groupModel2 = new GroupModel();
 
-					if (groupModel == null) {
-
-						groupModel2.setGroupName(Title_text);
-						groupModel2.setTypeId(1);
-						//groupModel.setGroupDesc();
-						groupModel2.setUsers(users);
-						long newrowId = mDbHelper.createGroup(groupModel2);
-						new ServerUtil(MainActivity.this).createGroup(groupModel2, null);
-						groupModel2.setId(newrowId);
-					} else{
+					if (groupModel != null) {
 						groupSplit();
+					} else {
+						singleSplit();
 					}
 
 					StringBuilder totalAmounts = new StringBuilder();
@@ -690,7 +679,6 @@ import java.util.List;
 					expenseModel.setAmountDue(totalAmounts.toString());
 					expenseModel.setPayerId(payerIds.toString());
 					expenseModel.setInvoiceId("");
-					expenseModel.setGroupId(groupModel2.getId());
 					try {
 						expenseModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
 					} catch (UnsupportedEncodingException e) {
@@ -702,45 +690,23 @@ import java.util.List;
 					if (groupModel != null) {
 						expenseModel.setGroupId(groupModel.getGroupId());
 						expenseModel.setType("gt");
+						long rowId = mDbHelper.createEntry(expenseModel);
+						new ServerUtil(MainActivity.this).createEntry(expenseModel);
+						expenseModel.setId(rowId);
 					}
 
-					long rowId = mDbHelper.createEntry(expenseModel);
-					new ServerUtil(MainActivity.this).createEntry(expenseModel);
-					expenseModel.setId(rowId);
+					if (groupModel == null) {
+						GroupModel groupModel2 = new GroupModel();
+						groupModel2.setGroupName(Title_text);
+						groupModel2.setTypeId(1);
+						//groupModel.setGroupDesc();
+						groupModel2.setUsers(users);
+						long newrowId = mDbHelper.createGroup(groupModel2);
+						groupModel2.setId(newrowId);
+						new ServerUtil(MainActivity.this).createSingleGroup(groupModel2,
+							expenseModel, null);
+					}
 
-					//if (NetworkUtil.hasInternetConnection(MainActivity.this)) {
-					//	new ServerUtil(MainActivity.this).createEntry(expenseModel);
-					//} else {
-					//	mDbHelper.addToTemp(rowId, 0, "new");
-					//}
-					//TransactionDbHelper mdbhelper = new TransactionDbHelper(MainActivity.this);
-					//SQLiteDatabase db = mdbhelper.getWritableDatabase();
-					//ContentValues values = new ContentValues();
-					////values.put(recipe_entry.Column_Recipe_Image,byteimage);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, Title_text);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY,
-					//	Category_text);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
-					//	"Rs " + Amount_text);
-					//Log.d("Date created", DateEdit_text);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
-					//	DateEdit_text);
-					//values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
-					//values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
-					//long newRowId =
-					//	db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
-					//if (newRowId == -1) {
-					//	// If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
-					//	Toast.makeText(MainActivity.this, "Error with saving pet", Toast.LENGTH_SHORT)
-					//		.show();
-					//} else {
-					//	// Otherwise, the insertion was successful and we can display a toast with the row COLUMN_ONLINE_ID.
-					//	Toast.makeText(MainActivity.this, "Recipe saved with row id: " + newRowId,
-					//		Toast.LENGTH_SHORT).show();
-					//	new ServerUtil(MainActivity.this).createEntry(expenseModel);
-					//}
-					Bundle args = new Bundle();
-					//args.putParcelableArrayList("ARRAYLIST",(ArrayList<? extends Parcelable>) customlist);
 					Toast.makeText(MainActivity.this, "Success", Toast.LENGTH_LONG).show();
 				} else {
 					Updated_Title = TitleEdit.getText().toString();

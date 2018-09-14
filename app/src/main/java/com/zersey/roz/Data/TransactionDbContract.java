@@ -136,6 +136,7 @@ public class TransactionDbContract {
 		public static final String TABLE_NAME = "group_notes";
 		public static final String COLUMN_GROUP_ID = "group_id";
 		public static final String COLUMN_TITLE = "note_title";
+		public static final String COLUMN_NOTE_ID = "note_id";
 		public static final String COLUMN_DESCRIPTION = "note_description";
 		public static final String COLUMN_DATE_CREATED = "note_created_date";
 		public static final String COLUMN_DATE_REMINDER = "note_reminder_date";
@@ -147,6 +148,8 @@ public class TransactionDbContract {
 			+ " ( "
 			+ NoteEntry._ID
 			+ " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ NoteEntry.COLUMN_NOTE_ID
+			+ " INTEGER, "
 			+ COLUMN_TITLE
 			+ " TEXT, "
 			+ COLUMN_DESCRIPTION

@@ -19,13 +19,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import com.zersey.roz.Data.TransactionDbHelper;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ public class Main2Activity extends BaseActivity
 	private String[] tags = new String[3];
 	private List<GroupModel> list;
 	private TransactionDbHelper mDbHelper;
+	private List<Task_Model> taskList;
 
 	public FragmentRefreshListener getFragmentRefreshListener() {
 		return fragmentRefreshListener;
@@ -73,12 +73,14 @@ public class Main2Activity extends BaseActivity
 
 	public interface FragmentRefreshListener {
 		void onRefresh(List<GroupModel> list);
+		void onTaskRefresh(List<Task_Model> taskList);
 	}
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main2);
 		list = new ArrayList<>();
+		taskList = new ArrayList<>();
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		ActionBar actionbar = getSupportActionBar();
@@ -222,44 +224,92 @@ public class Main2Activity extends BaseActivity
 		//registerReceiver(br, netFilter);
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
-
 		final TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(this);
-		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getGroupsCount() == 0) {
-			showProgress("Getting your groups...");
-			Call<JsonObject> result =
-				NetworkUtil.getRestAdapter(this).fetchGroups(prefs.getString("userid", null), null);
-			result.enqueue(new Callback<JsonObject>() {
-				@Override
-				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-					list.addAll(Util.parseGroupResponse(response.body()));
-					dbHelper.addGroups(list);
-					list.clear();
-					list.addAll(dbHelper.getGroups(0));
-					getFragmentRefreshListener().onRefresh(list);
+
+		if (!prefs.getBoolean("dataFetched", false)) {
+
+			prefs.edit().putBoolean("dataFetched", true).apply();
+
+			if (NetworkUtil.hasInternetConnection(this)) {
+				showProgress("Getting your groups...");
+				Call<JsonObject> result = NetworkUtil.getRestAdapter(this)
+					.fetchGroups(prefs.getString("userid", null), null);
+				result.enqueue(new Callback<JsonObject>() {
+					@Override public void onResponse(@NonNull Call<JsonObject> call,
+						@NonNull Response<JsonObject> response) {
+						list.addAll(Util.parseGroupResponse(response.body()));
+						dbHelper.addGroups(list);
+
+						for (GroupModel groupModel : list) {
+							Call<JsonObject> groupResult =
+								NetworkUtil.getRestAdapter(Main2Activity.this)
+									.fetchAllUserEntry(null,
+										Long.toString(groupModel.getGroupId()));
+							groupResult.enqueue(new Callback<JsonObject>() {
+								@Override public void onResponse(@NonNull Call<JsonObject> call,
+									@NonNull Response<JsonObject> response) {
+									Util.getNotesList(Main2Activity.this, response, true);
+								}
+
+								@Override public void onFailure(@NonNull Call<JsonObject> call,
+									@NonNull Throwable t) {
+
+								}
+							});
+						}
+
+						list.clear();
+						list.addAll(dbHelper.getGroups(0));
+						getFragmentRefreshListener().onRefresh(list);
+					}
+
+					@Override
+					public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+
+					}
+				});
+			}
+
+			Call<JsonObject> taskResult =
+				NetworkUtil.getRestAdapter(Main2Activity.this).fetchGroupNotes(null, null);
+			taskResult.enqueue(new Callback<JsonObject>() {
+				@Override public void onResponse(@NonNull Call<JsonObject> call,
+					@NonNull Response<JsonObject> response) {
+					taskList.addAll(Util.parseTaskresponse(response.body()));
+					dbHelper.addTasks(taskList);
+					//taskList.clear();
+					//taskList.addAll(dbHelper.getTasks());
+					getFragmentRefreshListener().onTaskRefresh(taskList);
 				}
 
-				@Override public void onFailure(Call<JsonObject> call, Throwable t) {
+				@Override
+				public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 
 				}
 			});
+
+
+
+			if (NetworkUtil.hasInternetConnection(this)) {
+				Call<JsonObject> result =
+					NetworkUtil.getRestAdapter(this).fetchAllUserEntry(null, null);
+				result.enqueue(new Callback<JsonObject>() {
+					@Override public void onResponse(@NonNull Call<JsonObject> call,
+						@NonNull Response<JsonObject> response) {
+						Util.getNotesList(Main2Activity.this, response, false);
+						Groups.adapter.addAll(mDbHelper.getAllEntries());
+					}
+
+					@Override
+					public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+
+					}
+				});
+				dismissProgress();
+			}
 		} else {
 			list.addAll(dbHelper.getGroups(0));
-		}
-
-		if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
-			Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchAllUserEntry();
-			result.enqueue(new Callback<JsonObject>() {
-				@Override
-				public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
-					Util.getNotesList(Main2Activity.this, response);
-					Groups.adapter.addAll(dbHelper.getAllEntries());
-				}
-
-				@Override public void onFailure(Call<JsonObject> call, Throwable t) {
-
-				}
-			});
-			dismissProgress();
+			taskList.addAll(dbHelper.getTask(-1));
 		}
 	}
 
@@ -280,8 +330,8 @@ public class Main2Activity extends BaseActivity
 				while (phones.moveToNext()) {
 					String name = phones.getString(
 						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-					String hasPhone = phones.getString(
-						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
+					String hasPhone = phones.getString(phones.getColumnIndex(
+						ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
 
 					String cNumber = null, code = null;
 					if (hasPhone.equalsIgnoreCase("1")) {
@@ -413,6 +463,7 @@ public class Main2Activity extends BaseActivity
 					Fragment fragment = new Groups();
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("groupList", (Serializable) list);
+					bundle.putSerializable("taskList", (Serializable) taskList);
 					fragment.setArguments(bundle);
 					return fragment;
 
@@ -445,7 +496,7 @@ public class Main2Activity extends BaseActivity
 
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Fragment fragment = getSupportFragmentManager().findFragmentByTag(tags[2]);
+		Fragment fragment = getSupportFragmentManager().findFragmentByTag(tags[0]);
 		fragment.onActivityResult(requestCode, resultCode, data);
 	}
 }

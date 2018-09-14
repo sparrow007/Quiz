@@ -40,16 +40,16 @@ public class Util {
 			int halfbyte = (b >>> 4) & 0x0F;
 			int two_halfs = 0;
 			do {
-				buf.append((0 <= halfbyte) && (halfbyte <= 9) ? (char) ('0' + halfbyte) : (char) ('a' + (halfbyte - 10)));
+				buf.append((0 <= halfbyte) && (halfbyte <= 9) ? (char) ('0' + halfbyte)
+					: (char) ('a' + (halfbyte - 10)));
 				halfbyte = b & 0x0F;
 			} while (two_halfs++ < 1);
 		}
 		return buf.toString();
 	}
 
-
-	public static String SHA1(String text) throws NoSuchAlgorithmException,
-		UnsupportedEncodingException {
+	public static String SHA1(String text)
+		throws NoSuchAlgorithmException, UnsupportedEncodingException {
 		MessageDigest md = MessageDigest.getInstance("SHA-1");
 		byte[] textBytes = text.getBytes("iso-8859-1");
 		md.update(textBytes, 0, textBytes.length);
@@ -57,20 +57,54 @@ public class Util {
 		return convertToHex(sha1hash);
 	}
 
-	public static List<IncomeModel> getNotesList(Context context, Response<JsonObject> response) {
+	public static List<IncomeModel> getNotesList(Context context, Response<JsonObject> response,
+		boolean groupEntries) {
 		List<IncomeModel> list = new ArrayList<>();
 		try {
 			JsonArray array = response.body().get("entries").getAsJsonArray();
 			for (int i = 0; i < array.size(); i++) {
 				JsonObject obj = array.get(i).getAsJsonObject();
 				IncomeModel model = JsonHandler.handleSingleReminder(obj);
-				list.add(model);
+				if (groupEntries && (model.getType().equals("gt") || Util.isEmpty(
+					model.getType()))) {
+					list.add(model);
+				} else if (!groupEntries && !Util.isEmpty(model.getType())) list.add(model);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(context);
 		dbHelper.addTransactions(list);
+		return list;
+	}
+
+	public static List<Task_Model> parseTaskresponse(JsonObject response) {
+		List<Task_Model> list = new ArrayList<>();
+		try {
+
+			JsonArray array = response.get("groups").getAsJsonArray();
+			for (int i = 0; i < array.size(); i++) {
+				JsonObject obj = array.get(i).getAsJsonObject();
+				Task_Model model = new Task_Model();
+				model.setTask_Id(obj.get("id").getAsLong());
+				model.setTask_Title(obj.get("item_title").getAsString());
+				model.setGroup_Id(obj.get("group_id").getAsLong());
+				model.setAssignedBy(obj.get("assigned_by").getAsLong());
+				if (!obj.get("item_description").isJsonNull()) {
+					model.setTask_Des(obj.get("item_description").getAsString());
+				}
+				if (!obj.get("assigned_to").isJsonNull()) {
+					model.setAssignedTo(obj.get("assigned_to").getAsLong());
+				}
+				if (!obj.get("reminder_date").isJsonNull()) {
+					model.setTask_Date(obj.get("reminder_date").getAsString());
+				}
+				list.add(model);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 		return list;
 	}
 
@@ -89,7 +123,9 @@ public class Util {
 					model.setGroupDesc(obj.get("group_description").getAsString());
 				}
 				if (!obj.get("users").isJsonNull()) model.setUsers(obj.get("users").getAsString());
-				if (!obj.get("type_id").isJsonNull()) model.setTypeId(obj.get("type_id").getAsInt());
+				if (!obj.get("type_id").isJsonNull()) {
+					model.setTypeId(obj.get("type_id").getAsInt());
+				}
 				list.add(model);
 			}
 		} catch (Exception e) {
@@ -103,23 +139,21 @@ public class Util {
 
 		Context context;
 
-
 		@Override protected Object doInBackground(Object[] objects) {
 
 			Response<JsonObject> response = (Response<JsonObject>) objects[0];
-
 
 			return null;
 		}
 
 		@Override protected void onPostExecute(Object o) {
 			super.onPostExecute(o);
-			}
+		}
 	}
 
 	public static String generateUuid(String userId)
 		throws UnsupportedEncodingException, NoSuchAlgorithmException {
-		String s =  userId + Calendar.getInstance().getTimeInMillis();
+		String s = userId + Calendar.getInstance().getTimeInMillis();
 		return SHA1(s);
 	}
 }
