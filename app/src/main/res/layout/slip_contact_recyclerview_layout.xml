@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColor="#000000"
-        android:textSize="20dp"
+        android:textSize="17dp"
         android:text="Bharat"/>
     <TextView
         android:layout_gravity="center_vertical"
@@ -30,6 +30,7 @@
     <EditText
         android:hint="000"
         android:inputType="number"
+        android:textSize="14dp"
         android:id="@+id/RecyclerView_Split_Amount"
         android:gravity="center_vertical"
         android:layout_gravity="center_vertical"

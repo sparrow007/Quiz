@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapter.Task_ViewHolder> {
+
 	List<Task_Model> list;
 	private Context context;
 	int ViewType = 0;

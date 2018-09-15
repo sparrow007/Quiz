@@ -3,6 +3,7 @@ package com.zersey.roz;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -12,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -24,6 +27,7 @@ public class Dialog_Split_RecyclerViewAdapter
 	private List<Integer> Amount_List;
 	private String Slider;
 	private int Amount;
+	private Boolean split_Correctly;
 
 	public Dialog_Split_RecyclerViewAdapter(List<Split_Contact_model> list, String Slider,
 		int Amount) {
@@ -31,6 +35,18 @@ public class Dialog_Split_RecyclerViewAdapter
 		this.Slider = Slider;
 		Amount_List = new ArrayList<>();
 		this.Amount = Amount;
+
+		if (TextUtils.equals(Slider, "ratio")){
+			MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: 100% of 100%</font> \n<font color=#90A4AE> <br>left "+0+"%</font>"));
+		}else if (TextUtils.equals(Slider, "Equally")){
+			MainActivity.Split_Notes.setText("");
+		}else {
+			double amount = Double.parseDouble(Amount+"");
+			DecimalFormat formatter = new DecimalFormat("#,###");
+
+			MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formatter.format(amount)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+0+"</font>"));
+			//MainActivity.Split_Notes.setText(("Total: "+Amount+" of "+Amount+" \nleft "+0));
+		}
 	}
 
 	@NonNull @Override
@@ -43,12 +59,21 @@ public class Dialog_Split_RecyclerViewAdapter
 	@Override
 	public void onBindViewHolder(@NonNull final Split_ViewHolder holder, final int position) {
 
+
 		if (TextUtils.equals(Slider, "ratio")) {
 			holder.Currency2.setVisibility(View.VISIBLE);
 			holder.Currency.setVisibility(View.GONE);
 			holder.Currency2.setText("%");
 			holder.Contact_Name.setText(list.get(position).getContact_Name().getName());
-			holder.Split_Amount.setText(100 / list.size() + "");
+			//holder.Split_Amount.setText(100 / list.size() + "");
+			if (position==list.size()-1)
+			{
+			if (list.size() % 2 != 0) {
+				holder.Split_Amount.setText((100 / list.size()) + 1 + "");
+			} else {
+				holder.Split_Amount.setText(100 / list.size() + "");
+			}
+		       }else {holder.Split_Amount.setText(100 / list.size() + "");}
 			Amount_List.add(position, 100 / list.size());
 		}
 		if (TextUtils.equals(Slider, "") || TextUtils.equals(Slider, "Equally")) {
@@ -58,6 +83,15 @@ public class Dialog_Split_RecyclerViewAdapter
 			holder.Currency.setText("Rs");
 			holder.Contact_Name.setText(list.get(position).getContact_Name().getName());
 			holder.Split_Amount.setText(list.get(position).getSplit_Amount());
+			/*if (position==list.size()-1)
+			{
+				if (list.size() % 2 != 0) {
+				holder.Split_Amount.setText(Integer.parseInt(list.get(position).getSplit_Amount()) + 1+"");
+			} else {
+				holder.Split_Amount.setText(list.get(position).getSplit_Amount());
+			}
+		         }else {holder.Split_Amount.setText(list.get(position).getSplit_Amount());}*/
+
 			if (TextUtils.equals(Slider, "Equally")) {
 				holder.Split_Amount.setInputType(InputType.TYPE_NULL);
 			}
@@ -97,8 +131,9 @@ public class Dialog_Split_RecyclerViewAdapter
 				} else {
 					list.get(position).setSplit_Amount(holder.Split_Amount.getText().toString());
 				}
+                   Check();
+				/*if (Check()) {
 
-				if (Check()) {
 					if (TextUtils.equals(Slider, "ratio")) {
 						MainActivity.Split_Notes.setText("Total:" + "with 100%");
 					} else {
@@ -106,13 +141,27 @@ public class Dialog_Split_RecyclerViewAdapter
 					}
 				} else {
 					MainActivity.Split_Notes.setText("All Amount is not Split Correctly");
-				}
+				}*/
 			}
 
 			@Override public void afterTextChanged(Editable s) {
+				Check();
+				/*if (Check()) {
 
+					if (TextUtils.equals(Slider, "ratio")) {
+						MainActivity.Split_Notes.setText("Total:" + "with 100%");
+					} else {
+						MainActivity.Split_Notes.setText("All settle with " + Amount);
+					}
+				} else {
+					MainActivity.Split_Notes.setText("All Amount is not Split Correctly");
+				}*/
 			}
 		});
+	}
+
+	public Boolean getSplit_Correctly() {
+		return split_Correctly;
 	}
 
 	public List<Split_Contact_model> getList() {
@@ -129,15 +178,41 @@ public class Dialog_Split_RecyclerViewAdapter
 			for (int i = 0; i < Amount_List.size(); i++) {
 				Total = Total + Integer.parseInt(Amount_List.get(i).toString());
 			}
+			//if(list.size()%2!=0){Total++;}
 			Log.d("Check: ", Amount + "  " + Total);
-			return Total == 100;
+			if (Total==100){
+				split_Correctly=true;
+				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: "+Total+"% of 100%</font> <font color=#90A4AE> <br>left "+(100-Total)+"%</font>"));
+				MainActivity.positive_Button.setEnabled(true);
+				return true;
+			}else {split_Correctly=false;
+				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: "+Total+"% of 100%</font> <font color=#90A4AE> <br>left "+(100-Total)+"%</font>"));
+				MainActivity.positive_Button.setEnabled(false);
+			return false;}
+
 		} else {
 			int Total = 0;
 			for (int i = 0; i < Amount_List.size(); i++) {
 				Total = Total + Integer.parseInt(Amount_List.get(i).toString());
 			}
+			//if(list.size()%2!=0){Total++;}
 			Log.d("Check: ", Amount + "  " + Total);
-			return Total == Amount;
+
+			double amount = Double.parseDouble(Amount+"");
+			DecimalFormat formatter = new DecimalFormat("#,###");
+			double total = Double.parseDouble(Total+"");
+			DecimalFormat formattert = new DecimalFormat("#,###");
+			double left = Double.parseDouble((Amount-Total)+"");
+			//DecimalFormat formatterl = new DecimalFormat("#,###");
+			if (Total==Amount){
+				split_Correctly=true;
+				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formattert.format(total)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+formatter.format(left)+"</font>"));
+				MainActivity.positive_Button.setEnabled(true);
+				return true;
+			}else {split_Correctly=false;
+				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formattert.format(total)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+formatter.format(left)+"</font>"));
+				MainActivity.positive_Button.setEnabled(false);
+			return false;}
 		}
 	}
 

@@ -44,6 +44,7 @@ public class Task_Fragment extends Fragment {
 	private TransactionDbHelper mdbHelper;
 	private OnFragmentInteractionListener mListener;
 
+
 	public Task_Fragment() {
 		// Required empty public constructor
 	}
@@ -80,7 +81,7 @@ public class Task_Fragment extends Fragment {
 		// Inflate the layout for this fragment
 		View fragment = inflater.inflate(R.layout.fragment_task, container, false);
 		fragment = initRecyclerView(fragment);
-		FloatingActionButton fab = fragment.findViewById(R.id.fab);
+		/*FloatingActionButton fab = getActivity().findViewById(R.id.fab_Transaction);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
 				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -90,7 +91,7 @@ public class Task_Fragment extends Fragment {
 				intent.putExtra("Group", mParam1);
 				startActivityForResult(intent, 1);
 			}
-		});
+		});*/
 		return fragment;
 	}
 

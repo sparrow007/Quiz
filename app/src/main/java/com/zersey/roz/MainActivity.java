@@ -64,7 +64,7 @@ import java.util.List;
 	private CategoryAdapter adapter;
 	private boolean person_added = false;
 	private RecyclerView Category_Recycler_View;
-
+    public static Button positive_Button;
 	private String Contact_Person_Name, Contact_Person_Number;
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
@@ -394,14 +394,43 @@ import java.util.List;
 		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
 			new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
 		alertDialogBuilder.setView(PromptsView);
-		alertDialogBuilder.setCancelable(true);
+		alertDialogBuilder.setCancelable(false);
+
 		alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override public void onClick(DialogInterface dialog, int which) {
 				Split_List = Adapter.getList();
 			}
 		});
-		Dialog dialog = alertDialogBuilder.create();
+		final android.support.v7.app.AlertDialog dialog = alertDialogBuilder.create();
+		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
+			@Override public void onShow(DialogInterface dialogInterface) {
+
+				positive_Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				//Button Negative = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+				//Negative.setTextColor(getColor(R.color.colorPrimary));
+				positive_Button.setTextColor(getColor(R.color.colorPrimary));
+				/*Negative.setOnClickListener(new View.OnClickListener() {
+					@Override public void onClick(View v) {
+						alertDialog.dismiss();
+					}
+				});*/
+				/*positive_Button.setOnClickListener(new View.OnClickListener() {
+
+					@Override public void onClick(View view) {
+						// TODO Do something
+
+						//Dismiss once everything is OK.
+						if (Adapter.getSplit_Correctly()) {
+							Toast.makeText(MainActivity.this, "Please Split Correctly",
+									Toast.LENGTH_LONG).show();
+						} else {
+							dialog.dismiss();
+						}
+					}
+				});*/
+			}
+		});
 		dialog.show();
 		dialog.getWindow()
 			.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
@@ -427,7 +456,12 @@ import java.util.List;
 			return;
 		}
 		for (int i = 0; i < Item_list.size(); i++) {
+
+
+			if((i==Item_list.size()-1)   &&  (no_of_Person+1)%2!=0){Specific_Amount=Integer.parseInt(Specific_Amount)+1+"";
+			}
 			Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
+
 		}
 	}
 

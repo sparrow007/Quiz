@@ -170,6 +170,16 @@
     </android.support.v4.widget.NestedScrollView>
 
 
-
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_Transaction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginBottom="24dp"
+        android:layout_marginEnd="24dp"
+        android:src="@drawable/plus"
+        android:tint="@android:color/white"
+        app:backgroundTint="#cddc39"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

@@ -35,6 +35,7 @@ public class Group_Transactions extends Fragment {
 	private RecyclerView recyclerView;
 	private OnFragmentInteractionListener mListener;
 	public static Group_Transaction_Adapter adapter;
+	private List<ContactModel> ContactList;
 
 	public Group_Transactions() {
 		// Required empty public constructor
@@ -76,7 +77,7 @@ public class Group_Transactions extends Fragment {
 		View fragmentLayout =
 			inflater.inflate(R.layout.fragment_group_transactions, container, false);
 		fragmentLayout = initRecyclerView(fragmentLayout);
-		FloatingActionButton fab = fragmentLayout.findViewById(R.id.fab_Transaction);
+		FloatingActionButton fab = getActivity().findViewById(R.id.fab_Transaction);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
 				Intent intent = new Intent(getContext(), MainActivity.class);

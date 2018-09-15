@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -29,6 +30,7 @@ public class Specific_Group extends AppCompatActivity
 	private LinearLayout Search_Layout;
 	private EditText Search_Edit;
 	private ImageButton Back,Search;
+	private FloatingActionButton fab;
 	public GroupModel model;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class Specific_Group extends AppCompatActivity
         Search_Layout=findViewById(R.id.Search_Layout);
         Search_Layout.setVisibility(View.GONE);
         model = (GroupModel) getIntent().getSerializableExtra("group");
+        //fab=findViewById(R.id.fab_Transaction);
         Search.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -115,6 +118,11 @@ public class Specific_Group extends AppCompatActivity
 					fragment.onStart();
 					//adapter.notifyDataSetChanged();
 				}
+/*				if (position == 0 && positionOffset == 0)
+					fab.show();
+				else if (position ==2 || position==3)
+					fab.hide();
+*/
 			}
 
 			@Override public void onPageSelected(int position) {
