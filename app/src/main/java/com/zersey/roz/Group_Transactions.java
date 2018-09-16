@@ -3,6 +3,7 @@ package com.zersey.roz;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -69,7 +70,8 @@ public class Group_Transactions extends Fragment {
 		}
 		//initList();
 		list.addAll(mDbHelper.getGroupEntries(((Specific_Group) getActivity()).model.getGroupId()));
-		adapter = new Group_Transaction_Adapter(list);
+		SharedPreferences prefs = getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
+		adapter = new Group_Transaction_Adapter(list, prefs.getString("userid", null));
 	}
 
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

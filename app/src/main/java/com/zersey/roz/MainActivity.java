@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -64,7 +63,7 @@ import java.util.List;
 	private CategoryAdapter adapter;
 	private boolean person_added = false;
 	private RecyclerView Category_Recycler_View;
-    public static Button positive_Button;
+	public static Button positive_Button;
 	private String Contact_Person_Name, Contact_Person_Number;
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
@@ -457,11 +456,10 @@ import java.util.List;
 		}
 		for (int i = 0; i < Item_list.size(); i++) {
 
-
-			if((i==Item_list.size()-1)   &&  (no_of_Person+1)%2!=0){Specific_Amount=Integer.parseInt(Specific_Amount)+1+"";
+			if ((i == Item_list.size() - 1) && (no_of_Person + 1) % 2 != 0) {
+				Specific_Amount = Integer.parseInt(Specific_Amount) + 1 + "";
 			}
 			Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
-
 		}
 	}
 
@@ -694,6 +692,7 @@ import java.util.List;
 					StringBuilder totalAmounts = new StringBuilder();
 					StringBuilder payerIds = new StringBuilder();
 					StringBuilder amountsPaid = new StringBuilder();
+					StringBuilder datesPaid = new StringBuilder();
 
 					for (Split_Contact_model s : Split_List) {
 						totalAmounts.append(s.getSplit_Amount()).append(",");
@@ -703,12 +702,13 @@ import java.util.List;
 							payerIds.append(s.getContact_Name().getUserId()).append(",");
 						}
 						amountsPaid.append("0.00").append(",");
+						datesPaid.append(DateEdit_text).append(",");
 					}
 
 					expenseModel.setType(Category_text);
 					expenseModel.setTitle(Title_text);
 					expenseModel.setTotalAmount(totalAmounts.toString());
-					expenseModel.setPaidAtDate(DateEdit_text);
+					expenseModel.setPaidAtDate(datesPaid.toString());
 					expenseModel.setAmountPaid(amountsPaid.toString());
 					expenseModel.setAmountDue(totalAmounts.toString());
 					expenseModel.setPayerId(payerIds.toString());

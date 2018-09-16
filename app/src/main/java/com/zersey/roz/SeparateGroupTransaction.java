@@ -85,7 +85,8 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 				sum += Double.parseDouble(s);
 			}
 			AMOUNT.setText("Rs " + sum);
-			DATE.setText(Date);
+
+			if (!Util.isEmpty(Date)) DATE.setText(Date.split(",")[0]);
 			TITLE.setText(Title);
 		}
 		initRecyclerView();
