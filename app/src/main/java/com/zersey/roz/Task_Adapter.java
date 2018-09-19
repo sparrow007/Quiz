@@ -51,6 +51,8 @@ public class Task_Adapter extends RecyclerView.Adapter<Task_Adapter.Task_View_Ho
         notifyDataSetChanged();
     }
 
+
+
     public class Task_View_Holder extends RecyclerView.ViewHolder{
         TextView Task_Title,Task_Description;
         ImageButton Task_Check;

@@ -25,9 +25,10 @@
         app:mtf_hasFocus="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:mtf_labelColor="#666"
+        app:mtf_labelColor="#ffffff"
         >
         <EditText
+            android:textColorHint="@color/colorPrimaryDark"
             android:inputType="text"
             android:id="@+id/Task_Title_Edit"
             android:layout_width="match_parent"
@@ -44,23 +45,40 @@
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:mtf_labelColor="#666"
+        app:mtf_labelColor="#ffffff"
         >
         <EditText
-            android:inputType="text"
+            android:textColorHint="@color/colorPrimaryDark"
             android:id="@+id/Task_Description_Edit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="top"
             android:hint="Description"
+
+            android:inputType="text|textMultiLine"
+            android:scrollbars = "vertical"
             android:backgroundTint="#000000"/>
     </com.github.florent37.materialtextfield.MaterialTextField>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Select Group"
+            android:textSize="10sp"
+            android:textColor="#ffffff"
+            />
         <Spinner
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_width="match_parent"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
             android:layout_height="wrap_content"
             android:id="@+id/Task_Spinner"
+            android:background="#ffffff"
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:entries="@array/Split_Spinner"/>
         <ImageView
@@ -93,6 +111,7 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:padding="5dp"
+            android:textColor="#ffffff"
             android:id="@+id/Task_Date_Edit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -124,4 +143,16 @@
             android:layout_height="40dp"
             android:background="#B0BEC5"/>
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#90A4AE"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:text="Submit"
+        android:id="@+id/Submit_Task_Button"
+        android:textColor="#ffffff"
+        />
 </LinearLayout>

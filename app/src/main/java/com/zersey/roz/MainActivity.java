@@ -60,7 +60,7 @@ import java.util.List;
 @SuppressLint("NewApi") public class MainActivity extends AppCompatActivity
 	implements UserIdInterface {
 
-	private CategoryAdapter adapter;
+		private CategoryAdapter adapter;
 	private boolean person_added = false;
 	private RecyclerView Category_Recycler_View;
 	public static Button positive_Button;
@@ -736,6 +736,7 @@ import java.util.List;
 						//groupModel.setGroupDesc();
 						groupModel2.setUsers(users);
 						long newrowId = mDbHelper.createGroup(groupModel2);
+						Log.d( "Submit: ",""+expenseModel);
 						groupModel2.setId(newrowId);
 						new ServerUtil(MainActivity.this).createSingleGroup(groupModel2,
 							expenseModel, null);

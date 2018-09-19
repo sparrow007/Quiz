@@ -24,7 +24,8 @@ public class TransactionDbContract {
 		public static final String COLUMN_AMOUNT_DUE = "amount_due";
 		public static final String COLUMN_PAYER_ID = "payer_id";
 		public static final String COLUMN_INVOICE_ID = "invoice_id";
-
+        public static final String COLUMN_PAYER_NUMBERS="payer_numbers";
+        public static final String COLUMN_PAYER_NAMES="payer_names";
 		public final static String SQL_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE "
 			+ Transaction_Entry.TABLE_NAME
 			+ "("
@@ -47,6 +48,10 @@ public class TransactionDbContract {
 			+ Transaction_Entry.COLUMN_DATE_UPDATED
 			+ " TEXT, "
 			+ COLUMN_PAYER_ID
+			+ " TEXT, "
+			+ COLUMN_PAYER_NUMBERS
+			+ " TEXT, "
+			+ COLUMN_PAYER_NAMES
 			+ " TEXT, "
 			+ COLUMN_AMOUNT_DUE
 			+ " TEXT, "

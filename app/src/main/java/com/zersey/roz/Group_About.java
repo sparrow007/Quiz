@@ -89,6 +89,7 @@ public class Group_About extends Fragment {
 			}
 		}
 
+		Log.d( "onCreate: ",""+users.length);
 		list.addAll(mDbHelper.getUserWithUserId(users));
 	}
 

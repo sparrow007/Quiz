@@ -30,6 +30,7 @@
                     android:layout_height="wrap_content"
                     android:text="Category"
                     android:textSize="18dp"
+                    android:textColor="#ffffff"
                     android:layout_marginLeft="15dp"
                     android:layout_marginRight="10dp"
                     />
@@ -45,10 +46,11 @@
                     android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:mtf_labelColor="#666"
+                    app:mtf_labelColor="#ffffff"
                     >
                     <EditText
                         android:inputType="text"
+                        android:textColor="#000000"
                         android:id="@+id/Title_Edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -63,7 +65,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:id="@+id/Material_Amount"
-                    app:mtf_labelColor="#666"
+                    app:mtf_labelColor="#ffffff"
                     android:layout_marginTop="10dp"
                     app:mtf_openKeyboardOnFocus="true">
 
@@ -73,6 +75,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:backgroundTint="#3F51B5"
+                        android:textColor="#000000"
                         android:hint="Amount" />
                 </com.github.florent37.materialtextfield.MaterialTextField>
 
@@ -103,6 +106,7 @@
                         android:layout_weight="1"
                         android:layout_marginLeft="10dp"
                         android:textSize="20dp"
+                        android:textColor="#ffffff"
                         android:layout_gravity="center_vertical"
                         android:text="Add Member"
                         android:layout_width="wrap_content"
@@ -127,6 +131,7 @@
                     <TextView
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
+                        android:textColor="#ffffff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Split in "/>
@@ -161,6 +166,7 @@
                         android:id="@+id/Amount_Due_Edit"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:textColor="#ffffff"
                         android:backgroundTint="#3F51B5"
                         android:hint="Amount Due" />
                 </com.github.florent37.materialtextfield.MaterialTextField>
@@ -185,8 +191,8 @@
                     android:src="@drawable/delete"/>
                 <TextView
                     android:padding="5dp"
-                    android:textColor="#000000"
                     android:textSize="12sp"
+                    android:textColor="#ffffff"
                     android:text="More"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
@@ -227,6 +233,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:hint="Date"
+                android:textColor="#ffffff"
                 android:backgroundTint="#000000"/>
             <LinearLayout
 
@@ -265,7 +272,19 @@
                 android:layout_width="35dp"
                 android:layout_height="30dp" />
         </LinearLayout>
+        <LinearLayout
 
+            android:padding="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#B0BEC5"/>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:text="Submit"
+            android:id="@+id/Submit_Transaction_form"
+            android:textColor="#ffffff"/>
     </LinearLayout>
 
 

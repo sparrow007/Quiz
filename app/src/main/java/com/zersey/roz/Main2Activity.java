@@ -19,10 +19,16 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 import com.zersey.roz.Data.TransactionDbHelper;
@@ -312,6 +318,7 @@ public class Main2Activity extends BaseActivity
 			taskList.addAll(dbHelper.getTask(-1));
 		}
 	}
+
 
 	public void Fetch_Contacts() {
 		thread.start();

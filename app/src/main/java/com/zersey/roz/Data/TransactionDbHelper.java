@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.util.Log;
 import com.zersey.roz.ContactModel;
 import com.zersey.roz.GroupModel;
@@ -629,6 +630,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public List<ContactModel> getUserWithUserId(String[] userIds) {
 		SQLiteDatabase db = getReadableDatabase();
 		List<ContactModel> list = new ArrayList<>();
+		Boolean Flag=false;
 
 		StringBuilder query = new StringBuilder(userIds[0]);
 		for (int i = 1; i < userIds.length; i++) {
@@ -655,6 +657,24 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
 
 			list.add(model);
+		}
+
+
+		for(int i=0;i<userIds.length;i++){
+			for(int j=0;j<list.size();j++){
+				if(TextUtils.equals(userIds[i],list.get(j).getUserId()+"")){
+                   Flag=true;
+				}else {
+                   Flag=false;
+				}
+			}
+			if(!Flag){
+				ContactModel model=new ContactModel();
+				model.setName(userIds[i]+"7011");
+				model.setNumber(userIds[i]+"7011");
+				model.setUserId(Long.parseLong(userIds[i]));
+				list.add(model);
+			}
 		}
 		cursor.close();
 		return list;

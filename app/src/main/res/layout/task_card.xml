@@ -47,6 +47,8 @@
             android:layout_height="50dp"
             android:layout_gravity="center_vertical"
             android:scaleType="centerCrop"
+            android:padding="10dp"
+            android:background="@android:color/transparent"
             android:src="@drawable/unchecked"
             />
     </LinearLayout>

@@ -18,6 +18,7 @@ public class Group_Transaction_Adapter
 	private List<ContactModel> ContactList;
 	private TransactionDbHelper mdbHelper;
 	private String userId;
+	private int noOfMembers ;
 
 	public Group_Transaction_Adapter(List<IncomeModel> list, String userId) {
 		ContactList = new ArrayList<>();
@@ -39,6 +40,8 @@ public class Group_Transaction_Adapter
 	@Override public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
 		holder.Transaction_TextView.setText(list.get(position).getTitle());
 		String[] amounts = list.get(position).getTotalAmount().split(",");
+
+
 		double sum = 0;
 		for (String s : amounts) {
 			try {
@@ -47,20 +50,35 @@ public class Group_Transaction_Adapter
 				e.printStackTrace();
 			}
 		}
-		holder.groupTransactionAmount.setText("Rs " + sum);
+
 		if (list.get(position).getPayerId() != null) {
+			if(list.get(position).getPayerId().split(",").length>0) {
+				noOfMembers = list.get(position).getPayerId().split(",").length;
+			}else {
+				noOfMembers=Integer.parseInt(list.get(position).getPayerId());
+			}
 			if (userId.equals(list.get(position).getPayerId().split(",")[0])) {
 				holder.Paid.setText(String.format("%s paid Rs %s", "You", sum));
+				if(noOfMembers>1){
+					//--noOfMembers;
+					holder.groupTransactionAmount.setText("Rs " + (sum/noOfMembers)*(noOfMembers-1));
+				}else {holder.groupTransactionAmount.setText("Rs " + 0.0);}
+
 			} else {
 				List<ContactModel> contactList =
 					mdbHelper.getUserWithUserId(list.get(position).getPayerId().split(","));
 				if (contactList.size() > 0) {
 					holder.Paid.setText(
 						String.format("%s paid Rs %s", contactList.get(0).getName(), sum));
+					if(noOfMembers>1){
+						--noOfMembers;
+						holder.groupTransactionAmount.setText("Rs " + (sum/noOfMembers)*(noOfMembers-1));
+					}else {holder.groupTransactionAmount.setText("Rs " + 0.0);}
 				}
 			}
 		} else {
 			holder.Paid.setText(" PayerID: null ");
+			holder.groupTransactionAmount.setText("Rs " + 0.0);
 		}
 	}
 

@@ -124,6 +124,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 		}
 	}
 
+	void Transaction_Form_Dialog()
+	{
+
+	}
+
 	public void addItem(IncomeModel model) {
 		list.add(model);
 		notifyDataSetChanged();
