@@ -489,13 +489,7 @@ import java.util.List;
 		super.onActivityResult(requestCode, resultCode, data);
 		//callbackManager.onActivityResult(requestCode, resultCode, data);
 		Log.d("onActivityResult: ", requestCode + "");
-		if (resultCode == -1) {
-			Contact_RecyclerView.setVisibility(View.VISIBLE);
-			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
-			Log.d("onActivityResult: ", Item_list.size() + "");
-			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
-			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
-		} else if (requestCode == 2 && resultCode == RESULT_OK) {
+		if (requestCode == 2 && resultCode == RESULT_OK) {
 
 			//Bitmap photo = (Bitmap) data.getExtras().get("data");
 			Uri uri = data.getData();
@@ -550,6 +544,12 @@ import java.util.List;
 						.show();
 				}
 			}
+		}else if (resultCode == -1) {
+			Contact_RecyclerView.setVisibility(View.VISIBLE);
+			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
+			Log.d("onActivityResult: ", Item_list.size() + "");
+			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 		}
 	}
 

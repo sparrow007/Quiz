@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +78,7 @@ public class Group_About extends Fragment {
 		list = new ArrayList<>();
 		String[] users = mParam1.getUsers().split(",");
 
+
 		SharedPreferences prefs = getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
 
 		for (String user : users) {
@@ -88,9 +90,42 @@ public class Group_About extends Fragment {
 				list.add(m);
 			}
 		}
+		Log.d( "onCreate: ",""+list.size());
+		//Log.d( "onCreate: ",mParam1.getMobile_no());
+		/*if(mParam1.getMobile_no()!=null){
+			String[] mobile_no= mParam1.getMobile_no().split(",");
+			Log.d( "onCreate: ",mobile_no[0]);
+			for(int i=1;i<mobile_no.length;i++){
+				ContactModel model=new ContactModel();
+				model.setNumber(mobile_no[i]);
+				model.setUserId(Long.parseLong(users[i]));
+				list.add(model);
+				Log.d( "onCreate: ",""+list.size());
+			}
+		}else {
+			list.addAll(mDbHelper.getUserWithUserId(users));
+			Log.d( "onCreate: ",""+list.size());
+		}*/
 
-		Log.d( "onCreate: ",""+users.length);
+		Log.d( "onCreate: ",""+list.size());
 		list.addAll(mDbHelper.getUserWithUserId(users));
+		String notinlist;
+		String[] mobile_no= mParam1.getMobile_no().split(",");
+		for (int i=0;i<mobile_no.length;i++){
+			boolean flag=false;
+			for (int j=1;j<list.size();j++)
+			{
+				if(TextUtils.equals(list.get(j).getNumber(),mobile_no[i])){
+                       flag=true;
+				}
+			}
+			if (!flag){
+				ContactModel model=new ContactModel();
+				model.setNumber(mobile_no[i]);
+				list.add(model);
+			}
+		}
+
 	}
 
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

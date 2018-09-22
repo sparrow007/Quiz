@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -59,10 +60,11 @@ import static android.content.Context.MODE_PRIVATE;
 		implements UserIdInterface{
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-	private TextView First_More, Second_More;
+	private TextView First_More, Second_More,Split_Button;
 	private String mParam1;
 	private String mParam2;
 	private int pos=-1;
+	public static Button positive_Button;
 	private String Contact_Person_Name, Contact_Person_Number;
 	private boolean person_added = false;
 	private CategoryAdapter Catadapter;
@@ -143,6 +145,9 @@ import static android.content.Context.MODE_PRIVATE;
 		super.onCreate(savedInstanceState);
 		list = new ArrayList<>();
 		if (getArguments() != null) {
+		    //mDbHelper=TransactionDbHelper.getInstance(getContext());
+			//long count=mDbHelper.getGroupsCount();
+			//Log.d( "onCreate: ",count+"");
 			list.addAll((List<GroupModel>) getArguments().getSerializable("groupList"));
 		}
 		//mDbHelper = new TransactionDbHelper(getContext());
@@ -235,6 +240,13 @@ import static android.content.Context.MODE_PRIVATE;
 		Material_Amount_Due = PromptsView.findViewById(R.id.Material_Amount_Due);
 		Material_Amount_Due.setVisibility(View.GONE);
 		More_TextButton = PromptsView.findViewById(R.id.MoreButton);
+		Split_Button=PromptsView.findViewById(R.id.Split_Dialog);
+		Split_Button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Dialog(Split_Button);
+			}
+		});
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
@@ -308,15 +320,15 @@ import static android.content.Context.MODE_PRIVATE;
 						cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
 		datePicker.setTitle("Select Date");
-		/*fab = findViewById(R.id.Fab_Camera_Button);
-		fab.setOnClickListener(new View.OnClickListener() {
+		Camera_Button = PromptsView.findViewById(R.id.Fab_Camera_Button);
+		Camera_Button.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
 				Onclick_Image_button();
 			}
-		});*/
+		});
 
 		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
 				new android.support.v7.app.AlertDialog.Builder(getContext());
@@ -325,11 +337,12 @@ import static android.content.Context.MODE_PRIVATE;
 		final android.support.v7.app.AlertDialog dialog = alertDialogBuilder.create();
 		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 			@Override
-			public void onShow(DialogInterface dialog) {
+			public void onShow(final DialogInterface dialog) {
 				Submit_button.setOnClickListener(new View.OnClickListener() {
 					@Override public void onClick(View v) {
 
 						Submit();
+						dialog.dismiss();
 					}
 				});
 			}
@@ -512,7 +525,7 @@ import static android.content.Context.MODE_PRIVATE;
 		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
 			@Override public void onShow(DialogInterface dialogInterface) {
-                Button positive_Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                positive_Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 				//Button Negative = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
 				//Negative.setTextColor(getColor(R.color.colorPrimary));
 				positive_Button.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -675,7 +688,7 @@ import static android.content.Context.MODE_PRIVATE;
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 3);*/
 		Intent intent = new Intent(getContext(), Add_Members_Activity.class);
-		startActivityForResult(intent, 1);
+		startActivityForResult(intent, 4);
 	}
 
 	@Override
@@ -927,14 +940,86 @@ import static android.content.Context.MODE_PRIVATE;
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
+        Log.d( "onActivityResult: ",resultCode+""+requestCode);
 		if (requestCode == 1234) {
 			if (resultCode == RESULT_OK) {
 				GroupModel model = (GroupModel) data.getSerializableExtra("group");
 				First_List.add(model);
 				First_RecyclerView.getAdapter().notifyItemInserted(First_List.size() - 1);
 			}
-		} else if (resultCode == 52) {
+		} else if (requestCode == 2 && resultCode == RESULT_OK) {
+
+			//Bitmap photo = (Bitmap) data.getExtras().get("data");
+			Uri uri = data.getData();
+			Img_File.setVisibility(View.VISIBLE);
+			Img_File.setImageURI(uri);
+			Image_uri = uri;
+		} else if (requestCode == 1 && resultCode == RESULT_OK) {
+			//Bitmap photo = (Bitmap) data.getExtras().get("data");
+			Uri uri = data.getData();
+			Img_File.setVisibility(View.VISIBLE);
+			Image_uri = uri;
+			Img_File.setVisibility(View.VISIBLE);
+			Img_File.setImageURI(uri);
+		} else if (requestCode == 3 && resultCode == RESULT_OK) {
+			//List<String> temp=getIntent().getStringArrayListExtra("Previous_Contacts");
+			Uri contactData = data.getData();
+			Cursor c = getContext().getContentResolver().query(contactData, null, null, null, null);
+			if (c.moveToFirst()) {
+				String cNumber = null;
+				final String name =
+						c.getString(c.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+				String id = c.getString(c.getColumnIndexOrThrow(ContactsContract.Contacts._ID));
+
+				String hasPhone =
+						c.getString(c.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER));
+
+				if (hasPhone.equalsIgnoreCase("1")) {
+
+					cNumber = c.getString(
+							c.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+					cNumber = cNumber.replaceAll("[^0-9]", "");
+					if (cNumber.length() > 10) {
+						code = cNumber.substring(0, cNumber.length() - 10);
+						cNumber = cNumber.substring(cNumber.length() - 10);
+					} else {
+						code = "91";
+					}
+				}
+				ContactModel CCItem = new ContactModel();
+				CCItem.setNumber(cNumber);
+				CCItem.setName(name);
+
+				if (!Check_Contact_List(cNumber)) {
+					Contact_list.add(CCItem);
+					Log.d("onActivityResult: ", Contact_list.size() + "");
+					Contact_RecyclerView.setVisibility(View.VISIBLE);
+					RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Contact_list);
+					Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
+					//					Log.d("onActivityResult: ", cNumber);
+				} else {
+					Toast.makeText(getContext(), "Contact is already added", Toast.LENGTH_LONG)
+							.show();
+				}
+			}
+		}else if(resultCode == RESULT_OK && requestCode==4) {
+			Contact_RecyclerView.setVisibility(View.VISIBLE);
+			Contact_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
+			Log.d("onActivityResult: ", Item_list.size() + "");
+			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Contact_list);
+			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 
 		}
+
+	}
+
+
+	public boolean Check_Contact_List(String Number) {
+		Boolean check = false;
+		for (int i = 0; i < Contact_list.size(); i++) {
+			//return true;
+			check = TextUtils.equals(Contact_list.get(i).getNumber(), Number);
+		}
+		return check;
 	}
 }

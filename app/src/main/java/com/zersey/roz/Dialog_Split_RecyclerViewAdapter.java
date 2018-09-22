@@ -37,14 +37,14 @@ public class Dialog_Split_RecyclerViewAdapter
 		this.Amount = Amount;
 
 		if (TextUtils.equals(Slider, "ratio")){
-			MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: 100% of 100%</font> \n<font color=#90A4AE> <br>left "+0+"%</font>"));
+			Groups.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: 100% of 100%</font> \n<font color=#90A4AE> <br>left "+0+"%</font>"));
 		}else if (TextUtils.equals(Slider, "Equally")){
-			MainActivity.Split_Notes.setText("");
+			Groups.Split_Notes.setText("");
 		}else {
 			double amount = Double.parseDouble(Amount+"");
 			DecimalFormat formatter = new DecimalFormat("#,###");
 
-			MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formatter.format(amount)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+0+"</font>"));
+			Groups.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formatter.format(amount)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+0+"</font>"));
 			//MainActivity.Split_Notes.setText(("Total: "+Amount+" of "+Amount+" \nleft "+0));
 		}
 	}
@@ -182,12 +182,12 @@ public class Dialog_Split_RecyclerViewAdapter
 			Log.d("Check: ", Amount + "  " + Total);
 			if (Total==100){
 				split_Correctly=true;
-				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: "+Total+"% of 100%</font> <font color=#90A4AE> <br>left "+(100-Total)+"%</font>"));
-				MainActivity.positive_Button.setEnabled(true);
+				Groups.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: "+Total+"% of 100%</font> <font color=#90A4AE> <br>left "+(100-Total)+"%</font>"));
+				Groups.positive_Button.setEnabled(true);
 				return true;
 			}else {split_Correctly=false;
-				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: "+Total+"% of 100%</font> <font color=#90A4AE> <br>left "+(100-Total)+"%</font>"));
-				MainActivity.positive_Button.setEnabled(false);
+				Groups.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: "+Total+"% of 100%</font> <font color=#90A4AE> <br>left "+(100-Total)+"%</font>"));
+				Groups.positive_Button.setEnabled(false);
 			return false;}
 
 		} else {

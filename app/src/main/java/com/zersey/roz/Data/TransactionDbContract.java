@@ -26,6 +26,7 @@ public class TransactionDbContract {
 		public static final String COLUMN_INVOICE_ID = "invoice_id";
         public static final String COLUMN_PAYER_NUMBERS="payer_numbers";
         public static final String COLUMN_PAYER_NAMES="payer_names";
+
 		public final static String SQL_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE "
 			+ Transaction_Entry.TABLE_NAME
 			+ "("
@@ -99,6 +100,9 @@ public class TransactionDbContract {
 		public static final String COLUMN_GROUP_DESC = "group_desc";
 		public static final String COLUMN_USERS = "users";
 		public static final String COLUMN_TYPE_ID = "type_id";
+		public static final String COLUMN_MOBILE_NUMBER = "mobile_no";
+		public static final String COLUMN_FULL_NAME = "full_name";
+
 
 		public static final String SQL_CREATE_GROUP_TABLE = "CREATE TABLE "
 			+ TABLE_NAME
@@ -112,6 +116,10 @@ public class TransactionDbContract {
 			+ COLUMN_GROUP_NAME
 			+ " TEXT, "
 			+ COLUMN_GROUP_DESC
+			+ " TEXT, "
+			+ COLUMN_FULL_NAME
+			+ " TEXT, "
+			+COLUMN_MOBILE_NUMBER
 			+ " TEXT, "
 			+ COLUMN_USERS
 			+ " TEXT);";

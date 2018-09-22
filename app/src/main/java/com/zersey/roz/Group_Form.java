@@ -32,6 +32,7 @@ public class Group_Form extends AppCompatActivity {
 	private Dialog_Split_RecyclerViewAdapter Adapter;
 	private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
 	private StringBuffer users = new StringBuffer("");
+	private StringBuffer users_number = new StringBuffer("");
 	String USERS = "No Members";
 	private Contact_RecyclerView_Adapter RecyclerView_Adapter;
 	private TransactionDbHelper mDbHelper;
@@ -51,6 +52,7 @@ public class Group_Form extends AppCompatActivity {
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
 		users.append(prefs.getString("userid", null));
+		//users_number.append(7011+prefs.getString("userid", null));
 	}
 
 	public void Add_Members(View view) {
@@ -125,6 +127,7 @@ public class Group_Form extends AppCompatActivity {
 				Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 				for (ContactModel contactModel : list) {
 					users.append(",").append(contactModel.getUserId());
+					users_number.append(",").append(7011+contactModel.getUserId());
 				}
 			}
 		}
@@ -166,6 +169,8 @@ public class Group_Form extends AppCompatActivity {
 		model.setGroupDesc(
 			((EditText) findViewById(R.id.group_desc_edit_text)).getText().toString());
 		model.setUsers(users.toString());
+		//model.setMobile_no(users_number.toString());
+
 		long groupId = mDbHelper.createGroup(model);
 		model.setId(groupId);
 		model.setTypeId(0);

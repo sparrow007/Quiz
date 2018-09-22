@@ -19,6 +19,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -244,6 +245,7 @@ public class Main2Activity extends BaseActivity
 					@Override public void onResponse(@NonNull Call<JsonObject> call,
 						@NonNull Response<JsonObject> response) {
 						list.addAll(Util.parseGroupResponse(response.body()));
+							Log.d( "onResponse: ",list.size()+"");
 						dbHelper.addGroups(list);
 
 						for (GroupModel groupModel : list) {
@@ -266,6 +268,7 @@ public class Main2Activity extends BaseActivity
 
 						list.clear();
 						list.addAll(dbHelper.getGroups(0));
+						Log.d( "onResponse: ",list.size()+"");
 						getFragmentRefreshListener().onRefresh(list);
 					}
 

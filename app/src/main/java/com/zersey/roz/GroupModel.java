@@ -11,6 +11,8 @@ public class GroupModel implements Serializable {
 	@SerializedName("group_name") private String groupName;
 	@SerializedName("group_description") private String groupDesc;
 	@SerializedName("users") private String users;
+	@SerializedName("mobile_no") private String mobile_no;
+	@SerializedName("fullname") private String fullname;
 	@SerializedName("type_id") private int typeId;
 
 	public void setGroupId(long groupId) {
@@ -21,12 +23,28 @@ public class GroupModel implements Serializable {
 		this.id = id;
 	}
 
+	public void setFullname(String fullname) {
+		this.fullname = fullname;
+	}
+
+	public String getFullname() {
+		return fullname;
+	}
+
 	public long getGroupId() {
 		return groupId;
 	}
 
 	public long getId() {
 		return id;
+	}
+
+	public void setMobile_no(String mobile_no) {
+		this.mobile_no = mobile_no;
+	}
+
+	public String getMobile_no() {
+		return mobile_no;
 	}
 
 	public void setGroupName(String groupName) {
@@ -68,6 +86,12 @@ public class GroupModel implements Serializable {
 			+ ", users='"
 			+ users
 			+ '\''
+			+ ", fullname='"
+			+ fullname
+			+ '\''
+            + ", mobile_no='"
+            + mobile_no
+            + '\''
 			+ '}';
 	}
 

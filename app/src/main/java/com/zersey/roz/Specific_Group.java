@@ -14,6 +14,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -179,6 +180,7 @@ public class Specific_Group extends AppCompatActivity
 					Fragment frag1 = new Group_About();
 					Bundle args1 = new Bundle();
 					args1.putSerializable("group", model);
+					Log.d( "getItem: ",model+"");
 					frag1.setArguments(args1);
 					return frag1;
 				default:

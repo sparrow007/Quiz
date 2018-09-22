@@ -62,6 +62,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC, model.getGroupDesc());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
 		return db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 	}
 
@@ -82,16 +83,18 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		db.beginTransaction();
+		long count=0;
 		for (GroupModel model : list) {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID, model.getGroupId());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME, model.getGroupName());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC, model.getGroupDesc());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
-			cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
-			db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
+			cv.put(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME, model.getFullname());
+			cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
+			count=db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 			cv.clear();
 		}
-
+		Log.d( "addGroups: ",count+"");
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
@@ -217,6 +220,24 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.rawQuery(countQuery, null);
 		int count = cursor.getCount();
+		cursor.moveToFirst();
+		long currentID =
+				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
+		String title = cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
+		String desc = cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
+		long groupId = cursor.getLong(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
+		String usersGroup = cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
+		String  fullnameGroup= cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
+		String mobileGroup = cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
+		int te=cursor.getInt(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID));
+		Log.d( "getGroupsCount: ",currentID+" "+title+" "+desc+" "+groupId+" "+usersGroup+" "+fullnameGroup+" "+mobileGroup+" "+te);
 		cursor.close();
 		//        db.close();
 
@@ -333,10 +354,13 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		List<GroupModel> list = new ArrayList<>();
 
 		Cursor cursor = db1.query(TransactionDbContract.GroupEntry.TABLE_NAME, null,
-			TransactionDbContract.GroupEntry.COLUMN_TYPE_ID + "=" + Integer.toString(type), null,
-			null, null, TransactionDbContract.GroupEntry.COLUMN_GROUP_ID);
+			null, null,
+			null, null, null);
+		int i=cursor.getCount();
+		Log.d( "getGroups: ",i+"");
 
 		while (cursor.moveToNext()) {
+
 			long currentID =
 				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
 			String title = cursor.getString(
@@ -347,6 +371,10 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
 			String usersGroup = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
+			String  fullnameGroup= cursor.getString(
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
+			String mobileGroup = cursor.getString(
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
 
 			GroupModel model = new GroupModel();
 			model.setId(currentID);
@@ -356,9 +384,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			model.setGroupDesc(desc);
 			model.setGroupId(groupId);
 			model.setUsers(usersGroup);
+			model.setFullname(fullnameGroup);
+			model.setMobile_no(mobileGroup);
 			list.add(model);
 		}
 		cursor.close();
+		Log.d( "getGroups: ",list.size()+"");
 		return list;
 	}
 
@@ -660,7 +691,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		}
 
 
-		for(int i=0;i<userIds.length;i++){
+		/*for(int i=0;i<userIds.length;i++){
 			for(int j=0;j<list.size();j++){
 				if(TextUtils.equals(userIds[i],list.get(j).getUserId()+"")){
                    Flag=true;
@@ -675,7 +706,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				model.setUserId(Long.parseLong(userIds[i]));
 				list.add(model);
 			}
-		}
+		}*/
 		cursor.close();
 		return list;
 	}

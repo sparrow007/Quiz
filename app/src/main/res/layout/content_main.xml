@@ -117,7 +117,7 @@
                     android:layout_height="1dp"
                     android:background="#B0BEC5" />
                 <android.support.v7.widget.RecyclerView
-                    android:background="#ffffff"
+                    android:background="@android:color/transparent"
                     android:id="@+id/Add_Member_RecyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -142,6 +142,7 @@
                         android:elevation="2dp"
                         android:background="#ffffff"
                         android:padding="5dp"
+                        android:id="@+id/Split_Dialog"
                         android:textColor="#000000"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

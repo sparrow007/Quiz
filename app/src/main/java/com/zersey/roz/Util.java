@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
@@ -115,6 +117,7 @@ public class Util {
 
 			JsonArray array = response.get("groups").getAsJsonArray();
 			for (int i = 0; i < array.size(); i++) {
+				String temp = null;
 				JsonObject obj = array.get(i).getAsJsonObject();
 				GroupModel model = new GroupModel();
 				model.setGroupId(obj.get("id").getAsLong());
@@ -123,9 +126,15 @@ public class Util {
 					model.setGroupDesc(obj.get("group_description").getAsString());
 				}
 				if (!obj.get("users").isJsonNull()) model.setUsers(obj.get("users").getAsString());
+				if (!obj.get("mobile").isJsonNull()) {
+					temp=obj.get("mobile").getAsString();
+					model.setMobile_no(obj.get("mobile").getAsString());
+				}
+				if (!obj.get("fullname").isJsonNull()) model.setFullname(obj.get("fullname").getAsString());
 				if (!obj.get("type_id").isJsonNull()) {
 					model.setTypeId(obj.get("type_id").getAsInt());
 				}
+				Log.d( "parseGroupResponse: ",temp);
 				list.add(model);
 			}
 		} catch (Exception e) {
