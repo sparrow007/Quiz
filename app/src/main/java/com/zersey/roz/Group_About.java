@@ -34,7 +34,7 @@ public class Group_About extends Fragment {
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-	private List<ContactModel> list;
+	private List<ContactModel> list,Temp_List;
 	private LinearLayout Add_Member;
 	private RecyclerView recyclerView;
 	private ArrayList<ContactModel> Item_list;
@@ -76,7 +76,9 @@ public class Group_About extends Fragment {
 		}
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		list = new ArrayList<>();
+		Temp_List = new ArrayList<>();
 		String[] users = mParam1.getUsers().split(",");
+		String[] mobile_no= mParam1.getMobile_no().split(",");
 
 
 		SharedPreferences prefs = getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
@@ -90,7 +92,25 @@ public class Group_About extends Fragment {
 				list.add(m);
 			}
 		}
-		Log.d( "onCreate: ",""+list.size());
+		Log.d( "onCreate: ",mobile_no+""+users.length);
+		Temp_List.addAll(mDbHelper.getUserWithUserId(users));
+			Log.d( "onCreate: ",Temp_List.size()+"");
+		for(int i=1;i<mobile_no.length;i++){
+			ContactModel model=new ContactModel();
+			model.setNumber(mobile_no[i]);
+			model.setUserId(Long.parseLong(users[i]));
+			Log.d( "onCreate: ",Temp_List.size()+"");
+			for(int j=0;j<Temp_List.size();j++){
+				if(TextUtils.equals(Temp_List.get(j).getUserId()+"",users[i])){
+					model.setName(Temp_List.get(j).getName());
+					String temp=Temp_List.get(j).getName();
+					Log.d( "onCreate: ",temp);
+				}
+			}
+			list.add(model);
+		}
+
+		Log.d( "onCreate: ",mobile_no+""+users.length);
 		//Log.d( "onCreate: ",mParam1.getMobile_no());
 		/*if(mParam1.getMobile_no()!=null){
 			String[] mobile_no= mParam1.getMobile_no().split(",");
@@ -105,12 +125,12 @@ public class Group_About extends Fragment {
 		}else {
 			list.addAll(mDbHelper.getUserWithUserId(users));
 			Log.d( "onCreate: ",""+list.size());
-		}*/
+		}
 
 		Log.d( "onCreate: ",""+list.size());
 		list.addAll(mDbHelper.getUserWithUserId(users));
 		String notinlist;
-		String[] mobile_no= mParam1.getMobile_no().split(",");
+
 		for (int i=0;i<mobile_no.length;i++){
 			boolean flag=false;
 			for (int j=1;j<list.size();j++)
@@ -124,7 +144,7 @@ public class Group_About extends Fragment {
 				model.setNumber(mobile_no[i]);
 				list.add(model);
 			}
-		}
+		}*/
 
 	}
 

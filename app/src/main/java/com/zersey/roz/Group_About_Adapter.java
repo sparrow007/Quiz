@@ -24,10 +24,10 @@ public class Group_About_Adapter extends RecyclerView.Adapter<Group_About_Adapte
 	}
 
 	@Override public void onBindViewHolder(@NonNull AboutViewHolder holder, int position) {
-		/*if(TextUtils.isEmpty(list.get(position).getName())){
+		if(TextUtils.isEmpty(list.get(position).getName())){
 			holder.About_TextView.setText(list.get(position).getNumber());
-		}else {*/
-		holder.About_TextView.setText(list.get(position).getNumber());
+		}else {
+		holder.About_TextView.setText(list.get(position).getName());}
 		holder.textView2.setText(" ");
 	}
 

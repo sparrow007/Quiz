@@ -206,12 +206,12 @@ public class Dialog_Split_RecyclerViewAdapter
 			//DecimalFormat formatterl = new DecimalFormat("#,###");
 			if (Total==Amount){
 				split_Correctly=true;
-				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formattert.format(total)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+formatter.format(left)+"</font>"));
-				MainActivity.positive_Button.setEnabled(true);
+				Groups.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formattert.format(total)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+formatter.format(left)+"</font>"));
+				Groups.positive_Button.setEnabled(true);
 				return true;
 			}else {split_Correctly=false;
-				MainActivity.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formattert.format(total)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+formatter.format(left)+"</font>"));
-				MainActivity.positive_Button.setEnabled(false);
+				Groups.Split_Notes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formattert.format(total)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+formatter.format(left)+"</font>"));
+				Groups.positive_Button.setEnabled(false);
 			return false;}
 		}
 	}

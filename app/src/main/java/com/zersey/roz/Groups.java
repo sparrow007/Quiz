@@ -477,6 +477,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 			singleSplit();
 		}
+		if (TextUtils.isEmpty(Amount)) {
+			Amount = "0";
+		}
 		Log.d("Dialog: ", Split_List.size() + "");
 		LayoutInflater LI = LayoutInflater.from(getContext());
 		View PromptsView = LI.inflate(R.layout.split_dialog_layout, null);

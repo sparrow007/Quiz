@@ -675,7 +675,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			+ " IN ("
 			+ query.toString()
 			+ ");", null);
-
+		int t=cursor.getCount();
+		Log.d( "getUserWithUserId: ",t+"");
 		while (cursor.moveToNext()) {
 			ContactModel model = new ContactModel();
 			model.setId(
@@ -690,7 +691,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 
-
+		Log.d( "onCreate: ",list.size()+"");
 		/*for(int i=0;i<userIds.length;i++){
 			for(int j=0;j<list.size();j++){
 				if(TextUtils.equals(userIds[i],list.get(j).getUserId()+"")){
