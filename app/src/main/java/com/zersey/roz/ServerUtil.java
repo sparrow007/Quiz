@@ -2,6 +2,7 @@ package com.zersey.roz;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
@@ -10,6 +11,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -178,8 +181,10 @@ public class ServerUtil {
 				@NonNull Response<JsonObject> response) {
 				JsonObject jsonObject = response.body();
 				Crashlytics.log(jsonObject.toString());
+
 				for (String number1 : numbers) {
 					JsonObject number = jsonObject.getAsJsonObject(number1);
+
 					if (number.has("userId")) {
 						long userId = number.get("userId").getAsLong();
 						map.put(number1, userId);

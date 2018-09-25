@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "674099452338",
+    "firebase_url": "https://roz-001.firebaseio.com",
+    "project_id": "roz-001",
+    "storage_bucket": "roz-001.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:674099452338:android:422e8c484d6c33c6",
+        "android_client_info": {
+          "package_name": "com.zersey.roz"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "674099452338-mcetavp967h99us83jglm5jksdo0h5sh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.zersey.roz",
+            "certificate_hash": "758251c82a95e8da3c197bb9940c927484ec6cfa"
+          }
+        },
+        {
+          "client_id": "674099452338-9sg1ssstt883lcjoa2m2o8ng8gnb0hob.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtcjnH7ARQkT6qJksvMRa7V3KRNdNikFk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "674099452338-9sg1ssstt883lcjoa2m2o8ng8gnb0hob.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

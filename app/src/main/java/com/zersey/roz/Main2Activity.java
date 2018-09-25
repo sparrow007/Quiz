@@ -20,18 +20,11 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.EditText;
-import android.widget.Spinner;
-import android.widget.TextView;
-
 import com.google.gson.JsonObject;
-import com.google.gson.annotations.SerializedName;
 import com.zersey.roz.Data.TransactionDbHelper;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -80,6 +73,7 @@ public class Main2Activity extends BaseActivity
 
 	public interface FragmentRefreshListener {
 		void onRefresh(List<GroupModel> list);
+
 		void onTaskRefresh(List<Task_Model> taskList);
 	}
 
@@ -245,7 +239,7 @@ public class Main2Activity extends BaseActivity
 					@Override public void onResponse(@NonNull Call<JsonObject> call,
 						@NonNull Response<JsonObject> response) {
 						list.addAll(Util.parseGroupResponse(response.body()));
-							Log.d( "onResponse: ",list.size()+"");
+						Log.d("onResponse: ", list.size() + "");
 						dbHelper.addGroups(list);
 
 						for (GroupModel groupModel : list) {
@@ -268,7 +262,7 @@ public class Main2Activity extends BaseActivity
 
 						list.clear();
 						list.addAll(dbHelper.getGroups(0));
-						Log.d( "onResponse: ",list.size()+"");
+						Log.d("onResponse: ", list.size() + "");
 						getFragmentRefreshListener().onRefresh(list);
 					}
 
@@ -297,8 +291,6 @@ public class Main2Activity extends BaseActivity
 				}
 			});
 
-
-
 			if (NetworkUtil.hasInternetConnection(this)) {
 				Call<JsonObject> result =
 					NetworkUtil.getRestAdapter(this).fetchAllUserEntry(null, null);
@@ -321,7 +313,6 @@ public class Main2Activity extends BaseActivity
 			taskList.addAll(dbHelper.getTask(-1));
 		}
 	}
-
 
 	public void Fetch_Contacts() {
 		thread.start();
@@ -361,11 +352,17 @@ public class Main2Activity extends BaseActivity
 						ContactModel model = new ContactModel();
 						model.setName(name);
 						model.setNumber(cNumber);
+
+						if(contactModelList.size() == 200){
+							new ServerUtil(Main2Activity.this).verifyContacts(
+								contactModelList.toArray(new String[contactModelList.size()]));
+							contactModelList.clear();
+						}
+
 						contactModelList.add(cNumber);
 						long rowId = mDbHelper.addContact(model);
 					}
 				}
-
 				new ServerUtil(Main2Activity.this).verifyContacts(
 					contactModelList.toArray(new String[contactModelList.size()]));
 				phones.close();

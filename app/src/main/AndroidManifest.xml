@@ -2,23 +2,23 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.zersey.roz">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_SMS" />
-    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
 
     <uses-feature
         android:name="android.hardware.camera.any"
-        android:required="true" />
+        android:required="true"/>
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+        android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -26,69 +26,74 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="@xml/backup_descriptor">
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".Main2Activity"
             android:label="Roz"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+            </intent-filter>
+        </activity>
         <activity
             android:name=".LoginActivity"
             android:theme="@style/NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
             android:name=".PasswordOtpActivity"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".Add_Contacts_Activity"
             android:label="Add Contacts"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden"/>
         <activity
             android:name=".Contact_List_Activity"
             android:label="Contacts"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
 
-        <receiver android:name=".NetworkChangeReceiver" />
+        <receiver android:name=".NetworkChangeReceiver"/>
 
         <activity
             android:name=".SpecificTransactions"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".More_Activity" />
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".More_Activity"/>
         <activity
             android:name=".Specific_Group"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".Group_Form" />
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".Group_Form"/>
         <activity
             android:name=".Specific_Group_Transaction"
             android:label="@string/title_activity_specific__group__transaction"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="7844611159b7df2790836a6f20fa28253e7b5d61" />
+            android:value="7844611159b7df2790836a6f20fa28253e7b5d61"/>
 
-        <activity android:name=".Transactions" />
+        <activity android:name=".Transactions"/>
         <activity
             android:name=".Add_Members_Activity"
             android:label="@string/title_activity_add__members_"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".SeparateGroupTransaction"
             android:label="@string/title_activity_spererate__group__transaction"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".OnBoarding_Screens" />
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".OnBoarding_Screens"/>
         <activity
             android:name=".Task_Form_Activity"
             android:label="@string/title_activity_task__form_"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

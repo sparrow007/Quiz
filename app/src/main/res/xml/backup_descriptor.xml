@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<full-backup-content>
+    <exclude
+        domain="database"
+        path="ContactsInformation.db"/>
+    <exclude
+        domain="database"
+        path="Transactions.db"/>
+    <!-- Exclude the shared preferences file that contains the GCM registrationId -->
+    <exclude
+        domain="sharedpref"
+        path="locker.xml"/>
+    <exclude
+        domain="sharedpref"
+        path="login.xml"/>
+</full-backup-content>
