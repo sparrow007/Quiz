@@ -693,6 +693,7 @@ import java.util.List;
 					StringBuilder payerIds = new StringBuilder();
 					StringBuilder amountsPaid = new StringBuilder();
 					StringBuilder datesPaid = new StringBuilder();
+					StringBuilder amountsDue = new StringBuilder();
 
 					for (Split_Contact_model s : Split_List) {
 						totalAmounts.append(s.getSplit_Amount()).append(",");
@@ -701,7 +702,14 @@ import java.util.List;
 						} else {
 							payerIds.append(s.getContact_Name().getUserId()).append(",");
 						}
-						amountsPaid.append("0.00").append(",");
+
+						// TODO: Make another split_contact_model list but it should contain amountsPaid.
+						// TODO: Parse it similar to above and append to 'amountsPaid' variable with a comma
+
+
+						// TODO: Do totalAmount - amountPaid here for each person and uncomment when done
+						//double amountDuePerPerson = Double.parseDouble(s.getSplit_Amount()) - ;
+						//amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
 						datesPaid.append(DateEdit_text).append(",");
 					}
 
@@ -709,8 +717,10 @@ import java.util.List;
 					expenseModel.setTitle(Title_text);
 					expenseModel.setTotalAmount(totalAmounts.toString());
 					expenseModel.setPaidAtDate(datesPaid.toString());
-					expenseModel.setAmountPaid(amountsPaid.toString());
-					expenseModel.setAmountDue(totalAmounts.toString());
+
+					//TODO: Uncomment this when you are done
+					//expenseModel.setAmountPaid(amountsPaid.toString());
+					//expenseModel.setAmountDue(amountsDue.toString());
 					expenseModel.setPayerId(payerIds.toString());
 					expenseModel.setInvoiceId("");
 					try {
