@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -51,6 +53,8 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener;
 import com.zersey.roz.Data.Contacts_contract;
 import com.zersey.roz.Data.Contactsdbhelper;
 import com.zersey.roz.Data.TransactionDbHelper;
+
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -84,6 +88,7 @@ import java.util.List;
 	private List<ContactModel> Contact_list;
 	private List<String> Category_list;
 	private TextView Category_text_view, dateEdit;
+	public static TextView Paid_TextView;
 	private int year_x, month_x, day_x, Selected_date = 0;
 	private long Updated_Id;
 	private String Category_text, Add_Person_text, Amount_text, Title_text;
@@ -92,6 +97,7 @@ import java.util.List;
 	private EditText AmountEdit, TitleEdit, Amount_Due_Edit;
 	private String CardClicked, Updated_Category, Updated_Title, Updated_Amount, Updated_Date;
 	private Calendar cal;
+	public static Paid_By_Dialog Paid_Dialog;
 	private String[] Months = {
 		"Jan", "Feb", "March", "April", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec"
 	}, Contact_Names;
@@ -103,7 +109,7 @@ import java.util.List;
 
 	private ListView Add_Member_ListView;
 	private ArrayList<ContactModel> Item_list;
-	private List<Split_Contact_model> Split_List;
+	private List<Split_Contact_model> Split_List,Second_split_list;
 	private Spinner Split_Spinner;
 	public static TextView Split_Notes;
 	private RecyclerView Split_RecyclerView;
@@ -171,6 +177,7 @@ import java.util.List;
 		//Category_Recycler_View.setVisibility(View.VISIBLE);
 		initRecyclerView();
 		//customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
+		Paid_TextView=findViewById(R.id.Paid_Dialog);
 		Material_Title = findViewById(R.id.Material_Title);
 		Material_Title.setHasFocus(true);
 		Material_Amount = findViewById(R.id.Material_Amount);
@@ -199,6 +206,7 @@ import java.util.List;
 		//AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
 		Item_list = new ArrayList<>();
 		Split_List = new ArrayList<>();
+        Second_split_list = new ArrayList<>();
 		if (getIntent().getSerializableExtra("group") != null) {
 			groupModel = (GroupModel) getIntent().getSerializableExtra("group");
 			Category_Recycler_View.setVisibility(View.GONE);
@@ -442,14 +450,18 @@ import java.util.List;
 		Amount = Material_Amount.getEditText().getText().toString();
 		if (TextUtils.isEmpty(Amount)) {
 			Specific_Amount = "0";
+			Amount="0";
 		} else {
 			Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
 		}
 		Log.d("Dialog: ", Item_list.size() + "");
 		Split_List = new ArrayList<>();
+        Second_split_list = new ArrayList<>();
 		ContactModel you = new ContactModel();
 		you.setName("You");
+		Contact_list.add(you);
 		Split_List.add(new Split_Contact_model(you, Specific_Amount));
+        Second_split_list.add(new Split_Contact_model(you, Amount));
 		if (Item_list.isEmpty()) {
 			Toast.makeText(this, "Add members ", Toast.LENGTH_SHORT).show();
 			return;
@@ -459,7 +471,9 @@ import java.util.List;
 			if ((i == Item_list.size() - 1) && (no_of_Person + 1) % 2 != 0) {
 				Specific_Amount = Integer.parseInt(Specific_Amount) + 1 + "";
 			}
+			Contact_list.add(Item_list.get(i));
 			Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
+            Second_split_list.add(new Split_Contact_model(Item_list.get(i), "0"));
 		}
 	}
 
@@ -478,9 +492,11 @@ import java.util.List;
 
 		ContactModel you = new ContactModel();
 		you.setName("You");
+		Contact_list.add(you);
 		Split_List.add(new Split_Contact_model(you, Specific_Amount));
 
 		for (int i = 0; i < userList.size(); i++) {
+			Contact_list.add(Item_list.get(i));
 			Split_List.add(new Split_Contact_model(userList.get(i), Specific_Amount));
 		}
 	}
@@ -544,13 +560,28 @@ import java.util.List;
 						.show();
 				}
 			}
-		}else if (resultCode == -1) {
+		}else if (requestCode==4) {
 			Contact_RecyclerView.setVisibility(View.VISIBLE);
 			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
 			Log.d("onActivityResult: ", Item_list.size() + "");
 			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
 			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 		}
+	}
+
+	public void Paid_By_Dialog(View view){
+		Paid_Dialog=new Paid_By_Dialog();
+		Bundle bundle = new Bundle();
+		bundle.putSerializable("Contact_list", (Serializable) Item_list);
+		//bundle.putSerializable("taskList", (Serializable) taskList);
+        Paid_Dialog.setArguments(bundle);
+		FragmentTransaction ft = getFragmentManager().beginTransaction();
+		/*Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+		if (prev != null) {
+			ft.remove(prev);
+		}
+		ft.addToBackStack(null);*/
+		Paid_Dialog.show(ft,"dialog");
 	}
 
 	public boolean Check_Contact_List(String Number) {
@@ -617,6 +648,13 @@ import java.util.List;
 
 	public void Submit() {
 		Amount_text = AmountEdit.getText().toString();
+        ContactModel you = new ContactModel();
+        you.setName("You");
+        Second_split_list.add(new Split_Contact_model(you, "0"));
+        for (int i = 0; i < Item_list.size(); i++) {
+
+            Second_split_list.add(new Split_Contact_model(Item_list.get(i), "0"));
+        }
 		//Add_Person_text = AutoCompleteContacts.getText().toString();
 		Title_text = TitleEdit.getText().toString();
 		Category_text = adapter.getLastCategory();
@@ -694,8 +732,9 @@ import java.util.List;
 					StringBuilder amountsPaid = new StringBuilder();
 					StringBuilder datesPaid = new StringBuilder();
 					StringBuilder amountsDue = new StringBuilder();
-
+                       int i=0;
 					for (Split_Contact_model s : Split_List) {
+
 						totalAmounts.append(s.getSplit_Amount()).append(",");
 						if (s.getContact_Name().getName().equalsIgnoreCase("you")) {
 							payerIds.append(prefs.getString("userid", null)).append(",");
@@ -705,12 +744,14 @@ import java.util.List;
 
 						// TODO: Make another split_contact_model list but it should contain amountsPaid.
 						// TODO: Parse it similar to above and append to 'amountsPaid' variable with a comma
-
+                                amountsPaid.append(Second_split_list.get(i).getSplit_Amount()).append(",");
 
 						// TODO: Do totalAmount - amountPaid here for each person and uncomment when done
-						//double amountDuePerPerson = Double.parseDouble(s.getSplit_Amount()) - ;
-						//amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
+
+						double amountDuePerPerson = Double.parseDouble(s.getSplit_Amount()) - Double.parseDouble(Second_split_list.get(i).getSplit_Amount());
+						amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
 						datesPaid.append(DateEdit_text).append(",");
+						i++;
 					}
 
 					expenseModel.setType(Category_text);
@@ -719,8 +760,8 @@ import java.util.List;
 					expenseModel.setPaidAtDate(datesPaid.toString());
 
 					//TODO: Uncomment this when you are done
-					//expenseModel.setAmountPaid(amountsPaid.toString());
-					//expenseModel.setAmountDue(amountsDue.toString());
+					expenseModel.setAmountPaid(amountsPaid.toString());
+					expenseModel.setAmountDue(amountsDue.toString());
 					expenseModel.setPayerId(payerIds.toString());
 					expenseModel.setInvoiceId("");
 					try {
@@ -826,7 +867,7 @@ import java.util.List;
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 3);*/
 		Intent intent = new Intent(this, Add_Members_Activity.class);
-		startActivityForResult(intent, 1);
+		startActivityForResult(intent, 4);
 	}
 
 	@Override public void onRequestPermissionsResult(int requestCode, String permissions[],

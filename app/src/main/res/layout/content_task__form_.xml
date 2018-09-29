@@ -82,6 +82,7 @@
             android:scrollbarAlwaysDrawVerticalTrack="true"
             android:entries="@array/Split_Spinner"/>
         <ImageView
+            android:layout_marginTop="10dp"
             android:id="@+id/Task_Image_view"
             android:layout_width="match_parent"
             android:layout_height="200dp"
@@ -134,7 +135,6 @@
             android:background="@android:color/transparent"
             android:layout_marginRight="10dp"
             android:src="@drawable/cameragreen"
-            android:onClick="Onclick_Image_button"
             android:layout_width="40dp"
             android:layout_height="40dp" />
         <LinearLayout

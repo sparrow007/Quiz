@@ -255,6 +255,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
                 .clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
                         | WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
     }
+
 	@Override public int getItemCount() {
 		return list.size() + 1;
 	}

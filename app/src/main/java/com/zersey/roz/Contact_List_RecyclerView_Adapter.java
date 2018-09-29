@@ -52,6 +52,8 @@ holder.LineDivider.setVisibility(View.VISIBLE);}
 							.show();
 					} else {
 						Members.Add_Member_Adapter.add(list.get(position));
+						list.remove(list.get(position));
+						notifyDataSetChanged();
 					}
 				} else if (Group_About.RecyclerView_Adapter != null) {
 					if (Group_About.RecyclerView_Adapter.CheckItem(
@@ -60,9 +62,13 @@ holder.LineDivider.setVisibility(View.VISIBLE);}
 							.show();
 					} else {
 						Members.Add_Member_Adapter.add(list.get(position));
+						list.remove(list.get(position));
+						notifyDataSetChanged();
 					}
 				} else {
 					Members.Add_Member_Adapter.add(list.get(position));
+					list.remove(list.get(position));
+					notifyDataSetChanged();
 				}
 
 

@@ -131,6 +131,25 @@
                     <TextView
                         android:layout_gravity="center_vertical"
                         android:layout_marginLeft="5dp"
+                        android:textColor="#000000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Paid By "/>
+                    <TextView
+                        android:onClick="Paid_By_Dialog"
+                        android:layout_margin="5dp"
+                        android:layout_gravity="center_vertical"
+                        android:elevation="2dp"
+                        android:background="#ffffff"
+                        android:padding="5dp"
+                        android:id="@+id/Paid_Dialog"
+                        android:textColor="#000000"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="You"/>
+                    <TextView
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="5dp"
                         android:textColor="#ffffff"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

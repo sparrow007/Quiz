@@ -74,11 +74,12 @@ public class Group_About extends Fragment {
 		if (getArguments() != null) {
 			mParam1 = (GroupModel) getArguments().getSerializable("group");
 		}
+        Log.d( "onCreate: ",mParam1.getUsers());
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		list = new ArrayList<>();
 		Temp_List = new ArrayList<>();
 		String[] users = mParam1.getUsers().split(",");
-		String[] mobile_no= mParam1.getMobile_no().split(",");
+
 
 
 		SharedPreferences prefs = getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
@@ -92,9 +93,14 @@ public class Group_About extends Fragment {
 				list.add(m);
 			}
 		}
-		Log.d( "onCreate: ",mobile_no+""+users.length);
+		//Log.d( "onCreate: ",mobile_no+""+users.length);
 		Temp_List.addAll(mDbHelper.getUserWithUserId(users));
 			Log.d( "onCreate: ",Temp_List.size()+"");
+
+
+
+		if (!TextUtils.isEmpty(mParam1.getMobile_no())){
+			String[] mobile_no= mParam1.getMobile_no().split(",");
 		for(int i=1;i<mobile_no.length;i++){
 			ContactModel model=new ContactModel();
 			model.setNumber(mobile_no[i]);
@@ -109,8 +115,13 @@ public class Group_About extends Fragment {
 			}
 			list.add(model);
 		}
+		}else {
+			list.addAll(mDbHelper.getUserWithUserId(users));
+		}
 
-		Log.d( "onCreate: ",mobile_no+""+users.length);
+
+
+		//Log.d( "onCreate: ",mobile_no+""+users.length);
 		//Log.d( "onCreate: ",mParam1.getMobile_no());
 		/*if(mParam1.getMobile_no()!=null){
 			String[] mobile_no= mParam1.getMobile_no().split(",");

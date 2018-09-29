@@ -3,6 +3,7 @@ package com.zersey.roz;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,12 +14,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,10 +41,13 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.androidanimations.library.Techniques;
+import com.daimajia.androidanimations.library.YoYo;
 import com.github.florent37.materialtextfield.MaterialTextField;
 import com.zersey.roz.Data.Contacts_contract;
 import com.zersey.roz.Data.Contactsdbhelper;
@@ -64,6 +70,7 @@ import static android.content.Context.MODE_PRIVATE;
 	private String mParam1;
 	private String mParam2;
 	private int pos=-1;
+	private Boolean Check=false;
 	public static Button positive_Button;
 	private String Contact_Person_Name, Contact_Person_Number;
 	private boolean person_added = false;
@@ -167,13 +174,170 @@ import static android.content.Context.MODE_PRIVATE;
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_groups, container, false);
-		FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+		final FloatingActionButton fab = getActivity().findViewById(R.id.fab);
+		final FloatingActionButton fab1 = getActivity().findViewById(R.id.fab1);
+		final FloatingActionButton fab2 = getActivity().findViewById(R.id.fab2);
+		final FloatingActionButton fab3 = getActivity().findViewById(R.id.fab3);
+		final LinearLayout fab1Layout=getActivity().findViewById(R.id.fab1Layout);
+		final LinearLayout fab2Layout=getActivity().findViewById(R.id.fab2Layout);
+		final LinearLayout fab3Layout=getActivity().findViewById(R.id.fab3Layout);
+		final RelativeLayout fabBackground=getActivity().findViewById(R.id.fab_background);
+
+
+		final Add_Bills_Form Bill_Dialog = new Add_Bills_Form();
+		final Add_Task_form Task_Dialog = new Add_Task_form();
+		final Add_Groups_Form Group_Dialog = new Add_Groups_Form();
+
+		//dialogFragment.show(ft,"dialog");
+		fabBackground.setBackgroundColor(getActivity().getResources().getColor(R.color.TransparentWhite));
+		fabBackground.setVisibility(View.GONE);
+		fab1Layout.setVisibility(View.GONE);
+		fab2Layout.setVisibility(View.GONE);
+		fab3Layout.setVisibility(View.GONE);
+
+
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
-				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+
+			/*	Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 						.setAction("Action", null)
-						.show();
-				Transaction_Form_Dialog();
+						.show();*/
+				if (!Check){
+					Check=true;
+					fabBackground.setVisibility(View.VISIBLE);
+					fab1Layout.setVisibility(View.VISIBLE);
+					fab2Layout.setVisibility(View.VISIBLE);
+					fab3Layout.setVisibility(View.VISIBLE);
+				YoYo.with(Techniques.SlideInUp)
+						.duration(700)
+						.repeat(0)
+						.playOn(fab1Layout);
+				YoYo.with(Techniques.SlideInUp)
+						.duration(700)
+						.repeat(0)
+						.playOn(fab2Layout);
+				YoYo.with(Techniques.SlideInUp)
+						.duration(700)
+						.repeat(0)
+						.playOn(fab3Layout);
+				}else {
+
+                    Check=false;
+					YoYo.with(Techniques.SlideOutDown)
+							.duration(700)
+							.repeat(0)
+							.playOn(fab1Layout);
+					YoYo.with(Techniques.SlideOutDown)
+							.duration(700)
+							.repeat(0)
+							.playOn(fab2Layout);
+					YoYo.with(Techniques.SlideOutDown)
+							.duration(700)
+							.repeat(0)
+							.playOn(fab3Layout);
+					final Handler handler = new Handler();
+					handler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							//Do something after 100ms
+							fabBackground.setVisibility(View.GONE);
+						}
+					}, 700);
+
+				}
+				fab1.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						fabBackground.setVisibility(View.GONE);
+                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        final Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+                        ft.addToBackStack(null);
+						Bill_Dialog.show(ft,"dialog");
+						//dialogFragment.getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+								//WindowManager.LayoutParams.MATCH_PARENT);
+						Check=false;
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab1Layout);
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab2Layout);
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab3Layout);
+						//Transaction_Form_Dialog();
+
+					}
+				});
+
+
+				fab2.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						fabBackground.setVisibility(View.GONE);
+                        final FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        final Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+                        if (prev != null) {
+                            ft.remove(prev);
+                        }
+                        ft.addToBackStack(null);
+						Task_Dialog.show(ft,"dialog");
+						//dialogFragment.getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+						//WindowManager.LayoutParams.MATCH_PARENT);
+						Check=false;
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab1Layout);
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab2Layout);
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab3Layout);
+						//Transaction_Form_Dialog();
+
+					}
+				});
+
+				fab3.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						fabBackground.setVisibility(View.GONE);
+						final FragmentTransaction ft = getFragmentManager().beginTransaction();
+						final Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+						if (prev != null) {
+							ft.remove(prev);
+						}
+						ft.addToBackStack(null);
+						Group_Dialog.show(ft,"dialog");
+						//dialogFragment.getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+						//WindowManager.LayoutParams.MATCH_PARENT);
+						Check=false;
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab1Layout);
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab2Layout);
+						YoYo.with(Techniques.SlideOutDown)
+								.duration(700)
+								.repeat(0)
+								.playOn(fab3Layout);
+					}
+				});
+
+
 				/*Intent intent = new Intent(getContext(), Task_Form_Activity.class);
 				intent.putExtra("Group", mParam1);
 				startActivityForResult(intent, 1);*/
