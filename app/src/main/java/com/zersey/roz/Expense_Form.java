@@ -33,21 +33,16 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.github.florent37.materialtextfield.MaterialTextField;
 import com.zersey.roz.Data.Contacts_contract;
 import com.zersey.roz.Data.Contactsdbhelper;
 import com.zersey.roz.Data.TransactionDbHelper;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -82,7 +77,7 @@ public class Expense_Form extends Fragment {
 	private MaterialTextField Material_Title, Material_Amount,
 		Material_Amount_Due;
 	public View layout_view = null;
-	private List<IncomeModel> customlist;
+	private List<BillModel> customlist;
 	private ArrayList<String> Contact_list;
 	private TextView Category_text_view;
 	private int year_x, month_x, day_x, Selected_date = 0;
@@ -107,13 +102,13 @@ public class Expense_Form extends Fragment {
 	//private OnFragmentInteractionListener mListener;
 	private int pos;
 	private TransactionDbHelper mDbHelper;
-	private IncomeModel model;
+	private BillModel model;
 
 	public Expense_Form() {
 		// Required empty public constructor
 	}
 
-	public void setString(IncomeModel model, String cardClicked, String updated_Title,
+	public void setString(BillModel model, String cardClicked, String updated_Title,
 		String updated_Amount, String updated_Date, String updated_Category, int id, int pos) {
 		CardClicked = cardClicked;
 		Updated_Title = model.getTitle();
@@ -182,7 +177,7 @@ public class Expense_Form extends Fragment {
 		More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
 		Delete_Button = (ImageButton) fragmentLayout.findViewById(R.id.Delete_Button);
 		Delete_Button.setVisibility(View.GONE);
-		//Contact_Button = (ImageButton) fragmentLayout.findViewById(R.id.Contact_Button);
+		//addMembers = (ImageButton) fragmentLayout.findViewById(R.id.addMembers);
 		//Camera_Button=(ImageButton)fragmentLayout.findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
 		Img_File = (ImageView) fragmentLayout.findViewById(R.id.Img_file);
@@ -311,7 +306,7 @@ public class Expense_Form extends Fragment {
         /*Camera_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Onclick_Image_button();
+                selectImage();
             }
         });*/
 		More_TextButton.setOnClickListener(new View.OnClickListener() {
@@ -1499,7 +1494,7 @@ public class Expense_Form extends Fragment {
 
 
   /*  @Override
-    protected Dialog onCreateDialog(int id){
+    protected splitDialog onCreateDialog(int id){
         if(id==DIALOG_ID){
             return new DatePickerDialog(getContext(),dateSetListener,year_x,month_x,day_x);
         }
@@ -1602,17 +1597,17 @@ public class Expense_Form extends Fragment {
 					model.setUsers(prefs.getString("userid", null));
 					long groupId = mDbHelper.createGroup(model);
 
-					IncomeModel incomeModel = new IncomeModel();
-					incomeModel.setTitle(Title_text);
-					incomeModel.setGroupId(groupId);
-					//incomeModel.setTotalAmount(Amount_text);
-					incomeModel.setPaidAtDate(DateEdit_text);
-					incomeModel.setCatId(Updated_Category);
-					incomeModel.setType("income");
+					BillModel billModel = new BillModel();
+					billModel.setTitle(Title_text);
+					billModel.setGroupId(groupId);
+					//billModel.setTotalAmount(Amount_text);
+					billModel.setPaidAtDate(DateEdit_text);
+					billModel.setCatId(Updated_Category);
+					billModel.setType("income");
 
-					//incomeModel.setAmountDue(Amount_text);
+					//billModel.setAmountDue(Amount_text);
 
-					mDbHelper.createEntry(incomeModel);
+					mDbHelper.createEntry(billModel);
 
 					//long rowId = mDbHelper.createEntry(expenseModel);
 					//expenseModel.setId(rowId);

@@ -1,6 +1,5 @@
 package com.zersey.roz;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -26,16 +25,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.zersey.roz.Add_Members_Activity;
-import com.zersey.roz.ContactModel;
-import com.zersey.roz.Contact_RecyclerView_Adapter;
 import com.zersey.roz.Data.TransactionDbHelper;
-import com.zersey.roz.Dialog_Split_RecyclerViewAdapter;
-import com.zersey.roz.GroupModel;
-import com.zersey.roz.Groups;
-import com.zersey.roz.R;
-import com.zersey.roz.ServerUtil;
-import com.zersey.roz.Split_Contact_model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,12 +44,12 @@ public class Add_Groups_Form extends DialogFragment{
     private TextView Split_Notes;
     private RecyclerView Split_RecyclerView;
     private RecyclerView Contact_RecyclerView;
-    private Dialog_Split_RecyclerViewAdapter Adapter;
+    private DialogSplitRecyclerViewAdapter Adapter;
     private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
     private StringBuffer users = new StringBuffer("");
     private StringBuffer users_number = new StringBuffer("");
     String USERS = "No Members";
-    private Contact_RecyclerView_Adapter RecyclerView_Adapter;
+    private ContactRecyclerViewAdapter RecyclerView_Adapter;
     private TransactionDbHelper mDbHelper;
     private Context context;
     private Button Group_Submit;
@@ -94,7 +84,7 @@ public class Add_Groups_Form extends DialogFragment{
         Group_Add_Member_Layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, Add_Members_Activity.class);
+                Intent intent = new Intent(context, AddMembersActivity.class);
                 startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
             }
         });
@@ -116,7 +106,7 @@ public class Add_Groups_Form extends DialogFragment{
                 new ServerUtil(context).createGroup(model, Item_list);
                 Intent intent = new Intent();
                 intent.putExtra("group", model);
-                Groups.ADAPTER.addItem(model);
+                Groups.billsAdapter.addItem(model);
                 dismiss();
                 /*setResult(Activity.RESULT_OK, intent);
                 finish();*/
@@ -166,7 +156,7 @@ public class Add_Groups_Form extends DialogFragment{
         new ServerUtil(this).createGroup(model, Item_list);
         Intent intent = new Intent();
         intent.putExtra("group", model);
-        Groups.ADAPTER.addItem(model);
+        Groups.billsAdapter.addItem(model);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }*/
@@ -195,7 +185,7 @@ public class Add_Groups_Form extends DialogFragment{
                 Contact_RecyclerView.setVisibility(View.VISIBLE);
                 List<ContactModel> list = (List<ContactModel>) data.getSerializableExtra("ADDED");
                 Item_list.addAll(list);
-                RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+                RecyclerView_Adapter = new ContactRecyclerViewAdapter(Item_list);
                 Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
                 for (ContactModel contactModel : list) {
                     users.append(",").append(contactModel.getUserId());

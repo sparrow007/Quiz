@@ -71,12 +71,20 @@ public class GroupModel implements Serializable {
 		return users;
 	}
 
+	public int getTypeId() {
+		return typeId;
+	}
+
+	public void setTypeId(int typeId) {
+		this.typeId = typeId;
+	}
+
 	@Override public String toString() {
 		return "GroupModel{"
-			+ "groupId="
-			+ groupId
-			+ ", id="
+			+ "id="
 			+ id
+			+ ", groupId="
+			+ groupId
 			+ ", groupName='"
 			+ groupName
 			+ '\''
@@ -86,20 +94,14 @@ public class GroupModel implements Serializable {
 			+ ", users='"
 			+ users
 			+ '\''
+			+ ", mobile_no='"
+			+ mobile_no
+			+ '\''
 			+ ", fullname='"
 			+ fullname
 			+ '\''
-            + ", mobile_no='"
-            + mobile_no
-            + '\''
+			+ ", typeId="
+			+ typeId
 			+ '}';
-	}
-
-	public int getTypeId() {
-		return typeId;
-	}
-
-	public void setTypeId(int typeId) {
-		this.typeId = typeId;
 	}
 }

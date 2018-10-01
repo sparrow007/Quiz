@@ -3,7 +3,7 @@ package com.zersey.roz;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
-public class Task_Model implements Serializable {
+public class TaskModel implements Serializable {
 	private Boolean Task_Checked = false;
 	private long id;
 

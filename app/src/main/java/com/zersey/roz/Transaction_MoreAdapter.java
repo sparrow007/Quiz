@@ -10,12 +10,12 @@ import android.widget.TextView;
 import java.util.List;
 
 public class Transaction_MoreAdapter extends RecyclerView.Adapter<Transaction_MoreAdapter.More_ViewHolder> {
-    private List<IncomeModel> list;
+    private List<BillModel> list;
     //private List<GroupModel> Group_List;
     private String[] Months = {
             "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
     };
-    public  Transaction_MoreAdapter(List<IncomeModel> list){
+    public  Transaction_MoreAdapter(List<BillModel> list){
         this.list=list;
     }
 

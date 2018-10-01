@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -59,14 +58,14 @@ public class Util {
 		return convertToHex(sha1hash);
 	}
 
-	public static List<IncomeModel> getNotesList(Context context, Response<JsonObject> response,
+	public static List<BillModel> getNotesList(Context context, Response<JsonObject> response,
 		boolean groupEntries) {
-		List<IncomeModel> list = new ArrayList<>();
+		List<BillModel> list = new ArrayList<>();
 		try {
 			JsonArray array = response.body().get("entries").getAsJsonArray();
 			for (int i = 0; i < array.size(); i++) {
 				JsonObject obj = array.get(i).getAsJsonObject();
-				IncomeModel model = JsonHandler.handleSingleReminder(obj);
+				BillModel model = JsonHandler.handleSingleReminder(obj);
 				if (groupEntries && (model.getType().equals("gt") || Util.isEmpty(
 					model.getType()))) {
 					list.add(model);
@@ -76,18 +75,18 @@ public class Util {
 			e.printStackTrace();
 		}
 		TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(context);
-		dbHelper.addTransactions(list);
+		dbHelper.addTransactions(list, groupEntries);
 		return list;
 	}
 
-	public static List<Task_Model> parseTaskresponse(JsonObject response) {
-		List<Task_Model> list = new ArrayList<>();
+	public static List<TaskModel> parseTaskresponse(JsonObject response) {
+		List<TaskModel> list = new ArrayList<>();
 		try {
 
 			JsonArray array = response.get("groups").getAsJsonArray();
 			for (int i = 0; i < array.size(); i++) {
 				JsonObject obj = array.get(i).getAsJsonObject();
-				Task_Model model = new Task_Model();
+				TaskModel model = new TaskModel();
 				model.setTask_Id(obj.get("id").getAsLong());
 				model.setTask_Title(obj.get("item_title").getAsString());
 				model.setGroup_Id(obj.get("group_id").getAsLong());
@@ -127,14 +126,12 @@ public class Util {
 				}
 				if (!obj.get("users").isJsonNull()) model.setUsers(obj.get("users").getAsString());
 				if (!obj.get("mobile").isJsonNull()) {
-					temp=obj.get("mobile").getAsString();
 					model.setMobile_no(obj.get("mobile").getAsString());
 				}
 				if (!obj.get("fullname").isJsonNull()) model.setFullname(obj.get("fullname").getAsString());
 				if (!obj.get("type_id").isJsonNull()) {
 					model.setTypeId(obj.get("type_id").getAsInt());
 				}
-				Log.d( "parseGroupResponse: ",temp);
 				list.add(model);
 			}
 		} catch (Exception e) {

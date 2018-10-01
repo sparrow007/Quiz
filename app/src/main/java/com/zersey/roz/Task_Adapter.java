@@ -13,10 +13,10 @@ import android.widget.TextView;
 import java.util.List;
 
 public class Task_Adapter extends RecyclerView.Adapter<Task_Adapter.Task_View_Holder> {
-    private List<Task_Model> list;
+    private List<TaskModel> list;
     private GroupModel model;
     private Context context;
-    Task_Adapter(List<Task_Model> list,GroupModel model){
+    Task_Adapter(List<TaskModel> list,GroupModel model){
         this.list=list;
         this.model=model;
     }
@@ -46,7 +46,7 @@ public class Task_Adapter extends RecyclerView.Adapter<Task_Adapter.Task_View_Ho
         return list.size();
     }
 
-    public void add(Task_Model model){
+    public void add(TaskModel model){
         list.add(model);
         notifyDataSetChanged();
     }
@@ -75,7 +75,7 @@ public class Task_Adapter extends RecyclerView.Adapter<Task_Adapter.Task_View_Ho
             Task_Check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Task_Model model=list.get(getAdapterPosition());
+                    TaskModel model=list.get(getAdapterPosition());
 
                     if(list.get(getAdapterPosition()).getTask_Checked()){
                         model.setTask_Checked(false);

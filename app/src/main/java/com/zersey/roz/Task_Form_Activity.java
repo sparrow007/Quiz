@@ -37,7 +37,7 @@ public class Task_Form_Activity extends AppCompatActivity {
 	private Uri Image_uri;
 	private GroupModel model;
 	private Boolean Updated = false;
-	private Task_Model TaskModel;
+	private com.zersey.roz.TaskModel TaskModel;
 	private Spinner Task_Spinner;
 	private List<GroupModel> list;
 	private TransactionDbHelper mDbHelper;
@@ -82,14 +82,14 @@ public class Task_Form_Activity extends AppCompatActivity {
 
 		if (getIntent().getSerializableExtra("Group") != null
 			&& getIntent().getSerializableExtra("Task") != null) {
-			TaskModel = (Task_Model) getIntent().getSerializableExtra("Task");
+			TaskModel = (com.zersey.roz.TaskModel) getIntent().getSerializableExtra("Task");
 			Task_Title.setText(TaskModel.getTask_Title());
 			Task_Des.setText(TaskModel.getTask_Des());
 			Task_Date.setText(TaskModel.getTask_Date());
 			model = (GroupModel) getIntent().getSerializableExtra("Group");
 			Task_Spinner.setSelection(adapter0.getPosition(model.getGroupName()));
 		} else if (getIntent().getSerializableExtra("Task") != null) {
-			TaskModel = (Task_Model) getIntent().getSerializableExtra("Task");
+			TaskModel = (com.zersey.roz.TaskModel) getIntent().getSerializableExtra("Task");
 			Task_Title.setText(TaskModel.getTask_Title());
 			Task_Des.setText(TaskModel.getTask_Des());
 			Task_Date.setText(TaskModel.getTask_Date());
@@ -129,7 +129,7 @@ public class Task_Form_Activity extends AppCompatActivity {
 		{
 			Intent intent = new Intent();
 			if (TaskModel == null) {
-				TaskModel = new Task_Model();
+				TaskModel = new TaskModel();
 				TaskModel.setTask_Title(Title);
 				TaskModel.setTask_Des(Des);
 				TaskModel.setTask_Date(Date);
@@ -146,7 +146,7 @@ public class Task_Form_Activity extends AppCompatActivity {
 				new ServerUtil(Task_Form_Activity.this).createGroupTask(TaskModel);
 				intent.putExtra("task", TaskModel);
 				setResult(Activity.RESULT_OK, intent);
-				Groups.task_slider_adapter.add(TaskModel);
+				Groups.tasksAdapter.add(TaskModel);
 				finish();
 			}
 		}

@@ -1,8 +1,6 @@
 package com.zersey.roz;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.net.Uri;
@@ -63,7 +61,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
 	private ArrayList<Entry> Line_Entries;
 	private List<BarEntry> BarChart_Entries ;
 	private ArrayList<PieEntry> Item_list;
-	private List<IncomeModel> Db_list;
+	private List<BillModel> Db_list;
 	private ArrayList<Expense_Info> Expense_List;
 	private ArrayList<Income_Info> Income_List;
 	private TransactionDbHelper mDbHelper ;

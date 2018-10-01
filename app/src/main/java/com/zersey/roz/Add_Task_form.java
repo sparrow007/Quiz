@@ -27,7 +27,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,9 +41,9 @@ import static android.app.Activity.RESULT_OK;
 
 public class Add_Task_form extends DialogFragment {
 
-    private List<Task_Model> list;
+    private List<com.zersey.roz.TaskModel> list;
     private Context context;
-    private Task_Model TaskModel;
+    private com.zersey.roz.TaskModel TaskModel;
     int ViewType = 0;
     private int year_x, month_x, day_x;
     private Calendar cal;
@@ -129,10 +128,10 @@ public class Add_Task_form extends DialogFragment {
         alertDialogBuilder.setView(PromptsView);
         alertDialogBuilder.setCancelable(true);
 
-		/*alertDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+		/*alertDialogBuilder.setPositiveButton("submitBill", new DialogInterface.OnClickListener() {
 			@Override public void onClick(DialogInterface dialog, int which) {
 				//Split_List = Adapter.getList();
-				Toast.makeText(context,"Submit Clicked",Toast.LENGTH_LONG).show();
+				Toast.makeText(context,"submitBill Clicked",Toast.LENGTH_LONG).show();
 			}
 		});*/
 
@@ -180,7 +179,7 @@ public class Add_Task_form extends DialogFragment {
                 {
                     Intent intent = new Intent();
                     if (TaskModel == null) {
-                        TaskModel = new Task_Model();
+                        TaskModel = new TaskModel();
                         TaskModel.setTask_Title(Title);
                         TaskModel.setTask_Des(Des);
                         TaskModel.setTask_Date(Date);
@@ -198,7 +197,7 @@ public class Add_Task_form extends DialogFragment {
                         new ServerUtil(context).createGroupTask(TaskModel);
                         intent.putExtra("task", TaskModel);
                         //setResult(Activity.RESULT_OK, intent);
-                        Groups.task_slider_adapter.add(TaskModel);
+                        Groups.tasksAdapter.add(TaskModel);
                         //finish();
                         dismiss();
                     }

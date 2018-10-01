@@ -43,6 +43,7 @@
                     android:layout_marginTop="10dp"
                     android:id="@+id/Material_Title"
                     android:layout_marginLeft="10dp"
+                    app:mtf_hasFocus="true"
                     android:layout_marginRight="10dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,6 +64,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    app:mtf_hasFocus="true"
                     android:layout_marginRight="10dp"
                     android:id="@+id/Material_Amount"
                     app:mtf_labelColor="#ffffff"
@@ -175,6 +177,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:id="@+id/Material_Amount_Due"
+                    android:visibility="gone"
                     app:mtf_labelColor="#666"
                     android:layout_marginTop="10dp"
                     app:mtf_openKeyboardOnFocus="true">
@@ -206,6 +209,7 @@
                     android:layout_gravity="center_vertical|right"
                     android:background="@android:color/transparent"
                     android:scaleType="centerCrop"
+                    android:visibility="gone"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:src="@drawable/delete"/>

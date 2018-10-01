@@ -3,13 +3,13 @@ package com.zersey.roz;
 import java.io.Serializable;
 import java.util.List;
 
-public class IncomeModel implements Serializable {
+public class BillModel implements Serializable {
 
 	private int Income_day,Income_month,Income_year;
 	private long id, onlineId, groupId;
 	private String type, title, description, uuid, catId;
 	private String totalAmount, paidAtDate, amountDue, payerId, invoiceId, amountPaid;
-	private List<IncomeModel> subList;
+	private List<BillModel> subList;
 
 
 	public void setId(long id) {
@@ -134,16 +134,16 @@ public class IncomeModel implements Serializable {
 		this.groupId = groupId;
 	}
 
-	public List<IncomeModel> getSubList() {
+	public List<BillModel> getSubList() {
 		return subList;
 	}
 
-	public void setSubList(List<IncomeModel> subList) {
+	public void setSubList(List<BillModel> subList) {
 		this.subList = subList;
 	}
 
 	@Override public String toString() {
-		return "IncomeModel{"
+		return "BillModel{"
 			+ "id="
 			+ id
 			+ ", onlineId="

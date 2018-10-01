@@ -20,7 +20,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -73,7 +72,7 @@ import java.util.List;
 	private static final String ARG_PARAM2 = "param2";
 	private ImageButton fab;
 	private RecyclerView Contact_RecyclerView;
-	private Contact_RecyclerView_Adapter RecyclerView_Adapter;
+	private ContactRecyclerViewAdapter RecyclerView_Adapter;
 	private DatePickerDialog datePicker;
 	//private View fragmentLayout;
 	ImageView Img_File;
@@ -84,7 +83,7 @@ import java.util.List;
 	private ArrayAdapter<String> ContactAdapter;
 	private MaterialTextField Material_Title, Material_Amount, Material_Amount_Due;
 	public View layout_view = null;
-	private List<IncomeModel> customlist;
+	private List<BillModel> customlist;
 	private List<ContactModel> Contact_list;
 	private List<String> Category_list;
 	private TextView Category_text_view, dateEdit;
@@ -113,7 +112,7 @@ import java.util.List;
 	private Spinner Split_Spinner;
 	public static TextView Split_Notes;
 	private RecyclerView Split_RecyclerView;
-	private Dialog_Split_RecyclerViewAdapter Adapter;
+	private DialogSplitRecyclerViewAdapter Adapter;
 	private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
 
 	// TODO: Rename and change types of parameters
@@ -122,10 +121,10 @@ import java.util.List;
 
 	private int pos;
 	private TransactionDbHelper mDbHelper;
-	private IncomeModel model;
+	private BillModel model;
 	private Boolean check = true;
 	private String Amount;
-	//private pageradapter adapter;
+	//private pageradapter groupsAdapter;
 	private String Updated_Type = "";
 	private GroupModel groupModel;
 	private String payerId;
@@ -159,7 +158,7 @@ import java.util.List;
 		pos = getIntent().getIntExtra("pos", -1);
 		if (!TextUtils.isEmpty(CardClicked)) {
 
-			model = (IncomeModel) getIntent().getSerializableExtra("model");
+			model = (BillModel) getIntent().getSerializableExtra("model");
 
 			Updated_Category = getIntent().getStringExtra("Category");
 			Updated_Amount = getIntent().getStringExtra("Amount");
@@ -192,7 +191,7 @@ import java.util.List;
 		More_TextButton = findViewById(R.id.MoreButton);
 		Delete_Button = findViewById(R.id.Delete_Button);
 		Delete_Button.setVisibility(View.GONE);
-		//Contact_Button = (ImageButton) findViewById(R.id.Contact_Button);
+		//addMembers = (ImageButton) findViewById(R.id.addMembers);
 		//Camera_Button=(ImageButton)findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
 		Img_File = findViewById(R.id.Img_file);
@@ -242,7 +241,7 @@ import java.util.List;
         /*Camera_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Onclick_Image_button();
+                selectImage();
             }
         });*/
 		More_TextButton.setOnClickListener(new View.OnClickListener() {
@@ -364,31 +363,31 @@ import java.util.List;
 
 			singleSplit();
 		}
-		Log.d("Dialog: ", Split_List.size() + "");
+		Log.d("splitDialog: ", Split_List.size() + "");
 		LayoutInflater LI = LayoutInflater.from(MainActivity.this);
 		View PromptsView = LI.inflate(R.layout.split_dialog_layout, null);
 		Split_Spinner = PromptsView.findViewById(R.id.Split_Spinner);
 		Split_RecyclerView = PromptsView.findViewById(R.id.Dialog_RecyclerView);
 		Split_Notes = PromptsView.findViewById(R.id.Dialog_Split_Notes);
 		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
-		Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "", Integer.parseInt(Amount));
+		Adapter = new DialogSplitRecyclerViewAdapter(Split_List, "", Integer.parseInt(Amount));
 		Split_RecyclerView.setAdapter(Adapter);
 
 		Split_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				if (position == 2) {
-					Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "ratio",
+					Adapter = new DialogSplitRecyclerViewAdapter(Split_List, "ratio",
 						Integer.parseInt(Amount));
 					Split_RecyclerView.setAdapter(Adapter);
 				}
 				if (position == 1) {
-					Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "",
+					Adapter = new DialogSplitRecyclerViewAdapter(Split_List, "",
 						Integer.parseInt(Amount));
 					Split_RecyclerView.setAdapter(Adapter);
 				}
 				if (position == 0) {
-					Adapter = new Dialog_Split_RecyclerViewAdapter(Split_List, "Equally",
+					Adapter = new DialogSplitRecyclerViewAdapter(Split_List, "Equally",
 						Integer.parseInt(Amount));
 					Split_RecyclerView.setAdapter(Adapter);
 				}
@@ -454,7 +453,7 @@ import java.util.List;
 		} else {
 			Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
 		}
-		Log.d("Dialog: ", Item_list.size() + "");
+		Log.d("splitDialog: ", Item_list.size() + "");
 		Split_List = new ArrayList<>();
         Second_split_list = new ArrayList<>();
 		ContactModel you = new ContactModel();
@@ -487,7 +486,7 @@ import java.util.List;
 		} else {
 			Specific_Amount = "" + Integer.parseInt(Amount) / (userList.size() + 1);
 		}
-		Log.d("Dialog: ", Item_list.size() + "");
+		Log.d("splitDialog: ", Item_list.size() + "");
 		Split_List = new ArrayList<>();
 
 		ContactModel you = new ContactModel();
@@ -552,7 +551,7 @@ import java.util.List;
 					Item_list.add(CCItem);
 					Log.d("onActivityResult: ", Item_list.size() + "");
 					Contact_RecyclerView.setVisibility(View.VISIBLE);
-					RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+					RecyclerView_Adapter = new ContactRecyclerViewAdapter(Item_list);
 					Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 					//					Log.d("onActivityResult: ", cNumber);
 				} else {
@@ -564,7 +563,7 @@ import java.util.List;
 			Contact_RecyclerView.setVisibility(View.VISIBLE);
 			Item_list.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
 			Log.d("onActivityResult: ", Item_list.size() + "");
-			RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+			RecyclerView_Adapter = new ContactRecyclerViewAdapter(Item_list);
 			Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 		}
 	}
@@ -715,7 +714,7 @@ import java.util.List;
 					}
 				}
 
-				IncomeModel expenseModel = new IncomeModel();
+				BillModel expenseModel = new BillModel();
 
 				if (TextUtils.isEmpty(CardClicked)) {
 					String DateEdit_text = dateEdit.getText().toString();
@@ -732,7 +731,7 @@ import java.util.List;
 					StringBuilder amountsPaid = new StringBuilder();
 					StringBuilder datesPaid = new StringBuilder();
 					StringBuilder amountsDue = new StringBuilder();
-                       int i=0;
+					int i=0;
 					for (Split_Contact_model s : Split_List) {
 
 						totalAmounts.append(s.getSplit_Amount()).append(",");
@@ -742,11 +741,7 @@ import java.util.List;
 							payerIds.append(s.getContact_Name().getUserId()).append(",");
 						}
 
-						// TODO: Make another split_contact_model list but it should contain amountsPaid.
-						// TODO: Parse it similar to above and append to 'amountsPaid' variable with a comma
-                                amountsPaid.append(Second_split_list.get(i).getSplit_Amount()).append(",");
-
-						// TODO: Do totalAmount - amountPaid here for each person and uncomment when done
+						amountsPaid.append(Second_split_list.get(i).getSplit_Amount()).append(",");
 
 						double amountDuePerPerson = Double.parseDouble(s.getSplit_Amount()) - Double.parseDouble(Second_split_list.get(i).getSplit_Amount());
 						amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
@@ -759,7 +754,6 @@ import java.util.List;
 					expenseModel.setTotalAmount(totalAmounts.toString());
 					expenseModel.setPaidAtDate(datesPaid.toString());
 
-					//TODO: Uncomment this when you are done
 					expenseModel.setAmountPaid(amountsPaid.toString());
 					expenseModel.setAmountDue(amountsDue.toString());
 					expenseModel.setPayerId(payerIds.toString());
@@ -787,7 +781,7 @@ import java.util.List;
 						//groupModel.setGroupDesc();
 						groupModel2.setUsers(users);
 						long newrowId = mDbHelper.createGroup(groupModel2);
-						Log.d( "Submit: ",""+expenseModel);
+						Log.d( "submitBill: ",""+expenseModel);
 						groupModel2.setId(newrowId);
 						new ServerUtil(MainActivity.this).createSingleGroup(groupModel2,
 							expenseModel, null);
@@ -866,7 +860,7 @@ import java.util.List;
 		/*Intent intent =
 			new Intent(Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
 		startActivityForResult(intent, 3);*/
-		Intent intent = new Intent(this, Add_Members_Activity.class);
+		Intent intent = new Intent(this, AddMembersActivity.class);
 		startActivityForResult(intent, 4);
 	}
 

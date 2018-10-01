@@ -13,7 +13,7 @@ import java.util.List;
 public class More_Activity extends AppCompatActivity {
 private RecyclerView More_RecyclerView;
 private List<GroupModel> More_List,More2_List;
-    private List<IncomeModel> Item_list;
+    private List<BillModel> Item_list;
     private TransactionDbHelper mDbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,13 +1,14 @@
 package com.zersey.roz;
 
+import android.animation.Animator;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -19,11 +20,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
 import java.io.Serializable;
@@ -33,33 +36,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class Main2Activity extends BaseActivity
-	implements Graphs.OnFragmentInteractionListener, Groups.OnFragmentInteractionListener {
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link FragmentPagerAdapter} derivative, which will keep every
-	 * loaded fragment in memory. If this becomes too memory intensive, it
-	 * may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
-	//private SectionsPagerAdapter mSectionsPagerAdapter;
-	private PagerAdapter adapter;
-	//private String Category_text,Notes_text,Amount_text,Date_text;
-	//private Uri Image_uri;
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
-	private ViewGroup Transaction_linearLayout;
-	private boolean Added = false;
-	private ViewPager mViewPager;
+public class Main2Activity extends BaseActivity {
+
 	private DrawerLayout mDrawerLayout;
 	private ActionBarDrawerToggle mDrawerToggle;
 	private String[] tags = new String[3];
 	private List<GroupModel> list;
 	private TransactionDbHelper mDbHelper;
-	private List<Task_Model> taskList;
+	private List<TaskModel> taskList;
+	private List<BillModel> billList;
+	private Animator animator;
+	private int radiusEnd;
 
 	public FragmentRefreshListener getFragmentRefreshListener() {
 		return fragmentRefreshListener;
@@ -74,7 +64,9 @@ public class Main2Activity extends BaseActivity
 	public interface FragmentRefreshListener {
 		void onRefresh(List<GroupModel> list);
 
-		void onTaskRefresh(List<Task_Model> taskList);
+		void onTaskRefresh(List<TaskModel> taskList);
+
+		void onBillsRefresh(List<BillModel> billsList);
 	}
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +74,7 @@ public class Main2Activity extends BaseActivity
 		setContentView(R.layout.activity_main2);
 		list = new ArrayList<>();
 		taskList = new ArrayList<>();
+		billList = new ArrayList<>();
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		ActionBar actionbar = getSupportActionBar();
@@ -90,8 +83,9 @@ public class Main2Activity extends BaseActivity
 			actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 		}
 		mDbHelper = TransactionDbHelper.getInstance(this);
-		Fetch_Contacts();
+		fetchContacts();
 		mDrawerLayout = findViewById(R.id.drawer_layout);
+
 		mDrawerToggle =
 			new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
 				R.string.navigation_drawer_close);
@@ -106,183 +100,181 @@ public class Main2Activity extends BaseActivity
 		navigationView.setNavigationItemSelectedListener(
 			new NavigationView.OnNavigationItemSelectedListener() {
 				@Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-					// set item as selected to persist highlight
 					menuItem.setChecked(true);
 					if (menuItem.getItemId() == R.id.nav_gallery) {
 						Intent i = new Intent(Main2Activity.this, Contact_List_Activity.class);
 						startActivity(i);
 					}
-					if (menuItem.getItemId() == R.id.nav_slideshow) {
-					}
-					// close drawer when item is tapped
 					mDrawerLayout.closeDrawers();
-
-					// Add code here to update the UI based on the item selected
-					// For example, swap UI fragments here
-
 					return true;
 				}
 			});
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the activity.
-		/*      mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		TabLayout tabLayout = findViewById(R.id.Tab_layout);
+		final FloatingActionsMenu fab = findViewById(R.id.fab);
 
-		 */  // Set up the ViewPager with the sections adapter.
-        /*Category_text=getIntent().getStringExtra("Category");
-        Date_text=getIntent().getStringExtra("Date");
-        Amount_text=getIntent().getStringExtra("Amount");
-        Notes_text=getIntent().getStringExtra("Notes");*/
-		//        Image_uri=Uri.parse(getIntent().getStringExtra("Image"));
+		tabLayout.addTab(tabLayout.newTab().setText("Dashboard"));
+		tabLayout.addTab(tabLayout.newTab().setText("Chat"));
+		tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-		TabLayout tab_layout = findViewById(R.id.Tab_layout);
+		ViewPager viewPager = findViewById(R.id.container);
+		PagerAdapter adapter =
+			new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+		viewPager.setAdapter(adapter);
+		tabLayout.setupWithViewPager(viewPager);
 
-		tab_layout.addTab(tab_layout.newTab().setText("Dashboard"));
-		tab_layout.addTab(tab_layout.newTab().setText("Chat"));
-		tab_layout.setTabGravity(TabLayout.GRAVITY_FILL);
-
-		mViewPager = findViewById(R.id.container);
-		adapter = new PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount());
-		mViewPager.setAdapter(adapter);
-		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
-		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
 			@Override public void onPageScrolled(int position, float positionOffset,
 				int positionOffsetPixels) {
-				Fragment fragment =
-					((FragmentPagerAdapter) mViewPager.getAdapter()).getItem(position);
 				if (position == 1) {
-					fragment.onStart();
-					//adapter.notifyDataSetChanged();
+					fab.setVisibility(View.GONE);
+				} else {
+					fab.setVisibility(View.VISIBLE);
 				}
 			}
 
 			@Override public void onPageSelected(int position) {
-
 			}
 
 			@Override public void onPageScrollStateChanged(int state) {
-
-			}
-		});
-		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-			@Override public void onTabSelected(TabLayout.Tab tab) {
-				mViewPager.setCurrentItem(tab.getPosition());
-				//				adapter.notifyDataSetChanged();
-			}
-
-			@Override public void onTabUnselected(TabLayout.Tab tab) {
-
-			}
-
-			@Override public void onTabReselected(TabLayout.Tab tab) {
-
 			}
 		});
 
-		Transaction_linearLayout = mViewPager.findViewById(R.id.Transaction_linearLayout);
+		final View layer = findViewById(R.id.layer);
+		final View root = findViewById(R.id.root);
+		root.getViewTreeObserver()
+			.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+				@Override public void onGlobalLayout() {
+					root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+					radiusEnd = (int) Math.hypot(root.getWidth(), root.getHeight());
+				}
+			});
 
-		FloatingActionButton fab = findViewById(R.id.fab);
-		fab.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
-                /*Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();*/
-				Intent intent = new Intent(Main2Activity.this, MainActivity.class);
-				startActivity(intent);
-			}
-		});
-		//if(!TextUtils.isEmpty(Category_text)){ addTransaction();}
+		fab.setOnFloatingActionsMenuUpdateListener(
+			new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+				@Override public void onMenuExpanded() {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+						animator = ViewAnimationUtils.createCircularReveal(layer,
+							(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab.getHeight(),
+							0, radiusEnd);
+						animator.start();
+					}
+					layer.setVisibility(VISIBLE);
+				}
 
-		//TransactionDbHelper dbHelper = new TransactionDbHelper(this);
-		//if (NetworkUtil.hasInternetConnection(this) && dbHelper.getEntriesCount() == 0) {
-		//	showProgress("Getting your notes...");
-		//	Call<JsonObject> result = NetworkUtil.getRestAdapter(this).fetchAllUserEntry();
-		//	result.enqueue(new Callback<JsonObject>() {
-		//		@Override public void onResponse(@NonNull Call<JsonObject> call,
-		//			@NonNull Response<JsonObject> response) {
-		//			JsonObject obj = response.body();
-		//			if (obj != null && obj.has("success")) {
-		//				String access = obj.get("success").getAsString();
-		//				if (access.equals("UnauthorizedAccess") || access.equals(
-		//					"Unauthorized Access")) {
-		//					Toast.makeText(Main2Activity.this, "Unauthorized access",
-		//						Toast.LENGTH_SHORT).show();
-		//					return;
-		//				}
-		//			}
-		//			Util.getNotesList(Main2Activity.this, response);
-		//		}
-		//
-		//		@Override
-		//		public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-		//			t.printStackTrace();
-		//		}
-		//	});
-		//}
-		//
-		//NetworkChangeReceiver br = new NetworkChangeReceiver();
-		//IntentFilter netFilter = new IntentFilter();
-		//netFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
-		//registerReceiver(br, netFilter);
+				@Override public void onMenuCollapsed() {
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+						animator = ViewAnimationUtils.createCircularReveal(layer,
+							(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab.getHeight(),
+							radiusEnd, 0);
+						animator.addListener(new Animator.AnimatorListener() {
+							@Override public void onAnimationStart(Animator animation) {
+
+							}
+
+							@Override public void onAnimationEnd(Animator animation) {
+								layer.setVisibility(GONE);
+							}
+
+							@Override public void onAnimationCancel(Animator animation) {
+
+							}
+
+							@Override public void onAnimationRepeat(Animator animation) {
+
+							}
+						});
+						animator.start();
+					} else {
+						layer.setVisibility(GONE);
+					}
+				}
+			});
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
-		final TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(this);
 
 		if (!prefs.getBoolean("dataFetched", false)) {
-
 			prefs.edit().putBoolean("dataFetched", true).apply();
+			fetchGroupsFromServer(prefs);
+			fetchTasksFromServer();
+			fetchBillsFromServer();
+		} else {
+			list.addAll(mDbHelper.getGroups(0));
+			taskList.addAll(mDbHelper.getTask(-1));
+			billList.addAll(mDbHelper.getAllEntries());
+		}
+	}
 
-			if (NetworkUtil.hasInternetConnection(this)) {
-				showProgress("Getting your groups...");
-				Call<JsonObject> result = NetworkUtil.getRestAdapter(this)
-					.fetchGroups(prefs.getString("userid", null), null);
-				result.enqueue(new Callback<JsonObject>() {
-					@Override public void onResponse(@NonNull Call<JsonObject> call,
-						@NonNull Response<JsonObject> response) {
-						list.addAll(Util.parseGroupResponse(response.body()));
-						Log.d("onResponse: ", list.size() + "");
-						dbHelper.addGroups(list);
-
-						for (GroupModel groupModel : list) {
-							Call<JsonObject> groupResult =
-								NetworkUtil.getRestAdapter(Main2Activity.this)
-									.fetchAllUserEntry(null,
-										Long.toString(groupModel.getGroupId()));
-							groupResult.enqueue(new Callback<JsonObject>() {
-								@Override public void onResponse(@NonNull Call<JsonObject> call,
-									@NonNull Response<JsonObject> response) {
-									Util.getNotesList(Main2Activity.this, response, true);
-								}
-
-								@Override public void onFailure(@NonNull Call<JsonObject> call,
-									@NonNull Throwable t) {
-
-								}
-							});
-						}
-
-						list.clear();
-						list.addAll(dbHelper.getGroups(0));
-						Log.d("onResponse: ", list.size() + "");
-						getFragmentRefreshListener().onRefresh(list);
-					}
-
-					@Override
-					public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-
-					}
-				});
-			}
-
-			Call<JsonObject> taskResult =
-				NetworkUtil.getRestAdapter(Main2Activity.this).fetchGroupNotes(null, null);
-			taskResult.enqueue(new Callback<JsonObject>() {
+	private void fetchBillsFromServer() {
+		if (NetworkUtil.hasInternetConnection(this)) {
+			Call<JsonObject> result =
+				NetworkUtil.getRestAdapter(this).fetchAllUserEntry(null, null);
+			result.enqueue(new Callback<JsonObject>() {
 				@Override public void onResponse(@NonNull Call<JsonObject> call,
 					@NonNull Response<JsonObject> response) {
-					taskList.addAll(Util.parseTaskresponse(response.body()));
-					dbHelper.addTasks(taskList);
-					//taskList.clear();
-					//taskList.addAll(dbHelper.getTasks());
-					getFragmentRefreshListener().onTaskRefresh(taskList);
+					Util.getNotesList(Main2Activity.this, response, false);
+					//Groups.groupsAdapter.addAll(mDbHelper.getAllEntries());
+					getFragmentRefreshListener().onBillsRefresh(mDbHelper.getAllEntries());
+				}
+
+				@Override
+				public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+					t.printStackTrace();
+				}
+			});
+			dismissProgress();
+		}
+	}
+
+	private void fetchTasksFromServer() {
+		Call<JsonObject> taskResult =
+			NetworkUtil.getRestAdapter(Main2Activity.this).fetchGroupNotes(null, null);
+		taskResult.enqueue(new Callback<JsonObject>() {
+			@Override public void onResponse(@NonNull Call<JsonObject> call,
+				@NonNull Response<JsonObject> response) {
+				taskList.addAll(Util.parseTaskresponse(response.body()));
+				mDbHelper.addTasks(taskList);
+				//taskList.clear();
+				//taskList.addAll(dbHelper.getTasks());
+				getFragmentRefreshListener().onTaskRefresh(taskList);
+			}
+
+			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+
+			}
+		});
+	}
+
+	private void fetchGroupsFromServer(SharedPreferences prefs) {
+		if (NetworkUtil.hasInternetConnection(this)) {
+			showProgress("Getting your groups...");
+			Call<JsonObject> result =
+				NetworkUtil.getRestAdapter(this).fetchGroups(prefs.getString("userid", null), null);
+			result.enqueue(new Callback<JsonObject>() {
+				@Override public void onResponse(@NonNull Call<JsonObject> call,
+					@NonNull Response<JsonObject> response) {
+					list.addAll(Util.parseGroupResponse(response.body()));
+					mDbHelper.addGroups(list);
+					for (GroupModel groupModel : list) {
+						Call<JsonObject> groupResult =
+							NetworkUtil.getRestAdapter(Main2Activity.this)
+								.fetchAllUserEntry(null, Long.toString(groupModel.getGroupId()));
+						groupResult.enqueue(new Callback<JsonObject>() {
+							@Override public void onResponse(@NonNull Call<JsonObject> call,
+								@NonNull Response<JsonObject> response) {
+								Util.getNotesList(Main2Activity.this, response, true);
+							}
+
+							@Override public void onFailure(@NonNull Call<JsonObject> call,
+								@NonNull Throwable t) {
+								t.printStackTrace();
+							}
+						});
+					}
+
+					list.clear();
+					list.addAll(mDbHelper.getGroups(0));
+					getFragmentRefreshListener().onRefresh(list);
 				}
 
 				@Override
@@ -290,108 +282,69 @@ public class Main2Activity extends BaseActivity
 
 				}
 			});
-
-			if (NetworkUtil.hasInternetConnection(this)) {
-				Call<JsonObject> result =
-					NetworkUtil.getRestAdapter(this).fetchAllUserEntry(null, null);
-				result.enqueue(new Callback<JsonObject>() {
-					@Override public void onResponse(@NonNull Call<JsonObject> call,
-						@NonNull Response<JsonObject> response) {
-						Util.getNotesList(Main2Activity.this, response, false);
-						Groups.adapter.addAll(mDbHelper.getAllEntries());
-					}
-
-					@Override
-					public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-
-					}
-				});
-				dismissProgress();
-			}
-		} else {
-			list.addAll(dbHelper.getGroups(0));
-			taskList.addAll(dbHelper.getTask(-1));
 		}
 	}
 
-	public void Fetch_Contacts() {
+	private void fetchContacts() {
 		thread.start();
 	}
 
 	Thread thread = new Thread(new Runnable() {
 		@Override public void run() {
 			String phone = getSharedPreferences("login", MODE_PRIVATE).getString("phone", null);
-			phone = phone.substring(phone.length() - 10, phone.length());
+			if (phone != null) {
+				phone = phone.substring(phone.length() - 10, phone.length());
+			}
 			int count = mDbHelper.getContactCount();
 			List<String> contactModelList = new ArrayList<>();
-			if (count <= 0) {
-				Cursor phones =
+			if (count == 0) {
+				Cursor phoneCursor =
 					getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
 						null, null, null, null);
-				while (phones.moveToNext()) {
-					String name = phones.getString(
-						phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
-					String hasPhone = phones.getString(phones.getColumnIndex(
-						ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
+				if (phoneCursor != null) {
+					while (phoneCursor.moveToNext()) {
+						String name = phoneCursor.getString(phoneCursor.getColumnIndex(
+							ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+						String hasPhone = phoneCursor.getString(phoneCursor.getColumnIndex(
+							ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
 
-					String cNumber = null, code = null;
-					if (hasPhone.equalsIgnoreCase("1")) {
+						String cNumber = null;
+						//String code = null;
+						if (hasPhone.equalsIgnoreCase("1")) {
 
-						cNumber = phones.getString(
-							phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-						cNumber = cNumber.replaceAll("[^0-9]", "");
-						if (cNumber.length() > 10) {
-							code = cNumber.substring(0, cNumber.length() - 10);
-							cNumber = cNumber.substring(cNumber.length() - 10);
-						} else {
-							code = "91";
-						}
-					}
-
-					if (cNumber != null && !cNumber.equals(phone)) {
-						ContactModel model = new ContactModel();
-						model.setName(name);
-						model.setNumber(cNumber);
-
-						if(contactModelList.size() == 200){
-							new ServerUtil(Main2Activity.this).verifyContacts(
-								contactModelList.toArray(new String[contactModelList.size()]));
-							contactModelList.clear();
+							cNumber = phoneCursor.getString(phoneCursor.getColumnIndex(
+								ContactsContract.CommonDataKinds.Phone.NUMBER));
+							cNumber = cNumber.replaceAll("[^0-9]", "");
+							if (cNumber.length() > 10) {
+								//code = cNumber.substring(0, cNumber.length() - 10);
+								cNumber = cNumber.substring(cNumber.length() - 10);
+							}
 						}
 
-						contactModelList.add(cNumber);
-						long rowId = mDbHelper.addContact(model);
+						if (cNumber != null && !cNumber.equals(phone)) {
+							ContactModel model = new ContactModel();
+							model.setName(name);
+							model.setNumber(cNumber);
+
+							if (contactModelList.size() == 200) {
+								new ServerUtil(Main2Activity.this).verifyContacts(
+									contactModelList.toArray(new String[0]));
+								contactModelList.clear();
+							}
+
+							contactModelList.add(cNumber);
+							mDbHelper.addContact(model);
+						}
 					}
+					new ServerUtil(Main2Activity.this).verifyContacts(
+						contactModelList.toArray(new String[0]));
+					phoneCursor.close();
 				}
-				new ServerUtil(Main2Activity.this).verifyContacts(
-					contactModelList.toArray(new String[contactModelList.size()]));
-				phones.close();
 			}
 		}
 	});
 
-    /*public void addTransaction(){
-        TextView Transaction_Category_text_view,Transaction_Notes_text_view,
-                Transaction_Amount_text_view,Transaction_Date_text_view;
-        View layout2=LayoutInflater.from(this).inflate(R.layout.transaction_list_layout,Transaction_linearLayout,false);
-        Transaction_Category_text_view=(TextView)layout2.findViewById(R.id.Transaction_Category);
-        Transaction_Date_text_view=(TextView)layout2.findViewById(R.id.Transaction_Date);
-        Transaction_Amount_text_view=(TextView)layout2.findViewById(R.id.Transaction_Amount);
-        Transaction_Notes_text_view=(TextView)layout2.findViewById(R.id.Transaction_Notes);
-        Transaction_Category_text_view.setText(Category_text);
-        Transaction_Amount_text_view.setText(Amount_text);
-        Transaction_Date_text_view.setText(Date_text);
-        if(!TextUtils.isEmpty(Notes_text)){
-            Transaction_Notes_text_view.setText(Notes_text);
-        }
-        if(Image_uri!=null){
-
-        }
-        Transaction_linearLayout.addView(layout2);
-    }*/
-
 	@Override public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.menu_main2, menu);
 		return true;
 	}
@@ -410,60 +363,15 @@ public class Main2Activity extends BaseActivity
 		return super.onOptionsItemSelected(item);
 	}
 
-	@Override public void onFragmentInteraction(Uri uri) {
-
-	}
-
-	/**
-	 * A placeholder fragment containing a simple view.
-	 */
-    /*public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-	//private static final String ARG_SECTION_NUMBER = "section_number";
-
-	// public PlaceholderFragment() {
-	// }
-
-	/**
-	 * Returns a new instance of this fragment for the given section
-	 * number.
-	 */
-       /* public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main2, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }*/
-
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
-	 */
 	public class PagerAdapter extends FragmentPagerAdapter {
-		int mnooftabes;
+		int numberOfTabs;
 
-		PagerAdapter(FragmentManager fm, int Numberoftabes) {
+		PagerAdapter(FragmentManager fm, int numberOfTabs) {
 			super(fm);
-			mnooftabes = Numberoftabes;
+			this.numberOfTabs = numberOfTabs;
 		}
 
 		@Override public Fragment getItem(int position) {
-			// getItem is called to instantiate the fragment for the given page.
-			// Return a PlaceholderFragment (defined as a static inner class below).
 			switch (position) {
 
 				case 0:
@@ -471,6 +379,7 @@ public class Main2Activity extends BaseActivity
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("groupList", (Serializable) list);
 					bundle.putSerializable("taskList", (Serializable) taskList);
+					bundle.putSerializable("billList", (Serializable) billList);
 					fragment.setArguments(bundle);
 					return fragment;
 
@@ -480,13 +389,20 @@ public class Main2Activity extends BaseActivity
 				default:
 					return null;
 			}
+		}
 
-			//return PlaceholderFragment.newInstance(position + 1);
+		@Nullable @Override public CharSequence getPageTitle(int position) {
+			switch (position) {
+				case 0:
+					return "Dashboard";
+				case 1:
+					return "Chats";
+			}
+			return null;
 		}
 
 		@Override public int getCount() {
-			// Show 3 total pages.
-			return mnooftabes;
+			return numberOfTabs;
 		}
 
 		@Override public int getItemPosition(@NonNull Object object) {
@@ -494,7 +410,6 @@ public class Main2Activity extends BaseActivity
 		}
 
 		@NonNull @Override public Object instantiateItem(ViewGroup container, int position) {
-
 			Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
 			tags[position] = createdFragment.getTag();
 			return createdFragment;

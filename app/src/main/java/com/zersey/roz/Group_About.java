@@ -166,7 +166,7 @@ public class Group_About extends Fragment {
 		Add_Member = fragmentLayout.findViewById(R.id.Add_Group_Member_Layout);
 		Add_Member.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
-				Intent intent = new Intent(getContext(), Add_Members_Activity.class);
+				Intent intent = new Intent(getContext(), AddMembersActivity.class);
 				startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
 			}
 		});

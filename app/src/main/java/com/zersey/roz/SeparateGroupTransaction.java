@@ -26,7 +26,7 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 	private TextView DATE, AMOUNT, TITLE;
 	private ImageButton Settle_Button;
 	private String Amount, Date, Title;
-	private IncomeModel model;
+	private BillModel model;
 	private TransactionDbHelper mDbHelper;
 	private List<ContactModel> payers;
 	private List<Split_Contact_model> splitList;
@@ -36,7 +36,7 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 		setContentView(R.layout.activity_spererate_group_transaction);
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		model = (IncomeModel) getIntent().getSerializableExtra("model");
+		model = (BillModel) getIntent().getSerializableExtra("model");
 		mDbHelper = TransactionDbHelper.getInstance(this);
 		splitList = new ArrayList<>();
 

@@ -87,13 +87,13 @@ public class Income_form extends Fragment {
 	private OnFragmentInteractionListener mListener;
 	private int pos;
 	private TransactionDbHelper mDbHelper;
-	private IncomeModel model;
+	private BillModel model;
 
 	public Income_form() {
 		// Required empty public constructor
 	}
 
-	public void setString(IncomeModel model, String updated_Title, String updated_Amount,
+	public void setString(BillModel model, String updated_Title, String updated_Amount,
 		String updated_Date, String updated_Category, int id, int pos) {
 		Updated_Title = model.getTitle();
 		//Updated_Amount = model.getTotalAmount();
@@ -757,7 +757,7 @@ public class Income_form extends Fragment {
         /*Camera_Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Onclick_Image_button();
+                selectImage();
             }
         });*/
 		More_TextView_Button.setOnClickListener(new View.OnClickListener() {
@@ -903,26 +903,26 @@ public class Income_form extends Fragment {
 				model.setUsers(prefs.getString("userid", null));
 				long groupId = mDbHelper.createGroup(model);
 
-				IncomeModel incomeModel = new IncomeModel();
-				incomeModel.setTitle(Title_text);
-				incomeModel.setGroupId(groupId);
-				//incomeModel.setTotalAmount(Amount_text);
-				incomeModel.setPaidAtDate(DateEdit_text);
-				incomeModel.setCatId(Updated_Category);
-				incomeModel.setType("income");
-				//incomeModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
-				//incomeModel.setAmountDue(Amount_text);
+				BillModel billModel = new BillModel();
+				billModel.setTitle(Title_text);
+				billModel.setGroupId(groupId);
+				//billModel.setTotalAmount(Amount_text);
+				billModel.setPaidAtDate(DateEdit_text);
+				billModel.setCatId(Updated_Category);
+				billModel.setType("income");
+				//billModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
+				//billModel.setAmountDue(Amount_text);
 
-				mDbHelper.createEntry(incomeModel);
+				mDbHelper.createEntry(billModel);
 
-				//long rowId = mDbHelper.createEntry(incomeModel);
-				//incomeModel.setId(rowId);
+				//long rowId = mDbHelper.createEntry(billModel);
+				//billModel.setId(rowId);
 				//if (NetworkUtil.hasInternetConnection(getContext())) {
-				//	new ServerUtil(getContext()).createEntry(incomeModel);
+				//	new ServerUtil(getContext()).createEntry(billModel);
 				//} else {
 				//	mDbHelper.addToTemp(rowId, 0, "new");
 				//}
-				//new ServerUtil(getContext()).createEntry(incomeModel);
+				//new ServerUtil(getContext()).createEntry(billModel);
 				//if (newRowId == -1) {
 				//	// If the row COLUMN_ONLINE_ID is -1, then there was an error with insertion.
 				//	Toast.makeText(getContext(), "Error with saving pet", Toast.LENGTH_SHORT)

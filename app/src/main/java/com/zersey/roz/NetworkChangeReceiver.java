@@ -45,7 +45,7 @@ public class NetworkChangeReceiver extends BroadcastReceiver {
 
 		for (Temp temp : list) {
 			if (flag) {
-				IncomeModel model = dbHelper.findEntryWithTemp(temp);
+				BillModel model = dbHelper.findEntryWithTemp(temp);
 				switch (temp.getAction()) {
 					case "new":
 						new ServerUtil(context).createEntry(model);

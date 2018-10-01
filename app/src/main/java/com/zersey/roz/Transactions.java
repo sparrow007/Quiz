@@ -13,15 +13,15 @@ public class Transactions extends AppCompatActivity {
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-	private List<IncomeModel> Item_list;
+	private List<BillModel> Item_list;
 	private TransactionDbHelper mDbHelper;
-	public static RecyclerAdapter adapter;
+	public static GroupRecyclerAdapter adapter;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
 	private String mParam2;
 
-	private List<IncomeModel> newModels;
+	private List<BillModel> newModels;
 
 	public Transactions() {
 
@@ -45,7 +45,7 @@ public class Transactions extends AppCompatActivity {
 		//if (models.size() > 0) {
 		//
 		//	newModels.add(models.get(i));
-		//	List<IncomeModel> subModels = new ArrayList<>();
+		//	List<BillModel> subModels = new ArrayList<>();
 		//	for (int j = 1; j < models.size(); j++) {
 		//		if (groups.get(i).getGroupId() == models.get(j).getGroupId()) {
 		//			subModels.add(models.get(j));
@@ -57,8 +57,8 @@ public class Transactions extends AppCompatActivity {
 		//		}
 		//	}
 		//
-		//	Collections.sort(newModels, new Comparator<IncomeModel>() {
-		//		@Override public int compare(IncomeModel model, IncomeModel t1) {
+		//	Collections.sort(newModels, new Comparator<BillModel>() {
+		//		@Override public int compare(BillModel model, BillModel t1) {
 		//			return (int) (model.getId() - t1.getId());
 		//		}
 		//	});
@@ -67,7 +67,7 @@ public class Transactions extends AppCompatActivity {
 		//Item_list.addAll(newModels);
 		RecyclerView recyclerView = findViewById(R.id.Fragment_listView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		adapter = new RecyclerAdapter(newModels);
+		adapter = new GroupRecyclerAdapter(newModels);
 		recyclerView.setAdapter(adapter);
 
 		//Item_list=bundle.getParcelableArrayList("ARRAYLIST");

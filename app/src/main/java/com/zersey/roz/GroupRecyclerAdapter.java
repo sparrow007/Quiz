@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +14,15 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-	List<IncomeModel> list;
+public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdapter.ViewHolder> {
+	List<BillModel> list;
 	int ViewType = 0;
 	Context context;
 	private String[] Months = {
 		"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 	};
 
-	public RecyclerAdapter(List<IncomeModel> list) {
+	public GroupRecyclerAdapter(List<BillModel> list) {
 		this.list = new ArrayList<>();
 		this.list.addAll(list);
 	}
@@ -46,7 +47,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	@Override public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-		IncomeModel customitems = new IncomeModel();
+		BillModel customitems = new BillModel();
 		if (list.size() == 0) {
 			holder.Dummy_Layout.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View v) {
@@ -129,18 +130,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
 	}
 
-	public void addItem(IncomeModel model) {
+	public void addItem(BillModel model) {
 		list.add(model);
 		notifyDataSetChanged();
 	}
 
-	public void addAll(List<IncomeModel> transactionList) {
+	public void addAll(List<BillModel> transactionList) {
 		list.clear();
 		list.addAll(transactionList);
+		Log.d("hueh", "onResponse: " + transactionList.size());
 		notifyDataSetChanged();
 	}
 
-	public void updateItem(int pos, IncomeModel model) {
+	public void updateItem(int pos, BillModel model) {
 		if (pos != -1) {
 			list.set(pos, model);
 			notifyItemChanged(pos);

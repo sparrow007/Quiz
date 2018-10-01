@@ -1,17 +1,14 @@
 package com.zersey.roz;
 
-import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +30,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import io.fabric.sdk.android.services.concurrency.Task;
+public class TaskRecyclerAdapter extends RecyclerView.Adapter<TaskRecyclerAdapter.Task_ViewHolder> {
 
-public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapter.Task_ViewHolder> {
-
-	 private List<Task_Model> list;
+	 private List<com.zersey.roz.TaskModel> list;
 	private Context context;
-	private Task_Model TaskModel;
+	private com.zersey.roz.TaskModel TaskModel;
 	int ViewType = 0;
 	private int year_x, month_x, day_x;
 	private Calendar cal;
@@ -48,7 +43,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
 	private List<GroupModel> Grouplist;
 	private DatePickerDialog datePicker;
 
-	Task_Slider_Adapter(List<Task_Model> list) {
+	TaskRecyclerAdapter(List<com.zersey.roz.TaskModel> list) {
 		this.list = list;
 
 	}
@@ -139,10 +134,10 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
         alertDialogBuilder.setView(PromptsView);
         alertDialogBuilder.setCancelable(true);
 
-		/*alertDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+		/*alertDialogBuilder.setPositiveButton("submitBill", new DialogInterface.OnClickListener() {
 			@Override public void onClick(DialogInterface dialog, int which) {
 				//Split_List = Adapter.getList();
-				Toast.makeText(context,"Submit Clicked",Toast.LENGTH_LONG).show();
+				Toast.makeText(context,"submitBill Clicked",Toast.LENGTH_LONG).show();
 			}
 		});*/
 
@@ -186,7 +181,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
 						{
 							Intent intent = new Intent();
 							if (TaskModel == null) {
-								TaskModel = new Task_Model();
+								TaskModel = new TaskModel();
 								TaskModel.setTask_Title(Title);
 								TaskModel.setTask_Des(Des);
 								TaskModel.setTask_Date(Date);
@@ -204,7 +199,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
 								new ServerUtil(context).createGroupTask(TaskModel);
 								intent.putExtra("task", TaskModel);
 								//setResult(Activity.RESULT_OK, intent);
-								Groups.task_slider_adapter.add(TaskModel);
+								Groups.tasksAdapter.add(TaskModel);
 								//finish();
                                dialog.dismiss();
 							}
@@ -270,7 +265,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
 		}
 	}
 
-	public void add(Task_Model model) {
+	public void add(com.zersey.roz.TaskModel model) {
 		list.add(model);
 		notifyDataSetChanged();
 	}
@@ -291,7 +286,7 @@ public class Task_Slider_Adapter extends RecyclerView.Adapter<Task_Slider_Adapte
 
 				Check.setOnClickListener(new View.OnClickListener() {
 					@Override public void onClick(View v) {
-						Task_Model model = list.get(getAdapterPosition());
+						com.zersey.roz.TaskModel model = list.get(getAdapterPosition());
 
 						if (list.get(getAdapterPosition()).getTask_Checked()) {
 							model.setTask_Checked(false);

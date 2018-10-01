@@ -2,7 +2,6 @@ package com.zersey.roz;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
@@ -11,8 +10,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONException;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -78,15 +75,15 @@ public class ServerUtil {
 		});
 	}
 
-	public void createEntry(final IncomeModel incomeModel) {
-		Call<JsonObject> result = JsonHandler.createEntry(context, incomeModel);
+	public void createEntry(final BillModel billModel) {
+		Call<JsonObject> result = JsonHandler.createEntry(context, billModel);
 		result.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject object = response.body();
 				long id = object.get("id").getAsLong();
-				incomeModel.setOnlineId(id);
-				mDbHelper.addTransactionOnlineId(incomeModel);
+				billModel.setOnlineId(id);
+				mDbHelper.addTransactionOnlineId(billModel);
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
@@ -95,8 +92,8 @@ public class ServerUtil {
 		});
 	}
 
-	public void updateEntry(final IncomeModel incomeModel) {
-		//Call<JsonObject> result = JsonHandler.updateEntry(context, incomeModel);
+	public void updateEntry(final BillModel billModel) {
+		//Call<JsonObject> result = JsonHandler.updateEntry(context, billModel);
 		//result.enqueue(new Callback<JsonObject>() {
 		//	@Override public void onResponse(@NonNull Call<JsonObject> call,
 		//		@NonNull Response<JsonObject> response) {
@@ -203,7 +200,7 @@ public class ServerUtil {
 		});
 	}
 
-	public void createSingleGroup(final GroupModel groupModel, final IncomeModel expenseModel,
+	public void createSingleGroup(final GroupModel groupModel, final BillModel expenseModel,
 		final List<ContactModel> itemList) {
 		Call<JsonObject> result = JsonHandler.createGroup(context, groupModel);
 		result.enqueue(new Callback<JsonObject>() {
@@ -216,7 +213,7 @@ public class ServerUtil {
 				mDbHelper.addOnlineId(groupModel);
 				long row = mDbHelper.createEntry(expenseModel);
 				expenseModel.setId(row);
-				Groups.adapter.addItem(expenseModel);
+				Groups.groupsAdapter.addItem(expenseModel);
 				Call<JsonObject> res = JsonHandler.createEntry(context, expenseModel);
 				res.enqueue(new Callback<JsonObject>() {
 					@Override public void onResponse(@NonNull Call<JsonObject> call,
@@ -248,7 +245,7 @@ public class ServerUtil {
 		});
 	}
 
-	public void createGroupTask(final Task_Model taskModel) {
+	public void createGroupTask(final TaskModel taskModel) {
 		Call<JsonObject> result = NetworkUtil.getRestAdapter(context)
 			.createGroupNote(taskModel.getTask_Title(), taskModel.getTask_Des(),
 				taskModel.getGroup_Id(), taskModel.getAssignedTo(), taskModel.getTask_Date());

@@ -6,16 +6,16 @@ import retrofit2.Call;
 
 public class JsonHandler {
 
-	public static Call<JsonObject> createEntry(Context context, IncomeModel incomeModel) {
+	public static Call<JsonObject> createEntry(Context context, BillModel billModel) {
 		return NetworkUtil.getRestAdapter(context)
-			.createEntry(incomeModel.getType(), incomeModel.getTitle(), incomeModel.getGroupId(),
-				incomeModel.getDescription(), incomeModel.getUuid(),
-				incomeModel.getPayerId().split(","), incomeModel.getTotalAmount().split(","),
-				incomeModel.getAmountDue().split(","), incomeModel.getPaidAtDate().split(","),
-				incomeModel.getInvoiceId().split(","), incomeModel.getAmountPaid().split(","));
+			.createEntry(billModel.getType(), billModel.getTitle(), billModel.getGroupId(),
+				billModel.getDescription(), billModel.getUuid(),
+				billModel.getPayerId().split(","), billModel.getTotalAmount().split(","),
+				billModel.getAmountDue().split(","), billModel.getPaidAtDate().split(","),
+				billModel.getInvoiceId().split(","), billModel.getAmountPaid().split(","));
 	}
 
-	//public static Call<JsonObject> updateEntry(Context context, IncomeModel incomeModel) {
+	//public static Call<JsonObject> updateEntry(Context context, BillModel incomeModel) {
 	//	return NetworkUtil.getRestAdapter(context)
 	//		.updateEntry(incomeModel.getOnlineId(), incomeModel.getType(), incomeModel.getTitle(),
 	//			incomeModel.getDescription(), incomeModel.getTotalAmount(),
@@ -33,9 +33,9 @@ public class JsonHandler {
 		return NetworkUtil.getRestAdapter(context).deleteSpecificUserEntry(id);
 	}
 
-	public static IncomeModel handleSingleReminder(JsonObject obj) {
+	public static BillModel handleSingleReminder(JsonObject obj) {
 
-		IncomeModel model = new IncomeModel();
+		BillModel model = new BillModel();
 
 		try {
 			model.setOnlineId(obj.get("id").getAsLong());

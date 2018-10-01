@@ -7,13 +7,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
+import com.zersey.roz.BillModel;
 import com.zersey.roz.ContactModel;
 import com.zersey.roz.GroupModel;
 import com.zersey.roz.Groups;
-import com.zersey.roz.IncomeModel;
-import com.zersey.roz.Task_Model;
+import com.zersey.roz.TaskModel;
 import com.zersey.roz.Temp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,7 +82,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		db.beginTransaction();
-		long count=0;
+		long count = 0;
 		for (GroupModel model : list) {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID, model.getGroupId());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME, model.getGroupName());
@@ -91,20 +90,21 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME, model.getFullname());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
-			count=db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
+			cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
+			count = db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 			cv.clear();
 		}
-		Log.d( "addGroups: ",count+"");
+		Log.d("addGroups: ", count + "");
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
 
-	public void addTransactions(List<IncomeModel> list) {
+	public void addTransactions(List<BillModel> list, boolean groupEntries) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		db.beginTransaction();
 
-		for (IncomeModel model : list) {
+		for (BillModel model : list) {
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_DESCRIPTION,
 				model.getDescription());
@@ -129,9 +129,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 
 		db.setTransactionSuccessful();
 		db.endTransaction();
+		if(!groupEntries){
+			Groups.groupsAdapter.addAll(list);
+		}
 	}
 
-	public long createEntry(final IncomeModel model) {
+	public long createEntry(final BillModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
@@ -153,7 +156,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		return newRowId;
 	}
 
-	public void updateEntry(final int pos, final IncomeModel model) {
+	public void updateEntry(final int pos, final BillModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
@@ -166,13 +169,13 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				//Transactions.adapter.updateItem(pos, model);
-				Groups.adapter.updateItem(pos, model);
+				//Transactions.groupsAdapter.updateItem(pos, model);
+				Groups.groupsAdapter.updateItem(pos, model);
 			}
 		});
 	}
 
-	public void Update_GroupMembers(final int pos, final IncomeModel model) {
+	public void Update_GroupMembers(final int pos, final BillModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
@@ -185,8 +188,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				//Transactions.adapter.updateItem(pos, model);
-				Groups.adapter.updateItem(pos, model);
+				//Transactions.groupsAdapter.updateItem(pos, model);
+				Groups.groupsAdapter.updateItem(pos, model);
 			}
 		});
 	}
@@ -198,8 +201,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				//Transactions.adapter.deleteItem(pos);
-				Groups.adapter.deleteItem(pos);
+				//Transactions.groupsAdapter.deleteItem(pos);
+				Groups.groupsAdapter.deleteItem(pos);
 			}
 		});
 	}
@@ -222,22 +225,36 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		int count = cursor.getCount();
 		cursor.moveToFirst();
 		long currentID =
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
+			cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
 		String title = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
+			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
 		String desc = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
-		long groupId = cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
-		String usersGroup = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
-		String  fullnameGroup= cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
+			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
+		long groupId =
+			cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
+		String usersGroup =
+			cursor.getString(cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
+		String fullnameGroup = cursor.getString(
+			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
 		String mobileGroup = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
-		int te=cursor.getInt(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID));
-		Log.d( "getGroupsCount: ",currentID+" "+title+" "+desc+" "+groupId+" "+usersGroup+" "+fullnameGroup+" "+mobileGroup+" "+te);
+			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
+		int te =
+			cursor.getInt(cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID));
+		Log.d("getGroupsCount: ", currentID
+			+ " "
+			+ title
+			+ " "
+			+ desc
+			+ " "
+			+ groupId
+			+ " "
+			+ usersGroup
+			+ " "
+			+ fullnameGroup
+			+ " "
+			+ mobileGroup
+			+ " "
+			+ te);
 		cursor.close();
 		//        db.close();
 
@@ -254,7 +271,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			new String[] { String.valueOf(model.getId()) });
 	}
 
-	public long addGroupNotes(Task_Model model) {
+	public long addGroupNotes(TaskModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(TransactionDbContract.NoteEntry.COLUMN_TITLE, model.getTask_Title());
@@ -265,12 +282,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		return db.insert(TransactionDbContract.NoteEntry.TABLE_NAME, null, cv);
 	}
 
-	public void addTasks(List<Task_Model> taskList) {
+	public void addTasks(List<TaskModel> taskList) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		db.beginTransaction();
 
-		for(Task_Model model: taskList) {
+		for (TaskModel model : taskList) {
 			cv.put(TransactionDbContract.NoteEntry.COLUMN_TITLE, model.getTask_Title());
 			cv.put(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION, model.getTask_Des());
 			cv.put(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER, model.getTask_Date());
@@ -284,12 +301,11 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 
 		db.setTransactionSuccessful();
 		db.endTransaction();
-
 	}
 
-	public List<Task_Model> getTask(long Group_id) {
+	public List<TaskModel> getTask(long Group_id) {
 		SQLiteDatabase db1 = getReadableDatabase();
-		List<Task_Model> list = new ArrayList<>();
+		List<TaskModel> list = new ArrayList<>();
 		Cursor cursor;
 		if (Group_id < 0) {
 			cursor =
@@ -306,7 +322,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			long groupID = cursor.getLong(
 				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID));
 
-
 			String title = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_TITLE));
 			String desc = cursor.getString(
@@ -315,7 +330,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			String date = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER));
 
-			Task_Model model = new Task_Model();
+			TaskModel model = new TaskModel();
 			model.setTask_Title(title);
 			model.setTask_Des(desc);
 			model.setTask_Date(date);
@@ -330,7 +345,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ASSIGNED)));
 			model.setAssignedBy(cursor.getLong(
 				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_CREATOR)));
-
 
 			list.add(model);
 		}
@@ -353,11 +367,11 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db1 = getReadableDatabase();
 		List<GroupModel> list = new ArrayList<>();
 
-		Cursor cursor = db1.query(TransactionDbContract.GroupEntry.TABLE_NAME, null,
-			null, null,
-			null, null, null);
-		int i=cursor.getCount();
-		Log.d( "getGroups: ",i+"");
+		Cursor cursor =
+			db1.query(TransactionDbContract.GroupEntry.TABLE_NAME, null, null, null, null, null,
+				null);
+		int i = cursor.getCount();
+		Log.d("getGroups: ", i + "");
 
 		while (cursor.moveToNext()) {
 
@@ -371,10 +385,10 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
 			String usersGroup = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
-			String  fullnameGroup= cursor.getString(
-					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
+			String fullnameGroup = cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
 			String mobileGroup = cursor.getString(
-					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
 
 			GroupModel model = new GroupModel();
 			model.setId(currentID);
@@ -389,18 +403,13 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 		cursor.close();
-		Log.d( "getGroups: ",list.size()+"");
 		return list;
 	}
 
-	public ArrayList<IncomeModel> getAllEntries() {
+	public ArrayList<BillModel> getAllEntries() {
 		SQLiteDatabase db1 = getReadableDatabase();
-		ArrayList<IncomeModel> list = new ArrayList<>();
+		ArrayList<BillModel> list = new ArrayList<>();
 
-		//Cursor cursor = db1.query(TransactionDbContract.Transaction_Entry.TABLE_NAME, null,
-		//	TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID + " =0", null, null, null,
-		//	TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID);
-		//
 		Cursor cursor = db1.rawQuery(
 			"SELECT * FROM expenses, groups WHERE groups.group_id=expenses.group_id AND groups.type_id=1",
 			null);
@@ -418,7 +427,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED));
-			IncomeModel model = new IncomeModel();
+			BillModel model = new BillModel();
 			model.setId(currentID);
 			model.setGroupId(cursor.getLong(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID)));
@@ -442,7 +451,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 		cursor.close();
-
+		Log.d("huehue", "getAllEntries: " + list.size());
 		return list;
 	}
 
@@ -479,8 +488,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		return list;
 	}
 
-	public IncomeModel findEntryWithTemp(Temp temp) {
-		IncomeModel model = new IncomeModel();
+	public BillModel findEntryWithTemp(Temp temp) {
+		BillModel model = new BillModel();
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.query(TransactionDbContract.Transaction_Entry.TABLE_NAME, null,
 			TransactionDbContract.Transaction_Entry._ID + "=" + temp.getLocalId(), null, null, null,
@@ -526,7 +535,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	public void addTransactionOnlineId(IncomeModel model) {
+	public void addTransactionOnlineId(BillModel model) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID, model.getOnlineId());
@@ -536,8 +545,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			new String[] { String.valueOf(model.getId()) });
 	}
 
-	public List<IncomeModel> getGroupEntries(long groupId) {
-		List<IncomeModel> list = new ArrayList<>();
+	public List<BillModel> getGroupEntries(long groupId) {
+		List<BillModel> list = new ArrayList<>();
 		SQLiteDatabase db1 = getReadableDatabase();
 
 		Cursor cursor =
@@ -557,7 +566,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED));
-			IncomeModel model = new IncomeModel();
+			BillModel model = new BillModel();
 			model.setId(currentID);
 			model.setGroupId(cursor.getLong(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID)));
@@ -604,7 +613,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		Cursor cursor = db.rawQuery(countQuery, null);
 		int count = cursor.getCount();
 		cursor.close();
-		//        db.close();
 		return count;
 	}
 
@@ -661,7 +669,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public List<ContactModel> getUserWithUserId(String[] userIds) {
 		SQLiteDatabase db = getReadableDatabase();
 		List<ContactModel> list = new ArrayList<>();
-		Boolean Flag=false;
+		Boolean Flag = false;
 
 		StringBuilder query = new StringBuilder(userIds[0]);
 		for (int i = 1; i < userIds.length; i++) {
@@ -675,8 +683,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			+ " IN ("
 			+ query.toString()
 			+ ");", null);
-		int t=cursor.getCount();
-		Log.d( "getUserWithUserId: ",t+"");
+		int t = cursor.getCount();
+		Log.d("getUserWithUserId: ", t + "");
 		while (cursor.moveToNext()) {
 			ContactModel model = new ContactModel();
 			model.setId(
@@ -691,7 +699,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 
-		Log.d( "onCreate: ",list.size()+"");
+		Log.d("onCreate: ", list.size() + "");
 		/*for(int i=0;i<userIds.length;i++){
 			for(int j=0;j<list.size();j++){
 				if(TextUtils.equals(userIds[i],list.get(j).getUserId()+"")){
@@ -722,7 +730,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		}
 	}
 
-	public void addOnlineIdForNote(Task_Model model) {
+	public void addOnlineIdForNote(TaskModel model) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID, model.getTask_Id());
@@ -730,6 +738,4 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			TransactionDbContract.NoteEntry._ID + "=?",
 			new String[] { String.valueOf(model.getId()) });
 	}
-
-
 }

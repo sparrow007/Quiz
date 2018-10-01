@@ -29,7 +29,7 @@ import java.util.List;
 public class Group_Transactions extends Fragment {
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
-	private List<IncomeModel> list;
+	private List<BillModel> list;
 	private String mParam1;
 	private String mParam2;
 	private TransactionDbHelper mDbHelper;
@@ -94,7 +94,7 @@ public class Group_Transactions extends Fragment {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 123) {
 			if (resultCode == Activity.RESULT_OK) {
-				adapter.addItem((IncomeModel) data.getSerializableExtra("model"));
+				adapter.addItem((BillModel) data.getSerializableExtra("model"));
 			}
 		}
 	}

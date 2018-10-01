@@ -3,7 +3,6 @@ package com.zersey.roz;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,11 +10,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import java.util.List;
 
-public class Contact_RecyclerView_Adapter
-	extends RecyclerView.Adapter<Contact_RecyclerView_Adapter.ContactHolder> {
+public class ContactRecyclerViewAdapter
+	extends RecyclerView.Adapter<ContactRecyclerViewAdapter.ContactHolder> {
 	private List<ContactModel> list;
 
-	public Contact_RecyclerView_Adapter(List<ContactModel> list) {
+	public ContactRecyclerViewAdapter(List<ContactModel> list) {
 		this.list = list;
 	}
 

@@ -14,13 +14,13 @@ import java.util.List;
 
 public class Group_Transaction_Adapter
 	extends RecyclerView.Adapter<Group_Transaction_Adapter.TransactionViewHolder> {
-	private List<IncomeModel> list, temp_list, Permanent_list;
+	private List<BillModel> list, temp_list, Permanent_list;
 	private List<ContactModel> ContactList;
 	private TransactionDbHelper mdbHelper;
 	private String userId;
 	private int noOfMembers ;
 
-	public Group_Transaction_Adapter(List<IncomeModel> list, String userId) {
+	public Group_Transaction_Adapter(List<BillModel> list, String userId) {
 		ContactList = new ArrayList<>();
 		this.list = list;
 		this.Permanent_list = list;
@@ -82,7 +82,7 @@ public class Group_Transaction_Adapter
 		}
 	}
 
-	public void addItem(IncomeModel model) {
+	public void addItem(BillModel model) {
 		list.add(model);
 		notifyItemInserted(list.size() - 1);
 	}

@@ -29,12 +29,12 @@ public class Group_Form extends AppCompatActivity {
 	private TextView Split_Notes;
 	private RecyclerView Split_RecyclerView;
 	private RecyclerView Contact_RecyclerView;
-	private Dialog_Split_RecyclerViewAdapter Adapter;
+	private DialogSplitRecyclerViewAdapter Adapter;
 	private EditText Amount_Edit, Description_Edit, Group_Name_Edit;
 	private StringBuffer users = new StringBuffer("");
 	private StringBuffer users_number = new StringBuffer("");
 	String USERS = "No Members";
-	private Contact_RecyclerView_Adapter RecyclerView_Adapter;
+	private ContactRecyclerViewAdapter RecyclerView_Adapter;
 	private TransactionDbHelper mDbHelper;
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +56,11 @@ public class Group_Form extends AppCompatActivity {
 	}
 
 	public void Add_Members(View view) {
-		Intent intent = new Intent(this, Add_Members_Activity.class);
+		Intent intent = new Intent(this, AddMembersActivity.class);
 		startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
 	}
 
-	/*public void Dialog(View view) {
+	/*public void splitDialog(View view) {
 		String Amount = Amount_Edit.getText().toString();
 		int no_of_Person = Item_list.size();
 		String Specific_Amount;
@@ -69,7 +69,7 @@ public class Group_Form extends AppCompatActivity {
 		} else {
 			Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
 		}
-		Log.d("Dialog: ", Item_list.size() + "");
+		Log.d("splitDialog: ", Item_list.size() + "");
 		if (Item_list.size() > 0) {
 			Split_List = new ArrayList<>();
 			for (int i = 0; i < Item_list.size(); i++) {
@@ -81,14 +81,14 @@ public class Group_Form extends AppCompatActivity {
 			Split_List = new ArrayList<>();
 			Split_List.add(new Split_Contact_model("Bharat", Specific_Amount));
 		}
-		Log.d("Dialog: ", Split_List.size() + "");
+		Log.d("splitDialog: ", Split_List.size() + "");
 		LayoutInflater LI = LayoutInflater.from(Group_Form.this);
 		View PromptsView = LI.inflate(R.layout.split_dialog_layout, null);
 		Split_Spinner = (Spinner) PromptsView.findViewById(R.id.Split_Spinner);
 		Split_RecyclerView = (RecyclerView) PromptsView.findViewById(R.id.Dialog_RecyclerView);
-		Split_Notes = (TextView) PromptsView.findViewById(R.id.Dialog_Split_Notes);
+		splitNotes = (TextView) PromptsView.findViewById(R.id.Dialog_Split_Notes);
 		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
-		Adapter = new Dialog_Split_RecyclerViewAdapter(getApplicationContext(), Split_List, "",
+		Adapter = new DialogSplitRecyclerViewAdapter(getApplicationContext(), Split_List, "",
 			Integer.parseInt(Amount));
 		Split_RecyclerView.setAdapter(Adapter);
 
@@ -123,7 +123,7 @@ public class Group_Form extends AppCompatActivity {
 				Contact_RecyclerView.setVisibility(View.VISIBLE);
 				List<ContactModel> list = (List<ContactModel>) data.getSerializableExtra("ADDED");
 				Item_list.addAll(list);
-				RecyclerView_Adapter = new Contact_RecyclerView_Adapter(Item_list);
+				RecyclerView_Adapter = new ContactRecyclerViewAdapter(Item_list);
 				Contact_RecyclerView.setAdapter(RecyclerView_Adapter);
 				for (ContactModel contactModel : list) {
 					users.append(",").append(contactModel.getUserId());
@@ -177,7 +177,7 @@ public class Group_Form extends AppCompatActivity {
 		new ServerUtil(this).createGroup(model, Item_list);
 		Intent intent = new Intent();
 		intent.putExtra("group", model);
-		Groups.ADAPTER.addItem(model);
+		Groups.billsAdapter.addItem(model);
 		setResult(Activity.RESULT_OK, intent);
 		finish();
 	}

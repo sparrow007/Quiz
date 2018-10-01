@@ -1,106 +1,75 @@
 package com.zersey.roz;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CheckedTextView;
-import android.widget.CompoundButton;
 import android.widget.RadioButton;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
- private List<String> list;
- //SelectedItems;
- private int lastSelectedPosition = -1;
- private String lastCategory="";
- private Context context;
- private String Category;
+	private List<String> list;
+	private int lastSelectedPosition = -1;
+	private String lastCategory = "";
+	private Context context;
+	private String Category;
 
-    public CategoryAdapter(Context context, List<String> list,String Category){
-        this.context=context;
-     this.list=list;
-     this.Category=Category;
-     //SelectedItems=new ArrayList<>();
+	public CategoryAdapter(Context context, List<String> list, String Category) {
+		this.context = context;
+		this.list = list;
+		this.Category = Category;
+	}
 
- }
+	@NonNull @Override
+	public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+		View view = inflater.inflate(R.layout.modelcategorylayout, parent, false);
+		return new CategoryViewHolder(view);
+	}
 
-    @NonNull
-    @Override
-    public CategoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater= LayoutInflater.from(parent.getContext());
-        View view=inflater.inflate(R.layout.modelcategorylayout,parent,false);
-        return new CategoryViewHolder(view);
-    }
+	@Override
+	public void onBindViewHolder(@NonNull final CategoryViewHolder holder, final int position) {
+		holder.category.setText(list.get(position));
+		holder.category.setChecked(false);
+		holder.category.setChecked(position == lastSelectedPosition);
 
-    @Override
-    public void onBindViewHolder(@NonNull final CategoryViewHolder holder, final int position) {
+		if (!TextUtils.isEmpty(Category)) {
+			if (Category.equalsIgnoreCase(list.get(position))) {
+				holder.category.setChecked(true);
+			}
+		}
+	}
 
+	@Override public int getItemCount() {
+		return list.size();
+	}
 
-        holder.category.setText(list.get(position));
-        holder.category.setChecked(lastSelectedPosition == position);
-        if(!TextUtils.isEmpty(Category)){
-            if(TextUtils.equals(Category,"expense")){
-                //Log.d( "onBindViewHolder: ",Category);
-                holder.category.setChecked(position==0);
-                //Category="";
-            }else {
-                //Log.d( "onBindViewHolder: ",Category);
-                holder.category.setChecked(position == 1);
-                //Category="";
-            }
-        }
+	public String getLastCategory() {
+		return lastCategory;
+	}
 
+	public class CategoryViewHolder extends RecyclerView.ViewHolder {
+		RadioButton category;
 
-    }
-
-    @Override
-    public int getItemCount() {
-        return list.size();
-    }
-
-    public String getLastCategory() {
-        return lastCategory;
-    }
-
-    public class CategoryViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
-     CardView cardView;
-    RadioButton category;
-    public CategoryViewHolder(View itemView) {
-        super(itemView);
-        category=(RadioButton) itemView.findViewById(R.id.Cat_View);
-        cardView=(CardView)itemView.findViewById(R.id.Specific_CardView);
-        category.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Category="";
-                lastSelectedPosition = getAdapterPosition();
-                notifyDataSetChanged();
-                //category.setBackgroundColor(Color.parseColor("#000000"));
-                if(!TextUtils.equals(lastCategory,category.getText().toString())){
-                    lastCategory=category.getText().toString();
-                }
-                Toast.makeText(context,
-                        "selected offer is " + category.getText(),
-                        Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-    }
+		public CategoryViewHolder(View itemView) {
+			super(itemView);
+			category = itemView.findViewById(R.id.Cat_View);
+			category.setOnClickListener(new View.OnClickListener() {
+				@Override public void onClick(View v) {
+					Category = "";
+					lastSelectedPosition = getAdapterPosition();
+					notifyDataSetChanged();
+					if (!lastCategory.equalsIgnoreCase(category.getText().toString())) {
+						lastCategory = category.getText().toString();
+					}
+					Toast.makeText(context, "selected offer is " + category.getText(),
+						Toast.LENGTH_LONG).show();
+				}
+			});
+		}
+	}
 }

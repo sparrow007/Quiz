@@ -1,39 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".Groups">
+    tools:context=".Groups"
+    >
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
             <TextView
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:textSize="20dp"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Bill list >"/>
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:text="Bill list >"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                />
             <TextView
                 android:id="@+id/Second_More"
-                android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
                 android:layout_margin="10dp"
+                android:text="More"
+                android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                android:layout_gravity="center_vertical|right"
-                android:text="More"/>
+                />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
@@ -41,59 +46,65 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             />
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_marginLeft="10dp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_gravity="center_vertical"
-            android:textSize="20dp"
-            android:layout_weight="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Groups >"/>
-        <TextView
-            android:id="@+id/First_More"
-            android:textColor="@color/colorPrimary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:textStyle="bold"
-            android:layout_gravity="center_vertical|right"
-            android:text="More"/>
-    </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/First_Slider"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:stackFromEnd="true"
-        app:reverseLayout="true"
-        />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            >
             <TextView
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:textSize="20dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="10dp"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:text="Groups >"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                />
+            <TextView
+                android:id="@+id/First_More"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Todo task >"/>
+                android:layout_gravity="center_vertical|end"
+                android:layout_margin="10dp"
+                android:text="More"
+                android:textColor="@color/colorPrimary"
+                android:textStyle="bold"
+                />
+        </LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/First_Slider"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:reverseLayout="true"
+            app:stackFromEnd="true"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:text="Todo task >"
+                android:textColor="#000000"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                />
             <TextView
                 android:id="@+id/Task_More"
-                android:textColor="@color/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
                 android:layout_margin="10dp"
+                android:text="More"
+                android:textColor="@color/colorPrimary"
                 android:textStyle="bold"
-                android:layout_gravity="center_vertical|right"
-                android:text="More"/>
+                />
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView

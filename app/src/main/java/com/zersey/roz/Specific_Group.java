@@ -65,7 +65,7 @@ public class Specific_Group extends AppCompatActivity
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
-				//				adapter.notifyDataSetChanged();
+				//				groupsAdapter.notifyDataSetChanged();
 			}
 
 			@Override public void onTabUnselected(TabLayout.Tab tab) {
@@ -117,7 +117,7 @@ public class Specific_Group extends AppCompatActivity
 					((FragmentPagerAdapter) mViewPager.getAdapter()).getItem(position);
 				if (position == 1) {
 					fragment.onStart();
-					//adapter.notifyDataSetChanged();
+					//groupsAdapter.notifyDataSetChanged();
 				}
 /*				if (position == 0 && positionOffset == 0)
 					fab.show();
@@ -149,7 +149,7 @@ public class Specific_Group extends AppCompatActivity
 	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 	/*		if (resultCode == Activity.RESULT_OK){
-				Group_Transactions.adapter.addItem((IncomeModel) data.getSerializableExtra("model"));
+				Group_Transactions.groupsAdapter.addItem((BillModel) data.getSerializableExtra("model"));
 			}*/
 
 	}

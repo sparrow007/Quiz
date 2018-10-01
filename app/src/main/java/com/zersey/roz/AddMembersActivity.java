@@ -3,25 +3,18 @@ package com.zersey.roz;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.SumPathEffect;
 import android.graphics.drawable.ColorDrawable;
-import android.inputmethodservice.Keyboard;
-import android.media.Image;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -30,9 +23,9 @@ import com.zersey.roz.Data.TransactionDbHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Add_Members_Activity extends AppCompatActivity {
+public class AddMembersActivity extends AppCompatActivity {
 	private List<ContactModel> Contact_List = new ArrayList<>();
-	public static Contact_RecyclerView_Adapter Add_Member_Adapter;
+	public static ContactRecyclerViewAdapter Add_Member_Adapter;
 	public static List<ContactModel> Added_Members;
 	TextView Submit;
 	public EditText Search_Edit;
@@ -63,14 +56,14 @@ public class Add_Members_Activity extends AppCompatActivity {
 		Search_Edit.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//Submit.setVisibility(View.GONE);
+				//submitBill.setVisibility(View.GONE);
 				//back.setVisibility(View.VISIBLE);
 			}
 		});
 		Search_Icon.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//Submit.setVisibility(View.GONE);
+				//submitBill.setVisibility(View.GONE);
 				back.setVisibility(View.VISIBLE);
 				Search_Edit.setVisibility(View.VISIBLE);
 				Search_Icon.setVisibility(View.GONE);
@@ -85,10 +78,10 @@ public class Add_Members_Activity extends AppCompatActivity {
 				Search_Edit.clearFocus();
 				toolbar_title.setVisibility(View.VISIBLE);
 				toolbar_title.setText("Add Members");
-				//Submit.requestFocus();
-				View view=Add_Members_Activity.this.getCurrentFocus();
+				//submitBill.requestFocus();
+				View view=AddMembersActivity.this.getCurrentFocus();
 				IMM.hideSoftInputFromWindow(view.getWindowToken(),0);
-				//Submit.setVisibility(View.VISIBLE);
+				//submitBill.setVisibility(View.VISIBLE);
 				Search_Edit.setVisibility(View.GONE);
 				back.setVisibility(View.GONE);
 				Search_Icon.setVisibility(View.VISIBLE);
@@ -100,10 +93,10 @@ public class Add_Members_Activity extends AppCompatActivity {
 			@Override
 			public void onFocusChange(View v, boolean hasFocus) {
 				if(hasFocus){
-					//Submit.setVisibility(View.GONE);
+					//submitBill.setVisibility(View.GONE);
 					//back.setVisibility(View.VISIBLE);
 				}else {
-					//Submit.setVisibility(View.VISIBLE);
+					//submitBill.setVisibility(View.VISIBLE);
 				}
 			}
 		});
@@ -150,7 +143,7 @@ public class Add_Members_Activity extends AppCompatActivity {
 		RecyclerView addedMembersRecyclerView = findViewById(R.id.ADD_Members_RecyclerView);
 		addedMembersRecyclerView.setLayoutManager(
 			new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-		Add_Member_Adapter = new Contact_RecyclerView_Adapter(Added_Members);
+		Add_Member_Adapter = new ContactRecyclerViewAdapter(Added_Members);
 		addedMembersRecyclerView.setAdapter(Add_Member_Adapter);
 //		contactListRecyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL),1);
 	}

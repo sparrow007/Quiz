@@ -17,7 +17,7 @@ import java.util.List;
 public class Contact_List_RecyclerView_Adapter
 	extends RecyclerView.Adapter<Contact_List_RecyclerView_Adapter.ListViewHolder> {
 	private List<ContactModel> list,temp_list,Permanent_list;
-	private Add_Members_Activity Members;
+	private AddMembersActivity Members;
 	private Context context;
 	private int Count;
 

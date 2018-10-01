@@ -54,9 +54,9 @@ public class Task_Fragment extends Fragment {
 	private String mParam2;
 
 	public static Task_Adapter adapter;
-	private List<Task_Model> Task_list;
+	private List<com.zersey.roz.TaskModel> Task_list;
 	private RecyclerView Task_RecyclerView;
-	private Task_Model TaskModel;
+	private com.zersey.roz.TaskModel TaskModel;
 	private int year_x, month_x, day_x;
 	private Calendar cal;
 	//TransactionDbHelper mDbHelper;
@@ -121,7 +121,7 @@ public class Task_Fragment extends Fragment {
 	public void initTaskList() {
 		Task_list = new ArrayList<>();
         /*for (int i=0;i<10;i++){
-            Task_list.add(new Task_Model("New Task","New Description","null",false));
+            Task_list.add(new TaskModel("New Task","New Description","null",false));
         }*/
 		Log.d("initTaskList: ", "" + mParam1.getGroupId());
 		Task_list = mdbHelper.getTask(mParam1.getGroupId());
@@ -179,10 +179,10 @@ public class Task_Fragment extends Fragment {
 		alertDialogBuilder.setView(PromptsView);
 		alertDialogBuilder.setCancelable(true);
 
-		/*alertDialogBuilder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+		/*alertDialogBuilder.setPositiveButton("submitBill", new DialogInterface.OnClickListener() {
 			@Override public void onClick(DialogInterface dialog, int which) {
 				//Split_List = Adapter.getList();
-				Toast.makeText(context,"Submit Clicked",Toast.LENGTH_LONG).show();
+				Toast.makeText(context,"submitBill Clicked",Toast.LENGTH_LONG).show();
 			}
 		});*/
 
@@ -226,7 +226,7 @@ public class Task_Fragment extends Fragment {
 						{
 							Intent intent = new Intent();
 							if (TaskModel == null) {
-								TaskModel = new Task_Model();
+								TaskModel = new TaskModel();
 								TaskModel.setTask_Title(Title);
 								TaskModel.setTask_Des(Des);
 								TaskModel.setTask_Date(Date);
@@ -244,7 +244,7 @@ public class Task_Fragment extends Fragment {
 								new ServerUtil(getContext()).createGroupTask(TaskModel);
 								intent.putExtra("task", TaskModel);
 								//setResult(Activity.RESULT_OK, intent);
-								//Groups.task_slider_adapter.add(TaskModel);
+								//Groups.tasksAdapter.add(TaskModel);
 								adapter.add(TaskModel);
 								//finish();
 								dialog.dismiss();
@@ -316,7 +316,7 @@ public class Task_Fragment extends Fragment {
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (resultCode == Activity.RESULT_OK) {
-			Task_Model model = (Task_Model)data.getSerializableExtra("task");
+			com.zersey.roz.TaskModel model = (com.zersey.roz.TaskModel)data.getSerializableExtra("task");
 			if (model.getGroup_Id() == mParam1.getGroupId())
 				adapter.add(model);
 		}

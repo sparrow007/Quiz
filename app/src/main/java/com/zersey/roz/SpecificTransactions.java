@@ -15,8 +15,6 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.Locale;
-
 public class SpecificTransactions extends AppCompatActivity implements AppBarLayout.OnOffsetChangedListener {
     private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
     private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
@@ -34,7 +32,7 @@ public class SpecificTransactions extends AppCompatActivity implements AppBarLay
     private int Updated_Id;
     private TextView Amount_TextView,Date_TextView,Title_TextView;
     private Button Settle_Button;
-    private IncomeModel model;
+    private BillModel model;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,7 +47,7 @@ public class SpecificTransactions extends AppCompatActivity implements AppBarLay
       // Amount=getIntent().getStringExtra("Amount");
         //Title=getIntent().getStringExtra("Title");
         //Date=getIntent().getStringExtra("DateCreated");
-        model = (IncomeModel) getIntent().getSerializableExtra("model");
+        model = (BillModel) getIntent().getSerializableExtra("model");
         CardClicked = getIntent().getStringExtra("CardClicked");
         Updated_Category = getIntent().getStringExtra("Category");
         Amount = getIntent().getStringExtra("Amount");
