@@ -138,7 +138,6 @@ public class GroupRecyclerAdapter extends RecyclerView.Adapter<GroupRecyclerAdap
 	public void addAll(List<BillModel> transactionList) {
 		list.clear();
 		list.addAll(transactionList);
-		Log.d("hueh", "onResponse: " + transactionList.size());
 		notifyDataSetChanged();
 	}
 

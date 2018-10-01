@@ -451,7 +451,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			list.add(model);
 		}
 		cursor.close();
-		Log.d("huehue", "getAllEntries: " + list.size());
 		return list;
 	}
 
