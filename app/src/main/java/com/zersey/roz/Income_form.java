@@ -959,7 +959,7 @@ public class Income_form extends Fragment {
 				//		Updated_Category);
 				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
 				//		"Rs " + Updated_Amount);
-				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 				//		Updated_Date);
 				//	db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
 				//		TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID + "=" + Updated_Id, null);

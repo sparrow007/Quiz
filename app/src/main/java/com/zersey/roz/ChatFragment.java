@@ -134,7 +134,7 @@ public class ChatFragment extends Fragment {
 		}
 	}*/
 }
-/*class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+/*class ListGroupsAdapter extends RecyclerView.Adapter<RecyclerView.BillItemViewHolder> {
 
 	private ArrayList<Group> listGroup;
 	public static ListFriend listFriend = null;
@@ -146,13 +146,13 @@ public class ChatFragment extends Fragment {
 	}
 
 	@Override
-	public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+	public RecyclerView.BillItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 		View view = LayoutInflater.from(context).inflate(R.layout.rc_item_group, parent, false);
 		return new ItemGroupViewHolder(view);
 	}
 
 	@Override
-	public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
+	public void onBindViewHolder(RecyclerView.BillItemViewHolder holder, final int position) {
 		final String groupName = listGroup.get(position).groupInfo.get("name");
 		if(groupName != null && groupName.length() > 0) {
 			((ItemGroupViewHolder) holder).txtGroupName.setText(groupName);
@@ -200,7 +200,7 @@ public class ChatFragment extends Fragment {
 	}
 }
 
-class ItemGroupViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
+class ItemGroupViewHolder extends RecyclerView.BillItemViewHolder implements View.OnCreateContextMenuListener {
 	public TextView iconGroup, txtGroupName;
 	public ImageButton btnMore;
 	public ItemGroupViewHolder(View itemView) {

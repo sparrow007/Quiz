@@ -67,6 +67,8 @@ public class JsonHandler {
 			if (!obj.get("invoice_id").isJsonNull()) {
 				model.setInvoiceId(obj.get("invoice_id").getAsString());
 			}
+
+			model.setCreatedAt(obj.get("created_at").getAsString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -11,7 +11,7 @@ import android.util.Log;
 import com.zersey.roz.BillModel;
 import com.zersey.roz.ContactModel;
 import com.zersey.roz.GroupModel;
-import com.zersey.roz.Groups;
+import com.zersey.roz.GroupsFragment;
 import com.zersey.roz.TaskModel;
 import com.zersey.roz.Temp;
 import java.util.ArrayList;
@@ -68,11 +68,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public long updateGroup(GroupModel model) {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
-		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID, model.getGroupId());
-		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME, model.getGroupName());
-		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC, model.getGroupDesc());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
-		cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
 		return db.update(TransactionDbContract.GroupEntry.TABLE_NAME, cv,
 			TransactionDbContract.GroupEntry._ID + "=?",
 			new String[] { Long.toString(model.getId()) });
@@ -82,7 +78,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		db.beginTransaction();
-		long count = 0;
 		for (GroupModel model : list) {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID, model.getGroupId());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME, model.getGroupName());
@@ -91,10 +86,10 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME, model.getFullname());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
-			count = db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
+			cv.put(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT, model.getUpdatedAt());
+			db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 			cv.clear();
 		}
-		Log.d("addGroups: ", count + "");
 		db.setTransactionSuccessful();
 		db.endTransaction();
 	}
@@ -121,16 +116,18 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID, model.getPayerId());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID,
 				model.getOnlineId());
-			values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+			values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 				model.getPaidAtDate());
+			values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+				model.getCreatedAt());
 			db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
 			values.clear();
 		}
 
 		db.setTransactionSuccessful();
 		db.endTransaction();
-		if(!groupEntries){
-			Groups.groupsAdapter.addAll(list);
+		if (!groupEntries) {
+			GroupsFragment.groupsAdapter.addAll(list);
 		}
 	}
 
@@ -149,8 +146,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_INVOICE_ID, model.getInvoiceId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID, model.getPayerId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID, model.getOnlineId());
-		values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
-			model.getPaidAtDate());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE, model.getPaidAtDate());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED, model.getCreatedAt());
 		long newRowId = db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
 		model.setId(newRowId);
 		return newRowId;
@@ -162,7 +159,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
 		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT, model.getTotalAmount());
-		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 		//	model.getPaidAtDate());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
@@ -170,7 +167,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
 				//Transactions.groupsAdapter.updateItem(pos, model);
-				Groups.groupsAdapter.updateItem(pos, model);
+				GroupsFragment.groupsAdapter.updateItem(pos, model);
 			}
 		});
 	}
@@ -181,7 +178,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
 		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT, model.getTotalAmount());
-		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 		//	model.getPaidAtDate());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
@@ -189,7 +186,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
 				//Transactions.groupsAdapter.updateItem(pos, model);
-				Groups.groupsAdapter.updateItem(pos, model);
+				GroupsFragment.groupsAdapter.updateItem(pos, model);
 			}
 		});
 	}
@@ -202,7 +199,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
 				//Transactions.groupsAdapter.deleteItem(pos);
-				Groups.groupsAdapter.deleteItem(pos);
+				GroupsFragment.groupsAdapter.deleteItem(pos);
 			}
 		});
 	}
@@ -367,12 +364,9 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db1 = getReadableDatabase();
 		List<GroupModel> list = new ArrayList<>();
 
-		Cursor cursor =
-			db1.query(TransactionDbContract.GroupEntry.TABLE_NAME, null, null, null, null, null,
-				null);
-		int i = cursor.getCount();
-		Log.d("getGroups: ", i + "");
-
+		Cursor cursor = db1.query(TransactionDbContract.GroupEntry.TABLE_NAME, null,
+			TransactionDbContract.GroupEntry.COLUMN_TYPE_ID + "=" + Integer.toString(type), null,
+			null, null, null);
 		while (cursor.moveToNext()) {
 
 			long currentID =
@@ -400,6 +394,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			model.setUsers(usersGroup);
 			model.setFullname(fullnameGroup);
 			model.setMobile_no(mobileGroup);
+			model.setUpdatedAt(cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT)));
 			list.add(model);
 		}
 		cursor.close();
@@ -411,7 +407,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ArrayList<BillModel> list = new ArrayList<>();
 
 		Cursor cursor = db1.rawQuery(
-			"SELECT * FROM expenses, groups WHERE groups.group_id=expenses.group_id AND groups.type_id=1",
+			"SELECT * FROM expenses, groups WHERE groups.group_id=expenses.group_id AND groups.type_id=1 ORDER BY expenses.date_created DESC",
 			null);
 
 		while (cursor.moveToNext()) {
@@ -426,7 +422,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			String type = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED));
+				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE));
 			BillModel model = new BillModel();
 			model.setId(currentID);
 			model.setGroupId(cursor.getLong(
@@ -448,6 +444,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			model.setType(type);
 			model.setOnlineId(cursor.getLong(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID)));
+			model.setCreatedAt(cursor.getString(cursor.getColumnIndex(
+				TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED)));
 			list.add(model);
 		}
 		cursor.close();
@@ -506,7 +504,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			String type = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED));
+				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE));
 			model.setId(currentID);
 			model.setTitle(title);
 			//model.setTotalAmount(amount);
@@ -530,7 +528,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public void printTempDb() {
 		List<Temp> tempList = getTempEntries();
 		for (Temp temp : tempList) {
-			Log.d("hueh", "printTempDb: " + temp.toString());
+			Log.d(TransactionDbHelper.class.getSimpleName(), "printTempDb: " + temp.toString());
 		}
 	}
 
@@ -564,7 +562,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			String type = cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED));
+				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE));
 			BillModel model = new BillModel();
 			model.setId(currentID);
 			model.setGroupId(cursor.getLong(
@@ -668,7 +666,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public List<ContactModel> getUserWithUserId(String[] userIds) {
 		SQLiteDatabase db = getReadableDatabase();
 		List<ContactModel> list = new ArrayList<>();
-		Boolean Flag = false;
 
 		StringBuilder query = new StringBuilder(userIds[0]);
 		for (int i = 1; i < userIds.length; i++) {
@@ -682,8 +679,6 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			+ " IN ("
 			+ query.toString()
 			+ ");", null);
-		int t = cursor.getCount();
-		Log.d("getUserWithUserId: ", t + "");
 		while (cursor.moveToNext()) {
 			ContactModel model = new ContactModel();
 			model.setId(
@@ -736,5 +731,15 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		int id = db.update(TransactionDbContract.NoteEntry.TABLE_NAME, values,
 			TransactionDbContract.NoteEntry._ID + "=?",
 			new String[] { String.valueOf(model.getId()) });
+	}
+
+	public void clearDatabase() {
+		SQLiteDatabase db = getWritableDatabase();
+		db.execSQL("DELETE FROM " + TransactionDbContract.Transaction_Entry.TABLE_NAME);
+		db.execSQL("DELETE FROM " + TransactionDbContract.GroupEntry.TABLE_NAME);
+		db.execSQL("DELETE FROM " + TransactionDbContract.TempEntry.TABLE_NAME);
+		db.execSQL("DELETE FROM " + TransactionDbContract.ContactEntry.TABLE_NAME);
+		db.execSQL("DELETE FROM " + TransactionDbContract.NoteEntry.TABLE_NAME);
+		db.close();
 	}
 }

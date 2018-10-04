@@ -50,6 +50,9 @@ public class NetworkUtil {
 					.edit()
 					.putString("cookies", cookie)
 					.apply();
+				Log.d(NetworkUtil.class.getSimpleName(),
+					"onResponse: " + cookie);
+
 			}
 
 			return originalResponse;

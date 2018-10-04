@@ -1,24 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="5dp"
-    android:layout_marginBottom="5dp">
+    android:background="@android:color/white"
+    android:backgroundTint="@android:color/transparent"
+    android:gravity="end"
+    tools:context=".MainActivity"
+    >
 
-    <TextView
-        android:id="@+id/textContentUser"
+    <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/rounded_corner1"
-        android:padding="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="5dp"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:layout_marginStart="20dp"
-        android:text="a"
-        android:textColor="#ffffff" />
+        android:layout_centerInParent="true"
+        android:layout_marginStart="50dp"
+        >
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_background"
+            android:orientation="vertical"
+            android:padding="10dp"
+            >
+
+            <TextView
+                android:id="@+id/textContentUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:text="Hello user this is me from universe."
+                android:textSize="15sp"
+                android:layout_marginBottom="12dp"
+                />
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:text="10:30 AM"
+                android:textSize="8sp"
+                />
+
+
+        </FrameLayout>
+
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="2dp"
+            android:background="@drawable/white_background"
+            android:gravity="center"
+            android:padding="5dp"
+            android:src="@drawable/left_quote"
+            />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="2dp"
+            android:layout_marginEnd="1dp"
+            android:background="@drawable/white_background"
+            android:gravity="center"
+            android:padding="5dp"
+            android:src="@drawable/right_quote"
+            />
+    </FrameLayout>
 
 </RelativeLayout>

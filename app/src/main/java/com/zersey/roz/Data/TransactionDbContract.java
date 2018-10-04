@@ -18,6 +18,7 @@ public class TransactionDbContract {
 		public static final String COLUMN_DESCRIPTION = "desc";
 		public final static String COLUMN_CATEGORY = "category";
 		public final static String COLUMN_AMOUNT = "amount";
+		public final static String COLUMN_PAY_DATE = "pay_date";
 		public final static String COLUMN_DATE_CREATED = "date_created";
 		public final static String COLUMN_DATE_UPDATED = "date_updated";
 		public static final String COLUMN_TYPE = "type";
@@ -44,6 +45,8 @@ public class TransactionDbContract {
 			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_AMOUNT
 			+ " TEXT, "
+			+ Transaction_Entry.COLUMN_PAY_DATE
+			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_DATE_CREATED
 			+ " TEXT, "
 			+ Transaction_Entry.COLUMN_DATE_UPDATED
@@ -66,7 +69,7 @@ public class TransactionDbContract {
 
 	public static final class TempEntry implements BaseColumns {
 
-		public static final String TABLE_NAME = "temp";
+		public static final String TABLE_NAME = "temp_table";
 		public static final String COLUMN_LOCAL_ID = "local_id";
 		public static final String COLUMN_ACTION = "action";
 		public static final String COLUMN_ONLINE_ID = "online_id";
@@ -102,6 +105,7 @@ public class TransactionDbContract {
 		public static final String COLUMN_TYPE_ID = "type_id";
 		public static final String COLUMN_MOBILE_NUMBER = "mobile_no";
 		public static final String COLUMN_FULL_NAME = "full_name";
+		public static final String COLUMN_UPDATED_AT = "updated_at";
 
 
 		public static final String SQL_CREATE_GROUP_TABLE = "CREATE TABLE "
@@ -122,7 +126,10 @@ public class TransactionDbContract {
 			+COLUMN_MOBILE_NUMBER
 			+ " TEXT, "
 			+ COLUMN_USERS
-			+ " TEXT);";
+			+ " TEXT, "
+			+ COLUMN_UPDATED_AT
+			+ " TEXT"
+			+ ");";
 	}
 
 	public static final class ContactEntry implements BaseColumns {

@@ -10,6 +10,7 @@ public class BillModel implements Serializable {
 	private String type, title, description, uuid, catId;
 	private String totalAmount, paidAtDate, amountDue, payerId, invoiceId, amountPaid;
 	private List<BillModel> subList;
+	private String createdAt;
 
 
 	public void setId(long id) {
@@ -191,5 +192,13 @@ public class BillModel implements Serializable {
 
 	public void setAmountPaid(String amountPaid) {
 		this.amountPaid = amountPaid;
+	}
+
+	public String getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
 	}
 }

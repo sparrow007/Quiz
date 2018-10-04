@@ -197,7 +197,7 @@ public class Add_Task_form extends DialogFragment {
                         new ServerUtil(context).createGroupTask(TaskModel);
                         intent.putExtra("task", TaskModel);
                         //setResult(Activity.RESULT_OK, intent);
-                        Groups.tasksAdapter.add(TaskModel);
+                        GroupsFragment.tasksAdapter.add(TaskModel);
                         //finish();
                         dismiss();
                     }

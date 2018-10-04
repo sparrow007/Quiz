@@ -1,5 +1,6 @@
 package com.zersey.roz;
 
+import android.support.annotation.NonNull;
 import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
@@ -14,6 +15,7 @@ public class GroupModel implements Serializable {
 	@SerializedName("mobile_no") private String mobile_no;
 	@SerializedName("fullname") private String fullname;
 	@SerializedName("type_id") private int typeId;
+	@SerializedName("updated_at") private String updatedAt;
 
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
@@ -79,6 +81,14 @@ public class GroupModel implements Serializable {
 		this.typeId = typeId;
 	}
 
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	@Override public String toString() {
 		return "GroupModel{"
 			+ "id="
@@ -102,6 +112,13 @@ public class GroupModel implements Serializable {
 			+ '\''
 			+ ", typeId="
 			+ typeId
+			+ ", updatedAt='"
+			+ updatedAt
+			+ '\''
 			+ '}';
 	}
+
+	//@Override public int compareTo(@NonNull GroupModel groupModel) {
+	//	return groupModel.getUpdatedAt().compareTo(updatedAt);
+	//}
 }

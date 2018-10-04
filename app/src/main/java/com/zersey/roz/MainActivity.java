@@ -181,16 +181,16 @@ import java.util.List;
 		Material_Title.setHasFocus(true);
 		Material_Amount = findViewById(R.id.Material_Amount);
 		Material_Amount.setHasFocus(true);
-		Material_Amount_Due = findViewById(R.id.Material_Amount_Due);
-		Material_Amount_Due.setVisibility(View.GONE);
-		More_TextButton = findViewById(R.id.MoreButton);
+		//Material_Amount_Due = findViewById(R.id.Material_Amount_Due);
+		//Material_Amount_Due.setVisibility(View.GONE);
+		//More_TextButton = findViewById(R.id.MoreButton);
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
 		month_x = cal.get(Calendar.MONTH);
-		More_TextButton = findViewById(R.id.MoreButton);
-		Delete_Button = findViewById(R.id.Delete_Button);
-		Delete_Button.setVisibility(View.GONE);
+		//More_TextButton = findViewById(R.id.MoreButton);
+		//Delete_Button = findViewById(R.id.Delete_Button);
+		//Delete_Button.setVisibility(View.GONE);
 		//addMembers = (ImageButton) findViewById(R.id.addMembers);
 		//Camera_Button=(ImageButton)findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
@@ -200,8 +200,8 @@ import java.util.List;
 		dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
 		TitleEdit = findViewById(R.id.Title_Edit);
 		AmountEdit = findViewById(R.id.Amount_Edit);
-		Amount_Due_Edit = findViewById(R.id.Amount_Due_Edit);
-		Add_Member_Layout = findViewById(R.id.Add_Member_Layout);
+		//Amount_Due_Edit = findViewById(R.id.Amount_Due_Edit);
+		//Add_Member_Layout = findViewById(R.id.Add_Member_Layout);
 		//AutoCompleteContacts = (AutoCompleteTextView) findViewById(R.id.Notes_Edit);
 		Item_list = new ArrayList<>();
 		Split_List = new ArrayList<>();
@@ -758,13 +758,8 @@ import java.util.List;
 					expenseModel.setAmountDue(amountsDue.toString());
 					expenseModel.setPayerId(payerIds.toString());
 					expenseModel.setInvoiceId("");
-					try {
-						expenseModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
-					} catch (UnsupportedEncodingException e) {
-						e.printStackTrace();
-					} catch (NoSuchAlgorithmException e) {
-						e.printStackTrace();
-					}
+					expenseModel.setUuid(Util.generateUuid());
+
 
 					if (groupModel != null) {
 						expenseModel.setGroupId(groupModel.getGroupId());
@@ -819,7 +814,7 @@ import java.util.List;
 					//	Updated_Category);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
 					//	"Rs " + Updated_Amount);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 					//	Updated_Date);
 					//db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
 					//	TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID + "=" + Updated_Id, null);

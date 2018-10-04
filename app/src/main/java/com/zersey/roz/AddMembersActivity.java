@@ -46,9 +46,9 @@ public class AddMembersActivity extends AppCompatActivity {
 		this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 		toolbar_title=findViewById(R.id.toolbar_Text);
 		toolbar_title.setText("Add Members");
-		Submit=(TextView)findViewById(R.id.Add_Member_Submit);
+		Submit= findViewById(R.id.Add_Member_Submit);
 		back_White=findViewById(R.id.back_Button_white);
-		back=(ImageButton)findViewById(R.id.back_Button);
+		back= findViewById(R.id.back_Button);
 		Search_Icon=findViewById(R.id.Search_Icon);
 		Search_Edit.setVisibility(View.GONE);
 		back.setVisibility(View.GONE);
@@ -156,9 +156,4 @@ public class AddMembersActivity extends AppCompatActivity {
 		finish();
 	}
 
-	@Override
-	public void onBackPressed() {
-		View view= new View(this);
-		Add_Members(view);
-	}
 }

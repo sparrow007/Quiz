@@ -146,7 +146,7 @@ public class Task_Form_Activity extends AppCompatActivity {
 				new ServerUtil(Task_Form_Activity.this).createGroupTask(TaskModel);
 				intent.putExtra("task", TaskModel);
 				setResult(Activity.RESULT_OK, intent);
-				Groups.tasksAdapter.add(TaskModel);
+				GroupsFragment.tasksAdapter.add(TaskModel);
 				finish();
 			}
 		}

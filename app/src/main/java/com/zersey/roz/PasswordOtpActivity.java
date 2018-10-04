@@ -35,13 +35,11 @@ import retrofit2.Response;
 public class PasswordOtpActivity extends BaseActivity {
 
 	private ViewPager Slider_ViewPager;
-	private LinearLayout Dot_Layout,Boarding_Layout,Name_layout;
+	private LinearLayout Dot_Layout, Boarding_Layout, Name_layout;
 	private RelativeLayout background_Layout;
 	private OnBoardingSliderAdapter Slider_Adapter;
-	private ImageView First,Second,Third;
+	private ImageView First, Second, Third;
 	private TextView Password_Text;
-
-
 
 	//private static final String TAG = PasswordOtpActivity.class.getSimpleName();
 	//common widgets
@@ -75,18 +73,18 @@ public class PasswordOtpActivity extends BaseActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_password_otp);
 		//initializing shared preferences
-		Password_Text=findViewById(R.id.Password_text);
+		Password_Text = findViewById(R.id.Password_text);
 		Password_Text.setVisibility(View.GONE);
 		Create_OnBoarding();
-		background_Layout.setBackground(getResources().getDrawable(R.drawable.login_forms_background_b));
+		background_Layout.setBackground(
+			getResources().getDrawable(R.drawable.login_forms_background_b));
 		prefs = getSharedPreferences("login", MODE_PRIVATE);
 		// getting user activity type weather signup or login from intent
 		UserActivity = getIntent().getStringExtra("UserActivity");
 
-
 		rest = findViewById(R.id.rest);
-		Boarding_Layout=findViewById(R.id.Boarding_layout_id);
-		Name_layout=findViewById(R.id.name_layout);
+		Boarding_Layout = findViewById(R.id.Boarding_layout_id);
+		Name_layout = findViewById(R.id.name_layout);
 		//Typeface type = Typeface.createFromAsset(getAssets(), "RobotoThin.ttf");
 		//first.setTypeface(type, BOLD);
 		//rest.setTypeface(type);
@@ -325,56 +323,52 @@ public class PasswordOtpActivity extends BaseActivity {
 		});
 	}
 
-
-
-
-	public void Create_OnBoarding(){
+	public void Create_OnBoarding() {
 		Password_Text.setVisibility(View.GONE);
-		background_Layout=(RelativeLayout) findViewById(R.id.background);
+		background_Layout = (RelativeLayout) findViewById(R.id.background);
 		background_Layout.setBackgroundColor(getResources().getColor(R.color.White));
 
-		final int[] Slider_Color={
-				R.color.Red,
-				R.color.Green,
-				R.color.newdarkblue
+		final int[] Slider_Color = {
+			R.color.Red, R.color.Green, R.color.newdarkblue
 		};
-		final int[] Slide_Image={
-				R.drawable.notepad,
-				R.drawable.cardiogram,
-				R.drawable.cardiogramone
+		final int[] Slide_Image = {
+			R.drawable.notepad, R.drawable.cardiogram, R.drawable.cardiogramone
 		};
-		First=(ImageView)findViewById(R.id.First_Dot);
-		Second=(ImageView)findViewById(R.id.Second_Dot);
-		Third=(ImageView)findViewById(R.id.Third_Dot);
+		First = (ImageView) findViewById(R.id.First_Dot);
+		Second = (ImageView) findViewById(R.id.Second_Dot);
+		Third = (ImageView) findViewById(R.id.Third_Dot);
 		Second.setImageResource(R.drawable.circle);
 		Third.setImageResource(R.drawable.circle);
-		final LinearLayout.LayoutParams FirstParams=(LinearLayout.LayoutParams) First.getLayoutParams();
-		final LinearLayout.LayoutParams SecondParams=(LinearLayout.LayoutParams) Second.getLayoutParams();
-		final LinearLayout.LayoutParams ThirdParams=(LinearLayout.LayoutParams) Third.getLayoutParams();
+		final LinearLayout.LayoutParams FirstParams =
+			(LinearLayout.LayoutParams) First.getLayoutParams();
+		final LinearLayout.LayoutParams SecondParams =
+			(LinearLayout.LayoutParams) Second.getLayoutParams();
+		final LinearLayout.LayoutParams ThirdParams =
+			(LinearLayout.LayoutParams) Third.getLayoutParams();
 		//layoutParams.width=20;
 		//layoutParams.height=20;
 
-		Slider_ViewPager=(ViewPager)findViewById(R.id.Slider_ViewPager);
+		Slider_ViewPager = (ViewPager) findViewById(R.id.Slider_ViewPager);
 
-		Slider_Adapter=new OnBoardingSliderAdapter(getApplicationContext());
+		Slider_Adapter = new OnBoardingSliderAdapter(getApplicationContext());
 		Slider_ViewPager.setAdapter(Slider_Adapter);
 		Slider_ViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			@Override
-			public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+			@Override public void onPageScrolled(int position, float positionOffset,
+				int positionOffsetPixels) {
 				//Slider_Adapter.notifyDataSetChanged();
 
 			}
 
-			@Override
-			public void onPageSelected(final int position) {
+			@Override public void onPageSelected(final int position) {
 				//Slider_Adapter.notifyDataSetChanged();
-				if (position==0)
-				{ Slider_Adapter.Animate();
-					Toast.makeText(PasswordOtpActivity.this,"Page Scrolled",Toast.LENGTH_LONG).show();
+				if (position == 0) {
+					Slider_Adapter.Animate();
+					Toast.makeText(PasswordOtpActivity.this, "Page Scrolled", Toast.LENGTH_LONG)
+						.show();
 					background_Layout.setBackgroundColor(getResources().getColor(R.color.White));
-					FirstParams.width=FirstParams.height=100;
-					SecondParams.width=SecondParams.height=30;
-					ThirdParams.width=ThirdParams.height=30;
+					FirstParams.width = FirstParams.height = 100;
+					SecondParams.width = SecondParams.height = 30;
+					ThirdParams.width = ThirdParams.height = 30;
 					First.setLayoutParams(FirstParams);
 					Third.setLayoutParams(ThirdParams);
 					Second.setLayoutParams(SecondParams);
@@ -382,19 +376,19 @@ public class PasswordOtpActivity extends BaseActivity {
 					Second.setImageResource(R.drawable.circle);
 					Third.setImageResource(R.drawable.circle);
 				}
-				if (position==1)
-				{
+				if (position == 1) {
 					final Handler handler = new Handler();
 					handler.postDelayed(new Runnable() {
-						@Override
-						public void run() {
+						@Override public void run() {
 							//Do something after 100ms
 							Slider_Adapter.Animate();
-							Toast.makeText(PasswordOtpActivity.this,"Page Scrolled",Toast.LENGTH_LONG).show();
-							background_Layout.setBackgroundColor(getResources().getColor(R.color.White));
-							FirstParams.width=FirstParams.height=30;
-							SecondParams.width=SecondParams.height=100;
-							ThirdParams.width=ThirdParams.height=30;
+							Toast.makeText(PasswordOtpActivity.this, "Page Scrolled",
+								Toast.LENGTH_LONG).show();
+							background_Layout.setBackgroundColor(
+								getResources().getColor(R.color.White));
+							FirstParams.width = FirstParams.height = 30;
+							SecondParams.width = SecondParams.height = 100;
+							ThirdParams.width = ThirdParams.height = 30;
 							First.setLayoutParams(FirstParams);
 							Third.setLayoutParams(ThirdParams);
 							Second.setLayoutParams(SecondParams);
@@ -403,15 +397,15 @@ public class PasswordOtpActivity extends BaseActivity {
 							Third.setImageResource(R.drawable.circle);
 						}
 					}, 200);
-
 				}
-				if (position==2)
-				{Slider_Adapter.Animate();
-					Toast.makeText(PasswordOtpActivity.this,"Page Scrolled",Toast.LENGTH_LONG).show();
+				if (position == 2) {
+					Slider_Adapter.Animate();
+					Toast.makeText(PasswordOtpActivity.this, "Page Scrolled", Toast.LENGTH_LONG)
+						.show();
 					background_Layout.setBackgroundColor(getResources().getColor(R.color.White));
-					FirstParams.width=FirstParams.height=30;
-					SecondParams.width=SecondParams.height=30;
-					ThirdParams.width=ThirdParams.height=100;
+					FirstParams.width = FirstParams.height = 30;
+					SecondParams.width = SecondParams.height = 30;
+					ThirdParams.width = ThirdParams.height = 100;
 					First.setLayoutParams(FirstParams);
 					Third.setLayoutParams(ThirdParams);
 					Second.setLayoutParams(SecondParams);
@@ -422,18 +416,11 @@ public class PasswordOtpActivity extends BaseActivity {
 				//Slider_Adapter.Animate();
 			}
 
-			@Override
-			public void onPageScrollStateChanged(int state) {
+			@Override public void onPageScrollStateChanged(int state) {
 
 			}
 		});
-
 	}
-
-
-
-
-
 
 	@Override protected void onResume() {
 		super.onResume();
@@ -648,7 +635,7 @@ public class PasswordOtpActivity extends BaseActivity {
 						editor.putString("phone", phone);
 						editor.apply();
 
-						Intent intent = new Intent(PasswordOtpActivity.this,Main2Activity.class);
+						Intent intent = new Intent(PasswordOtpActivity.this, Main2Activity.class);
 						intent.putExtra("userid", userid);
 						intent.putExtra("cookie", prefs.getString("cookies", null));
 						startActivity(intent);
@@ -699,7 +686,7 @@ public class PasswordOtpActivity extends BaseActivity {
 						editor.putString("phone", getIntent().getStringExtra("phone"));
 						editor.apply();
 
-						Intent intent = new Intent(PasswordOtpActivity.this,Main2Activity.class);
+						Intent intent = new Intent(PasswordOtpActivity.this, Main2Activity.class);
 						startActivity(intent);
 						finish();
 					} else {

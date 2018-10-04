@@ -199,7 +199,7 @@ public class TaskRecyclerAdapter extends RecyclerView.Adapter<TaskRecyclerAdapte
 								new ServerUtil(context).createGroupTask(TaskModel);
 								intent.putExtra("task", TaskModel);
 								//setResult(Activity.RESULT_OK, intent);
-								Groups.tasksAdapter.add(TaskModel);
+								GroupsFragment.tasksAdapter.add(TaskModel);
 								//finish();
                                dialog.dismiss();
 							}

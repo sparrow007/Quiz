@@ -8,14 +8,15 @@ import com.zersey.roz.Data.TransactionDbHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Transactions extends AppCompatActivity {
+public class Transactions extends AppCompatActivity implements
+	BillRecyclerAdapter.BillItemClickListener {
 	// TODO: Rename parameter arguments, choose names that match
 	// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 	private static final String ARG_PARAM1 = "param1";
 	private static final String ARG_PARAM2 = "param2";
 	private List<BillModel> Item_list;
 	private TransactionDbHelper mDbHelper;
-	public static GroupRecyclerAdapter adapter;
+	public static BillRecyclerAdapter adapter;
 
 	// TODO: Rename and change types of parameters
 	private String mParam1;
@@ -67,10 +68,14 @@ public class Transactions extends AppCompatActivity {
 		//Item_list.addAll(newModels);
 		RecyclerView recyclerView = findViewById(R.id.Fragment_listView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
-		adapter = new GroupRecyclerAdapter(newModels);
+		adapter = new BillRecyclerAdapter(newModels, this);
 		recyclerView.setAdapter(adapter);
 
 		//Item_list=bundle.getParcelableArrayList("ARRAYLIST");
+
+	}
+
+	@Override public void onBillPlusCLick() {
 
 	}
 }

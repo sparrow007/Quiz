@@ -106,7 +106,7 @@ public class Add_Groups_Form extends DialogFragment{
                 new ServerUtil(context).createGroup(model, Item_list);
                 Intent intent = new Intent();
                 intent.putExtra("group", model);
-                Groups.billsAdapter.addItem(model);
+                GroupsFragment.billsAdapter.addItem(model);
                 dismiss();
                 /*setResult(Activity.RESULT_OK, intent);
                 finish();*/
@@ -138,7 +138,7 @@ public class Add_Groups_Form extends DialogFragment{
 
 
     /*public void addGroup(View view) {
-        //if (RecyclerView_Adapter != null) {
+        //if (groupAboutAdapter != null) {
         //	initUser();
         //}
 
@@ -156,7 +156,7 @@ public class Add_Groups_Form extends DialogFragment{
         new ServerUtil(this).createGroup(model, Item_list);
         Intent intent = new Intent();
         intent.putExtra("group", model);
-        Groups.billsAdapter.addItem(model);
+        GroupsFragment.billsAdapter.addItem(model);
         setResult(Activity.RESULT_OK, intent);
         finish();
     }*/

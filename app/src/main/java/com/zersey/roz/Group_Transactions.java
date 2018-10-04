@@ -79,14 +79,14 @@ public class Group_Transactions extends Fragment {
 		View fragmentLayout =
 			inflater.inflate(R.layout.fragment_group_transactions, container, false);
 		fragmentLayout = initRecyclerView(fragmentLayout);
-		FloatingActionButton fab = getActivity().findViewById(R.id.fab_Transaction);
-		fab.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
-				Intent intent = new Intent(getContext(), MainActivity.class);
-				intent.putExtra("group", ((Specific_Group) getActivity()).model);
-				startActivityForResult(intent, 123);
-			}
-		});
+//		FloatingActionButton fab = getActivity().findViewById(R.id.fab_Transaction);
+		//fab.setOnClickListener(new View.OnClickListener() {
+		//	@Override public void onClick(View view) {
+		//		Intent intent = new Intent(getContext(), MainActivity.class);
+		//		intent.putExtra("group", ((Specific_Group) getActivity()).model);
+		//		startActivityForResult(intent, 123);
+		//	}
+		//});
 		return fragmentLayout;
 	}
 

@@ -1,0 +1,38 @@
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="4dp"
+    >
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFAB91"
+        >
+
+        <TextView
+            android:id="@+id/group_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingEnd="8dp"
+            android:paddingStart="4dp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:text="None"
+            />
+
+
+        <ImageView
+            android:id="@+id/cross_button"
+            android:layout_width="12dp"
+            android:layout_height="12dp"
+            android:layout_gravity="end"
+            android:src="@drawable/error"
+            tools:ignore="contentDescription"
+            />
+
+    </FrameLayout>
+</android.support.v7.widget.CardView>

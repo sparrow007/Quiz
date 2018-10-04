@@ -103,18 +103,12 @@ public class Task_Fragment extends Fragment {
 		// Inflate the layout for this fragment
 		View fragment = inflater.inflate(R.layout.fragment_task, container, false);
 		fragment = initRecyclerView(fragment);
-		FloatingActionButton fab = getActivity().findViewById(R.id.fab_Transaction);
-		fab.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
-				Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-					.setAction("Action", null)
-					.show();
-				Task_Dialog();
-				/*Intent intent = new Intent(getContext(), Task_Form_Activity.class);
-				intent.putExtra("Group", mParam1);
-				startActivityForResult(intent, 1);*/
-			}
-		});
+		//FloatingActionButton fab = getActivity().findViewById(R.id.fab_Transaction);
+		//fab.setOnClickListener(new View.OnClickListener() {
+		//	@Override public void onClick(View view) {
+		//		Task_Dialog();
+		//	}
+		//});
 		return fragment;
 	}
 
@@ -244,7 +238,7 @@ public class Task_Fragment extends Fragment {
 								new ServerUtil(getContext()).createGroupTask(TaskModel);
 								intent.putExtra("task", TaskModel);
 								//setResult(Activity.RESULT_OK, intent);
-								//Groups.tasksAdapter.add(TaskModel);
+								//GroupsFragment.tasksAdapter.add(TaskModel);
 								adapter.add(TaskModel);
 								//finish();
 								dialog.dismiss();

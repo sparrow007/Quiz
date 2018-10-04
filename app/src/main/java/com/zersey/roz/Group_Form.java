@@ -148,7 +148,7 @@ public class Group_Form extends AppCompatActivity {
 
 	/*public void initUser() {
 		USERS = "";
-		List<ContactModel> itemsList = RecyclerView_Adapter.getList();
+		List<ContactModel> itemsList = groupAboutAdapter.getList();
 		for (int i = 0; i < itemsList.size(); i++) {
 			if (i < itemsList.size() - 1) {
 				USERS = USERS + itemsList.get(i).getId() + ",";
@@ -159,7 +159,7 @@ public class Group_Form extends AppCompatActivity {
 	} */
 
 	public void addGroup(View view) {
-		//if (RecyclerView_Adapter != null) {
+		//if (groupAboutAdapter != null) {
 		//	initUser();
 		//}
 
@@ -177,7 +177,7 @@ public class Group_Form extends AppCompatActivity {
 		new ServerUtil(this).createGroup(model, Item_list);
 		Intent intent = new Intent();
 		intent.putExtra("group", model);
-		Groups.billsAdapter.addItem(model);
+		GroupsFragment.billsAdapter.addItem(model);
 		setResult(Activity.RESULT_OK, intent);
 		finish();
 	}

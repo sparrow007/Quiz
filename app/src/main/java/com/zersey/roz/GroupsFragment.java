@@ -3,6 +3,7 @@ package com.zersey.roz;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,19 +21,18 @@ import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
 
-public class Groups extends Fragment {
+public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.GroupItemClickListener, BillRecyclerAdapter.BillItemClickListener {
 
 	private RecyclerView billsRecyclerView, groupsRecyclerView, taskRecyclerView;
-	public static First_Slider_Adapter billsAdapter;
+	public static GroupRecyclerAdapter billsAdapter;
 	private List<BillModel> billsList;
 	private List<TaskModel> taskList;
 	private List<GroupModel> groupsList;
 
-	public static GroupRecyclerAdapter groupsAdapter;
+	public static BillRecyclerAdapter groupsAdapter;
 	public static TaskRecyclerAdapter tasksAdapter;
 
-	public Groups() {
-		// Required empty public constructor
+	public GroupsFragment() {
 	}
 
 	@SuppressWarnings("unchecked") @Override public void onCreate(Bundle savedInstanceState) {
@@ -52,10 +52,6 @@ public class Groups extends Fragment {
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_groups, container, false);
-		final BillsFormFragment Bill_Dialog = new BillsFormFragment();
-		final Add_Task_form Task_Dialog = new Add_Task_form();
-		final Add_Groups_Form Group_Dialog = new Add_Groups_Form();
-
 		TextView moreBillsButton = fragmentLayout.findViewById(R.id.First_More);
 		TextView moreGroupsButton = fragmentLayout.findViewById(R.id.Second_More);
 		moreBillsButton.setOnClickListener(new View.OnClickListener() {
@@ -84,14 +80,14 @@ public class Groups extends Fragment {
 					}
 
 					@Override public void onTaskRefresh(List<TaskModel> taskList) {
-						Groups.this.taskList.clear();
-						Groups.this.taskList.addAll(taskList);
+						GroupsFragment.this.taskList.clear();
+						GroupsFragment.this.taskList.addAll(taskList);
 						taskRecyclerView.getAdapter().notifyDataSetChanged();
 					}
 
 					@Override public void onBillsRefresh(List<BillModel> billsList) {
-						Groups.this.billsList.clear();
-						Groups.this.billsList.addAll(billsList);
+						GroupsFragment.this.billsList.clear();
+						GroupsFragment.this.billsList.addAll(billsList);
 						groupsRecyclerView.getAdapter().notifyDataSetChanged();
 					}
 				});
@@ -99,13 +95,7 @@ public class Groups extends Fragment {
 			FloatingActionButton openBillFab = getActivity().findViewById(R.id.fab_open_bill_form);
 			openBillFab.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View view) {
-					final FragmentTransaction ft = getFragmentManager().beginTransaction();
-					final Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-					if (prev != null) {
-						ft.remove(prev);
-					}
-					ft.addToBackStack(null);
-					Bill_Dialog.show(ft, "dialog");
+					startDialogTransaction(new BillsFormFragment());
 					((FloatingActionsMenu) (getActivity()).findViewById(R.id.fab)).collapse();
 				}
 			});
@@ -114,13 +104,7 @@ public class Groups extends Fragment {
 				getActivity().findViewById(R.id.fab_open_tasks_form);
 			openTaskFormFab.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View view) {
-					final FragmentTransaction ft = getFragmentManager().beginTransaction();
-					final Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-					if (prev != null) {
-						ft.remove(prev);
-					}
-					ft.addToBackStack(null);
-					Task_Dialog.show(ft, "dialog");
+					startDialogTransaction(new Add_Task_form());
 					((FloatingActionsMenu) (getActivity()).findViewById(R.id.fab)).collapse();
 				}
 			});
@@ -129,19 +113,25 @@ public class Groups extends Fragment {
 				getActivity().findViewById(R.id.fab_open_group_form);
 			openGroupFormFab.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View view) {
-					final FragmentTransaction ft = getFragmentManager().beginTransaction();
-					final Fragment prev = getFragmentManager().findFragmentByTag("dialog");
-					if (prev != null) {
-						ft.remove(prev);
-					}
-					ft.addToBackStack(null);
-					Group_Dialog.show(ft, "dialog");
+					startDialogTransaction(new Add_Groups_Form());
 					((FloatingActionsMenu) (getActivity()).findViewById(R.id.fab)).collapse();
 				}
 			});
 		}
 
 		return fragmentLayout;
+	}
+
+	private void startDialogTransaction(DialogFragment dialog) {
+		if (getFragmentManager() != null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+			if (prev != null) {
+				ft.remove(prev);
+			}
+			ft.addToBackStack(null);
+			dialog.show(ft, "dialog");
+		}
 	}
 
 	private View initRecyclerView(View fragmentLayout) {
@@ -154,13 +144,13 @@ public class Groups extends Fragment {
 		billsRecyclerView = fragmentLayout.findViewById(R.id.First_Slider);
 		billsRecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-		billsAdapter = new First_Slider_Adapter(getContext(), groupsList);
+		billsAdapter = new GroupRecyclerAdapter(getContext(), groupsList, this);
 		billsRecyclerView.setAdapter(billsAdapter);
 
 		groupsRecyclerView = fragmentLayout.findViewById(R.id.Second_Slider);
 		groupsRecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-		groupsAdapter = new GroupRecyclerAdapter(billsList);
+		groupsAdapter = new BillRecyclerAdapter(billsList, this);
 		groupsRecyclerView.setAdapter(groupsAdapter);
 
 		return fragmentLayout;
@@ -176,5 +166,13 @@ public class Groups extends Fragment {
 				billsRecyclerView.getAdapter().notifyItemInserted(groupsList.size() - 1);
 			}
 		}
+	}
+
+	@Override public void onBillPlusCLick() {
+		startDialogTransaction(new BillsFormFragment());
+	}
+
+	@Override public void onGroupPlusClick() {
+		startDialogTransaction(new Add_Groups_Form());
 	}
 }

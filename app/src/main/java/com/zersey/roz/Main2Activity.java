@@ -101,10 +101,17 @@ public class Main2Activity extends BaseActivity {
 			new NavigationView.OnNavigationItemSelectedListener() {
 				@Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 					menuItem.setChecked(true);
-					if (menuItem.getItemId() == R.id.nav_gallery) {
-						Intent i = new Intent(Main2Activity.this, Contact_List_Activity.class);
-						startActivity(i);
+					switch (menuItem.getItemId()) {
+						case R.id.nav_gallery:
+							Intent i = new Intent(Main2Activity.this, Contact_List_Activity.class);
+							startActivity(i);
+							return true;
+
+						case R.id.nav_logout:
+							logout();
+							return true;
 					}
+
 					mDrawerLayout.closeDrawers();
 					return true;
 				}
@@ -213,7 +220,7 @@ public class Main2Activity extends BaseActivity {
 				@Override public void onResponse(@NonNull Call<JsonObject> call,
 					@NonNull Response<JsonObject> response) {
 					Util.getNotesList(Main2Activity.this, response, false);
-					//Groups.groupsAdapter.addAll(mDbHelper.getAllEntries());
+					//GroupsFragment.groupsAdapter.addAll(mDbHelper.getAllEntries());
 					getFragmentRefreshListener().onBillsRefresh(mDbHelper.getAllEntries());
 				}
 
@@ -232,7 +239,7 @@ public class Main2Activity extends BaseActivity {
 		taskResult.enqueue(new Callback<JsonObject>() {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
-				taskList.addAll(Util.parseTaskresponse(response.body()));
+				taskList.addAll(Util.parseTaskResponse(response.body()));
 				mDbHelper.addTasks(taskList);
 				//taskList.clear();
 				//taskList.addAll(dbHelper.getTasks());
@@ -274,12 +281,13 @@ public class Main2Activity extends BaseActivity {
 
 					list.clear();
 					list.addAll(mDbHelper.getGroups(0));
+					//Collections.sort(list);
 					getFragmentRefreshListener().onRefresh(list);
 				}
 
 				@Override
 				public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
-
+					t.printStackTrace();
 				}
 			});
 		}
@@ -375,7 +383,7 @@ public class Main2Activity extends BaseActivity {
 			switch (position) {
 
 				case 0:
-					Fragment fragment = new Groups();
+					Fragment fragment = new GroupsFragment();
 					Bundle bundle = new Bundle();
 					bundle.putSerializable("groupList", (Serializable) list);
 					bundle.putSerializable("taskList", (Serializable) taskList);

@@ -213,7 +213,7 @@ public class ServerUtil {
 				mDbHelper.addOnlineId(groupModel);
 				long row = mDbHelper.createEntry(expenseModel);
 				expenseModel.setId(row);
-				Groups.groupsAdapter.addItem(expenseModel);
+				GroupsFragment.groupsAdapter.addItem(expenseModel);
 				Call<JsonObject> res = JsonHandler.createEntry(context, expenseModel);
 				res.enqueue(new Callback<JsonObject>() {
 					@Override public void onResponse(@NonNull Call<JsonObject> call,

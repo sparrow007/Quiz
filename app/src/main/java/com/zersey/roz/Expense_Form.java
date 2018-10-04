@@ -152,7 +152,7 @@ public class Expense_Form extends Fragment {
 	@SuppressLint("NewApi") @Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
-		fragmentLayout = inflater.inflate(R.layout.content_main, container, false);
+		fragmentLayout = inflater.inflate(R.layout.fragment_bills_form, container, false);
 
 		Contact_list = new ArrayList<String>();
 
@@ -165,28 +165,28 @@ public class Expense_Form extends Fragment {
 		//Material_Date.setHasFocus(true);
 		//Material_Notes = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Notes);
 		//Notes_Layout = (LinearLayout) fragmentLayout.findViewById(R.id.Notes_Layout);
-		Material_Amount_Due =
-			(MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount_Due);
-		Material_Amount_Due.setVisibility(View.GONE);
-		More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
+		//Material_Amount_Due =
+		//	(MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount_Due);
+		//Material_Amount_Due.setVisibility(View.GONE);
+		//More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
 		//Notes_Layout.setVisibility(View.GONE);
 		cal = Calendar.getInstance();
 		year_x = cal.get(Calendar.YEAR);
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
 		month_x = cal.get(Calendar.MONTH);
-		More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
-		Delete_Button = (ImageButton) fragmentLayout.findViewById(R.id.Delete_Button);
-		Delete_Button.setVisibility(View.GONE);
+		//More_TextButton = (TextView) fragmentLayout.findViewById(R.id.MoreButton);
+		//Delete_Button = (ImageButton) fragmentLayout.findViewById(R.id.Delete_Button);
+		//Delete_Button.setVisibility(View.GONE);
 		//addMembers = (ImageButton) fragmentLayout.findViewById(R.id.addMembers);
 		//Camera_Button=(ImageButton)fragmentLayout.findViewById(R.id.Camera_Button);
 		//requestPermissions(Manifest.permission.CAMERA,1111);
-		Img_File = (ImageView) fragmentLayout.findViewById(R.id.Img_file);
-		Img_File.setVisibility(View.GONE);
-		dateEdit = (EditText) fragmentLayout.findViewById(R.id.Date_Edit);
-		dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
+		//Img_File = (ImageView) fragmentLayout.findViewById(R.id.Img_file);
+		//Img_File.setVisibility(View.GONE);
+		//dateEdit = (EditText) fragmentLayout.findViewById(R.id.Date_Edit);
+		//dateEdit.setText(year_x + "-" + (month_x + 1) + "-" + day_x);
 		TitleEdit = (EditText) fragmentLayout.findViewById(R.id.Title_Edit);
 		AmountEdit = (EditText) fragmentLayout.findViewById(R.id.Amount_Edit);
-		Amount_Due_Edit = (EditText) fragmentLayout.findViewById(R.id.Amount_Due_Edit);
+		//Amount_Due_Edit = (EditText) fragmentLayout.findViewById(R.id.Amount_Due_Edit);
 		//AutoCompleteContacts = (AutoCompleteTextView) fragmentLayout.findViewById(R.id.Notes_Edit);
 		/*Clothing = (LinearLayout) fragmentLayout.findViewById(R.id.Clothing_layout);
 		Entertainment = (LinearLayout) fragmentLayout.findViewById(R.id.Entertainment_layout);
@@ -1626,7 +1626,7 @@ public class Expense_Form extends Fragment {
 					//	Category_text);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
 					//	"Rs " + Amount_text);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 					//	DateEdit_text);
 					//values.put(recipe_entry.Column_Recipe_Nutri_label,Nlabel);
 					//values.put(recipe_entry.Column_Recipe_Nutri_Quantity,Nquantity);
@@ -1675,7 +1675,7 @@ public class Expense_Form extends Fragment {
 					//	Updated_Category);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
 					//	"Rs " + Updated_Amount);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 					//	Updated_Date);
 					//db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
 					//	TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID + "=" + Updated_Id, null);

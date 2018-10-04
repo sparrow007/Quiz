@@ -1,7 +1,6 @@
 package com.zersey.roz;
 
 import android.app.DatePickerDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,13 +29,10 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.zersey.roz.Data.TransactionDbHelper;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -55,9 +51,8 @@ public class BillsFormFragment extends DialogFragment {
 	private ImageView imgFile;
 	private TextView dateEditText;
 	public static Button positive_Button;
-	private TextView splitButton;
 	private EditText amountEditText, titleEditText;
-	private String users = "";
+	private StringBuilder users = new StringBuilder();
 	private RecyclerView splitRecyclerView;
 	private DialogSplitRecyclerViewAdapter dialogSplitAdapter;
 	private GroupModel groupModel;
@@ -66,25 +61,29 @@ public class BillsFormFragment extends DialogFragment {
 
 	private List<Split_Contact_model> splitList;
 	public static TextView splitNotes;
-	public static GroupRecyclerAdapter adapter;
+	public static BillRecyclerAdapter adapter;
 	private String amount;
 	private CategoryAdapter categoryAdapter;
 	private Uri Image_uri = null;
 	private Context context;
 	private ArrayList<Split_Contact_model> secondSplitList;
+	private List<GroupModel> groupList;
 
-	@NonNull @Override public Dialog onCreateDialog(Bundle savedInstanceState) {
+	@Override public void onCreate(@Nullable Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		secondSplitList = new ArrayList<>();
-
-		return super.onCreateDialog(savedInstanceState);
+		if (getArguments() != null) {
+			groupModel = (GroupModel) getArguments().getSerializable("model");
+		}
+		groupList = mDbHelper.getGroups(0);
 	}
 
 	@Nullable @Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
 		Bundle savedInstanceState) {
 		context = inflater.getContext();
-		View view = inflater.inflate(R.layout.content_main, container, false);
+		View fragmentView = inflater.inflate(R.layout.fragment_bills_form, container, false);
 
 		contactList = new ArrayList<>();
 		categoryList = new ArrayList<>();
@@ -92,10 +91,13 @@ public class BillsFormFragment extends DialogFragment {
 		categoryList.add("Income");
 		categoryList.add("Group");
 
-		categoryRecyclerView = view.findViewById(R.id.Category_Recycler_View);
-		view = initView(view);
-
-		splitButton = view.findViewById(R.id.Split_Dialog);
+		categoryRecyclerView = fragmentView.findViewById(R.id.Category_Recycler_View);
+		fragmentView = initView(fragmentView);
+		if (groupModel != null) {
+			categoryRecyclerView.setVisibility(View.GONE);
+			fragmentView.findViewById(R.id.Category_text_view).setVisibility(View.GONE);
+		}
+		TextView splitButton = fragmentView.findViewById(R.id.Split_Dialog);
 		splitButton.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				splitDialog();
@@ -107,30 +109,23 @@ public class BillsFormFragment extends DialogFragment {
 		day_x = cal.get(Calendar.DAY_OF_MONTH);
 		month_x = cal.get(Calendar.MONTH);
 
-		imgFile = view.findViewById(R.id.Img_file);
+		imgFile = fragmentView.findViewById(R.id.Img_file);
 		imgFile.setVisibility(View.GONE);
 
-		dateEditText = view.findViewById(R.id.Date_Edit);
+		dateEditText = fragmentView.findViewById(R.id.Date_Edit);
 		dateEditText.setText(
 			String.format(Locale.getDefault(), "%d-%d-%d", year_x, month_x + 1, day_x));
 
-		titleEditText = view.findViewById(R.id.Title_Edit);
-		amountEditText = view.findViewById(R.id.Amount_Edit);
-		LinearLayout addMembersButton = view.findViewById(R.id.Add_Member_Layout);
+		titleEditText = fragmentView.findViewById(R.id.Title_Edit);
+		amountEditText = fragmentView.findViewById(R.id.Amount_Edit);
 		splitRecyclerView = new RecyclerView(context);
 		SharedPreferences prefs = context.getSharedPreferences("login", MODE_PRIVATE);
-		users += prefs.getString("userid", null);
+		users.append(prefs.getString("userid", null)).append(",");
 
-		TextView submitButton = view.findViewById(R.id.Submit_Transaction_form);
+		TextView submitButton = fragmentView.findViewById(R.id.Submit_Transaction_form);
 		dateEditText.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				datePicker.show();
-			}
-		});
-
-		addMembersButton.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				addMembers();
 			}
 		});
 
@@ -148,7 +143,7 @@ public class BillsFormFragment extends DialogFragment {
 				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
 		datePicker.setTitle("Select Date");
-		ImageButton cameraButton = view.findViewById(R.id.Fab_Camera_Button);
+		ImageButton cameraButton = fragmentView.findViewById(R.id.Fab_Camera_Button);
 		cameraButton.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
 				selectImage();
@@ -161,6 +156,61 @@ public class BillsFormFragment extends DialogFragment {
 				dismiss();
 			}
 		});
+
+		final View finalFragmentView = fragmentView;
+		fragmentView.findViewById(R.id.share_with_group)
+			.setOnClickListener(new View.OnClickListener() {
+				@Override public void onClick(final View view) {
+					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+					LayoutInflater inflater = getActivity().getLayoutInflater();
+					final View view2 = inflater.inflate(R.layout.select_group_dialog, null);
+					builder.setView(view2);
+					final AlertDialog dialog = builder.create();
+
+					if (groupModel != null) {
+						view2.findViewById(R.id.add_member).setVisibility(View.GONE);
+					}
+
+					RecyclerView recyclerView = view2.findViewById(R.id.group_list);
+					recyclerView.setHasFixedSize(true);
+					recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+					SelectGroupAdapter selectGroupAdapter = new SelectGroupAdapter(groupList);
+					selectGroupAdapter.setGroupSelectListener(
+						new SelectGroupAdapter.GroupSelectListener() {
+							@Override public void groupSelected(GroupModel groupModel) {
+								BillsFormFragment.this.groupModel = groupModel;
+								((TextView) view.findViewById(R.id.group_name)).setText(
+									groupModel.getGroupName());
+								categoryRecyclerView.setVisibility(View.GONE);
+								finalFragmentView.findViewById(R.id.Category_text_view)
+									.setVisibility(View.GONE);
+								dialog.dismiss();
+							}
+						});
+					recyclerView.setAdapter(selectGroupAdapter);
+
+					view.findViewById(R.id.cross_button)
+						.setOnClickListener(new View.OnClickListener() {
+							@Override public void onClick(View v) {
+								BillsFormFragment.this.groupModel = null;
+								((TextView) view.findViewById(R.id.group_name)).setText("None");
+								categoryRecyclerView.setVisibility(View.VISIBLE);
+								finalFragmentView.findViewById(R.id.Category_text_view)
+									.setVisibility(View.VISIBLE);
+							}
+						});
+
+					view2.findViewById(R.id.add_member)
+						.setOnClickListener(new View.OnClickListener() {
+							@Override public void onClick(View view) {
+								Intent intent = new Intent(getContext(), AddMembersActivity.class);
+								startActivityForResult(intent, 4);
+								dialog.dismiss();
+							}
+						});
+					dialog.show();
+				}
+			});
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		if (getDialog().getWindow() != null) {
@@ -175,7 +225,7 @@ public class BillsFormFragment extends DialogFragment {
 				.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 					| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 		}
-		return view;
+		return fragmentView;
 	}
 
 	public void selectImage() {
@@ -271,8 +321,6 @@ public class BillsFormFragment extends DialogFragment {
 			}
 		});
 
-		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
-
 		if (getDialog().getWindow() != null) {
 			getDialog().getWindow()
 				.setBackgroundDrawable(
@@ -285,6 +333,8 @@ public class BillsFormFragment extends DialogFragment {
 				.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 					| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 		}
+		//getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+
 	}
 
 	private void singleSplit() {
@@ -328,13 +378,20 @@ public class BillsFormFragment extends DialogFragment {
 			Specific_Amount = "" + Integer.parseInt(amount) / (userList.size() + 1);
 		}
 		splitList = new ArrayList<>();
+		secondSplitList = new ArrayList<>();
 
 		ContactModel you = new ContactModel();
 		you.setName("You");
 		splitList.add(new Split_Contact_model(you, Specific_Amount));
+		secondSplitList.add(new Split_Contact_model(you, amount));
 
 		for (int i = 0; i < userList.size(); i++) {
+
+			if ((i == userList.size() - 1) && (userList.size() + 1) % 2 != 0) {
+				Specific_Amount = Integer.parseInt(Specific_Amount) + 1 + "";
+			}
 			splitList.add(new Split_Contact_model(userList.get(i), Specific_Amount));
+			secondSplitList.add(new Split_Contact_model(userList.get(i), "0"));
 		}
 	}
 
@@ -361,12 +418,6 @@ public class BillsFormFragment extends DialogFragment {
 
 	public void submitBill() {
 		String amountText = amountEditText.getText().toString();
-		ContactModel you = new ContactModel();
-		you.setName("You");
-		secondSplitList.add(new Split_Contact_model(you, "0"));
-		for (int i = 0; i < contactList.size(); i++) {
-			secondSplitList.add(new Split_Contact_model(contactList.get(i), "0"));
-		}
 		String titleText = titleEditText.getText().toString();
 		String categoryText = categoryAdapter.getLastCategory();
 
@@ -431,13 +482,8 @@ public class BillsFormFragment extends DialogFragment {
 		billModel.setAmountDue(amountsDue.toString());
 		billModel.setPayerId(payerIds.toString());
 		billModel.setInvoiceId("");
-		try {
-			billModel.setUuid(Util.generateUuid(prefs.getString("userid", null)));
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
+		billModel.setUuid(Util.generateUuid());
+		billModel.setCreatedAt(Util.getDateTime());
 
 		if (groupModel != null) {
 			billModel.setGroupId(groupModel.getGroupId());
@@ -454,7 +500,7 @@ public class BillsFormFragment extends DialogFragment {
 			groupModel2.setGroupName(titleText);
 			groupModel2.setTypeId(1);
 
-			groupModel2.setUsers(users);
+			groupModel2.setUsers(users.toString());
 			long newRowId = mDbHelper.createGroup(groupModel2);
 			groupModel2.setId(newRowId);
 			new ServerUtil(context).createSingleGroup(groupModel2, billModel, null);
@@ -485,10 +531,14 @@ public class BillsFormFragment extends DialogFragment {
 		} else if (resultCode == RESULT_OK && requestCode == 4) {
 			contactRecyclerView.setVisibility(View.VISIBLE);
 			//noinspection unchecked
-			contactList.addAll((List<ContactModel>) data.getSerializableExtra("ADDED"));
+			List<ContactModel> list = (List<ContactModel>) data.getSerializableExtra("ADDED");
+			contactList.addAll(list);
 			ContactRecyclerViewAdapter contactRecyclerViewAdapter =
 				new ContactRecyclerViewAdapter(contactList);
 			contactRecyclerView.setAdapter(contactRecyclerViewAdapter);
+			for (ContactModel model : list) {
+				users.append(model.getUserId()).append(",");
+			}
 		}
 	}
 }
