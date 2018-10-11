@@ -39,13 +39,13 @@ public class Group_Form extends AppCompatActivity {
 
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_group_form);
+		setContentView(R.layout.fragment_groups_form);
 		Item_list = new ArrayList<>();
 		mDbHelper = TransactionDbHelper.getInstance(this);
 
 		Description_Edit = findViewById(R.id.group_desc_edit_text);
 		Group_Name_Edit = findViewById(R.id.group_name_edit_text);
-		Contact_RecyclerView = findViewById(R.id.Add_Member_Group_Form_RecyclerView);
+		Contact_RecyclerView = findViewById(R.id.group_member_recycler_view);
 		Contact_RecyclerView.setLayoutManager(
 			new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL,
 				false));

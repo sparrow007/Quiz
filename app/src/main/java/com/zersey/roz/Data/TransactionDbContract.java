@@ -25,8 +25,8 @@ public class TransactionDbContract {
 		public static final String COLUMN_AMOUNT_DUE = "amount_due";
 		public static final String COLUMN_PAYER_ID = "payer_id";
 		public static final String COLUMN_INVOICE_ID = "invoice_id";
-        public static final String COLUMN_PAYER_NUMBERS="payer_numbers";
-        public static final String COLUMN_PAYER_NAMES="payer_names";
+		public static final String COLUMN_PAYER_NUMBERS = "payer_numbers";
+		public static final String COLUMN_PAYER_NAMES = "payer_names";
 
 		public final static String SQL_CREATE_TRANSACTIONS_TABLE = "CREATE TABLE "
 			+ Transaction_Entry.TABLE_NAME
@@ -106,7 +106,7 @@ public class TransactionDbContract {
 		public static final String COLUMN_MOBILE_NUMBER = "mobile_no";
 		public static final String COLUMN_FULL_NAME = "full_name";
 		public static final String COLUMN_UPDATED_AT = "updated_at";
-
+		public static final String COLUMN_GROUP_SETTINGS = "group_settings";
 
 		public static final String SQL_CREATE_GROUP_TABLE = "CREATE TABLE "
 			+ TABLE_NAME
@@ -123,11 +123,13 @@ public class TransactionDbContract {
 			+ " TEXT, "
 			+ COLUMN_FULL_NAME
 			+ " TEXT, "
-			+COLUMN_MOBILE_NUMBER
+			+ COLUMN_MOBILE_NUMBER
 			+ " TEXT, "
 			+ COLUMN_USERS
 			+ " TEXT, "
 			+ COLUMN_UPDATED_AT
+			+ " TEXT, "
+			+ COLUMN_GROUP_SETTINGS
 			+ " TEXT"
 			+ ");";
 	}

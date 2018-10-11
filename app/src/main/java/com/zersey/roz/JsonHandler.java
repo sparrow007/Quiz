@@ -9,10 +9,10 @@ public class JsonHandler {
 	public static Call<JsonObject> createEntry(Context context, BillModel billModel) {
 		return NetworkUtil.getRestAdapter(context)
 			.createEntry(billModel.getType(), billModel.getTitle(), billModel.getGroupId(),
-				billModel.getDescription(), billModel.getUuid(),
-				billModel.getPayerId().split(","), billModel.getTotalAmount().split(","),
-				billModel.getAmountDue().split(","), billModel.getPaidAtDate().split(","),
-				billModel.getInvoiceId().split(","), billModel.getAmountPaid().split(","));
+				billModel.getDescription(), billModel.getUuid(), billModel.getPayerId().split(","),
+				billModel.getTotalAmount().split(","), billModel.getAmountDue().split(","),
+				billModel.getPaidAtDate().split(","), billModel.getInvoiceId().split(","),
+				billModel.getAmountPaid().split(","));
 	}
 
 	//public static Call<JsonObject> updateEntry(Context context, BillModel incomeModel) {
@@ -26,7 +26,8 @@ public class JsonHandler {
 	public static Call<JsonObject> createGroup(Context context, GroupModel groupModel) {
 		return NetworkUtil.getRestAdapter(context)
 			.createGroup(groupModel.getGroupName(), groupModel.getGroupDesc(),
-				groupModel.getUsers(), groupModel.getTypeId(),groupModel.getMobile_no(), null);
+				groupModel.getUsers(), groupModel.getTypeId(), groupModel.getMobile_no(), null,
+				groupModel.getGroupSettings());
 	}
 
 	public static Call<JsonObject> deleteEntry(Context context, long id) {

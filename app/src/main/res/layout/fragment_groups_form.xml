@@ -2,12 +2,43 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".Group_Form"
     >
+
+
+    <RadioGroup
+        android:id="@+id/split_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:orientation="horizontal"
+        >
+
+        <RadioButton
+            android:id="@+id/radio_split"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.25"
+            android:checked="true"
+            android:text="Split Bills"
+            android:textColor="@android:color/white"
+            app:buttonTint="@android:color/white"
+            />
+
+        <RadioButton
+            android:id="@+id/radio_no_split"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Don't Split"
+            android:textColor="@android:color/white"
+            app:buttonTint="@android:color/white"
+            />
+
+
+    </RadioGroup>
 
 
     <com.github.florent37.materialtextfield.MaterialTextField
@@ -25,9 +56,10 @@
             android:id="@+id/group_name_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#000000"
             android:hint="Group name"
-            android:inputType="text" />
+            android:inputType="text"
+            app:backgroundTint="#000000"
+            />
     </com.github.florent37.materialtextfield.MaterialTextField>
     <View
         android:layout_width="fill_parent"
@@ -43,27 +75,30 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:mtf_hasFocus="true"
-        app:mtf_labelColor="#ffffff">
+        app:mtf_labelColor="#ffffff"
+        >
 
         <EditText
             android:id="@+id/group_desc_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="#000000"
             android:hint="Description"
-            android:inputType="text" />
+            android:inputType="text"
+            app:backgroundTint="#000000"
+            />
     </com.github.florent37.materialtextfield.MaterialTextField>
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#B0BEC5"/>
+        android:background="#B0BEC5"
+        />
     <com.github.florent37.materialtextfield.MaterialTextField
-        android:visibility="gone"
         android:id="@+id/Material_Group_Amount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
+        android:visibility="gone"
         app:mtf_hasFocus="true"
         app:mtf_labelColor="#666"
         >
@@ -82,51 +117,35 @@
         android:background="#B0BEC5"
         />
 
-        <LinearLayout
-            android:padding="5dp"
-            android:id="@+id/Group_Add_Member_Layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-            <android.support.v7.widget.CardView
-                android:layout_gravity="center_vertical"
-                app:cardCornerRadius="5dp"
-                android:layout_width="20dp"
-                android:layout_height="20dp">
-                <ImageView
-
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/plus"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </android.support.v7.widget.CardView>
-            <TextView
-                android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:textSize="20dp"
-                android:textColor="#ffffff"
-                android:layout_gravity="center_vertical"
-                android:text="Add Member"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+    <TextView
+        android:id="@+id/group_member_add_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:drawableStart="@drawable/plus"
+        android:padding="4dp"
+        android:text="Add Member"
+        android:textColor="@android:color/white"
+        android:textSize="20sp"
+        />
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
         android:background="#B0BEC5"
         />
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/Add_Member_Group_Form_RecyclerView"
+        android:id="@+id/group_member_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         />
 
     <Button
-        android:id="@+id/Group_Submit"
+        android:id="@+id/group_submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Submit"
         android:background="@color/colorPrimary"
+        android:text="Submit"
         />
 </LinearLayout>

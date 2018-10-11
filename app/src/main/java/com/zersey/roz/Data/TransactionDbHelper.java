@@ -62,6 +62,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_SETTINGS, model.getGroupSettings());
 		return db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 	}
 
@@ -87,6 +88,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT, model.getUpdatedAt());
+			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_SETTINGS,
+				model.getGroupSettings());
 			db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 			cv.clear();
 		}
@@ -147,7 +150,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID, model.getPayerId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID, model.getOnlineId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE, model.getPaidAtDate());
-		values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED, model.getCreatedAt());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
+			model.getCreatedAt());
 		long newRowId = db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
 		model.setId(newRowId);
 		return newRowId;
@@ -394,6 +398,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			model.setUsers(usersGroup);
 			model.setFullname(fullnameGroup);
 			model.setMobile_no(mobileGroup);
+			model.setGroupSettings(cursor.getString(
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_SETTINGS)));
 			model.setUpdatedAt(cursor.getString(
 				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT)));
 			list.add(model);

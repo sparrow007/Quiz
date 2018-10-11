@@ -113,7 +113,7 @@ public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.Gro
 				getActivity().findViewById(R.id.fab_open_group_form);
 			openGroupFormFab.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View view) {
-					startDialogTransaction(new Add_Groups_Form());
+					startDialogTransaction(new GroupsFormFragment());
 					((FloatingActionsMenu) (getActivity()).findViewById(R.id.fab)).collapse();
 				}
 			});
@@ -173,6 +173,6 @@ public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.Gro
 	}
 
 	@Override public void onGroupPlusClick() {
-		startDialogTransaction(new Add_Groups_Form());
+		startDialogTransaction(new GroupsFormFragment());
 	}
 }

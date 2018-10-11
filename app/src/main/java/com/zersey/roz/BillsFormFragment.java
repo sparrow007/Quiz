@@ -91,6 +91,13 @@ public class BillsFormFragment extends DialogFragment {
 		categoryList.add("Income");
 		categoryList.add("Group");
 
+		fragmentView.findViewById(R.id.Notes_Image_Button)
+			.setOnClickListener(new View.OnClickListener() {
+				@Override public void onClick(View view) {
+					Add_notes(view);
+				}
+			});
+
 		categoryRecyclerView = fragmentView.findViewById(R.id.Category_Recycler_View);
 		fragmentView = initView(fragmentView);
 		if (groupModel != null) {
@@ -184,6 +191,7 @@ public class BillsFormFragment extends DialogFragment {
 								categoryRecyclerView.setVisibility(View.GONE);
 								finalFragmentView.findViewById(R.id.Category_text_view)
 									.setVisibility(View.GONE);
+								view.findViewById(R.id.share_with_box).setVisibility(View.VISIBLE);
 								dialog.dismiss();
 							}
 						});
@@ -197,6 +205,7 @@ public class BillsFormFragment extends DialogFragment {
 								categoryRecyclerView.setVisibility(View.VISIBLE);
 								finalFragmentView.findViewById(R.id.Category_text_view)
 									.setVisibility(View.VISIBLE);
+								view.findViewById(R.id.share_with_box).setVisibility(View.GONE);
 							}
 						});
 
@@ -335,6 +344,53 @@ public class BillsFormFragment extends DialogFragment {
 		}
 		//getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
+	}
+
+	public void Add_notes(View view) {
+		final EditText Notes_Edit;
+		LayoutInflater inflater = LayoutInflater.from(getContext());
+		View notes_view = inflater.inflate(R.layout.notes_dialogue_layout, null);
+		Notes_Edit = notes_view.findViewById(R.id.Notes_EditText);
+		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
+			new android.support.v7.app.AlertDialog.Builder(getContext());
+		alertDialogBuilder.setView(notes_view);
+		alertDialogBuilder.setCancelable(false);
+		alertDialogBuilder.setPositiveButton(Html.fromHtml("<font color='#00796B'>Ok</font>"),
+			null);
+		//alertDialogBuilder.setNegativeButton("Cancel",null);
+		alertDialogBuilder.setNeutralButton("Cancel", null);
+
+		final android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
+		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+
+			@Override public void onShow(DialogInterface dialogInterface) {
+
+				Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				Button Negative = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+				Negative.setTextColor(getContext().getColor(R.color.colorPrimary));
+				button.setTextColor(getContext().getColor(R.color.colorPrimary));
+				Negative.setOnClickListener(new View.OnClickListener() {
+					@Override public void onClick(View v) {
+						alertDialog.dismiss();
+					}
+				});
+				button.setOnClickListener(new View.OnClickListener() {
+
+					@Override public void onClick(View view) {
+						// TODO Do something
+
+						//Dismiss once everything is OK.
+						if (TextUtils.isEmpty(Notes_Edit.getText().toString())) {
+							Toast.makeText(getContext(), "Please write something",
+								Toast.LENGTH_LONG).show();
+						} else {
+							alertDialog.dismiss();
+						}
+					}
+				});
+			}
+		});
+		alertDialog.show();
 	}
 
 	private void singleSplit() {

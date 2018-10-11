@@ -70,6 +70,39 @@
             />
     </com.github.florent37.materialtextfield.MaterialTextField>
 
+
+    <TextView
+        android:id="@+id/share_with_material"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:text="Share With"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        />
+
+    <FrameLayout
+        android:id="@+id/share_with_group"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="8dp"
+        android:background="@android:color/white"
+        >
+
+        <include
+            layout="@layout/group_name_bubble"
+            android:id="@+id/share_with_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:visibility="gone"
+            />
+
+    </FrameLayout>
+
+
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
@@ -129,21 +162,6 @@
             android:textColor="#000000"
             />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginStart="5dp"
-            android:text="Share with "
-            android:textColor="@android:color/white"
-            />
-        <include
-            layout="@layout/test_layout"
-            android:id="@+id/share_with_group"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            />
 
     </LinearLayout>
 
@@ -228,7 +246,6 @@
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@android:color/transparent"
-            android:onClick="Add_notes"
             android:scaleType="centerInside"
             android:src="@drawable/writing"
             tools:ignore="contentDescription"
