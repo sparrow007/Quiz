@@ -66,9 +66,9 @@
         <activity
             android:name=".SpecificTransactions"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity android:name=".More_Activity"/>
+        <activity android:name=".MoreGroupsActivity"/>
         <activity
-            android:name=".Specific_Group"
+            android:name=".SpecificGroup"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".Group_Form"/>
         <activity

@@ -1,21 +1,41 @@
 package com.zersey.roz;
 
 import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class GroupModel implements Serializable {
 
 	private long id;
 
-	@SerializedName("id") private long groupId;
-	@SerializedName("group_name") private String groupName;
-	@SerializedName("group_description") private String groupDesc;
-	@SerializedName("users") private String users;
-	@SerializedName("mobile_no") private String mobile_no;
-	@SerializedName("fullname") private String fullname;
-	@SerializedName("type_id") private int typeId;
-	@SerializedName("updated_at") private String updatedAt;
-	@SerializedName("group_settings") private String groupSettings;
+	@SerializedName("id")
+	private long groupId;
+	@SerializedName("group_name")
+	private String groupName;
+	@SerializedName("group_description")
+	private String groupDesc;
+	@SerializedName("users")
+	private String users;
+	@SerializedName("mobile_no")
+	private String mobile_no;
+	@SerializedName("fullname")
+	private String fullname;
+	@SerializedName("type_id")
+	private int typeId;
+	@SerializedName("created_at")
+	private String createdAt;
+	@SerializedName("group_settings")
+	private String groupSettings;
+
+	public String getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(String updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
+	private String updatedAt;
 
 	public void setGroupId(long groupId) {
 		this.groupId = groupId;
@@ -25,7 +45,7 @@ public class GroupModel implements Serializable {
 		this.id = id;
 	}
 
-	public void setFullname(String fullname) {
+	public void setFullNames(String fullname) {
 		this.fullname = fullname;
 	}
 
@@ -41,7 +61,7 @@ public class GroupModel implements Serializable {
 		return id;
 	}
 
-	public void setMobile_no(String mobile_no) {
+	public void setMobileNos(String mobile_no) {
 		this.mobile_no = mobile_no;
 	}
 
@@ -81,12 +101,12 @@ public class GroupModel implements Serializable {
 		this.typeId = typeId;
 	}
 
-	public String getUpdatedAt() {
-		return updatedAt;
+	public String getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setUpdatedAt(String updatedAt) {
-		this.updatedAt = updatedAt;
+	public void setCreatedAt(String createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getGroupSettings() {
@@ -97,39 +117,40 @@ public class GroupModel implements Serializable {
 		this.groupSettings = groupSettings;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
 		return "GroupModel{"
-			+ "id="
-			+ id
-			+ ", groupId="
-			+ groupId
-			+ ", groupName='"
-			+ groupName
-			+ '\''
-			+ ", groupDesc='"
-			+ groupDesc
-			+ '\''
-			+ ", users='"
-			+ users
-			+ '\''
-			+ ", mobile_no='"
-			+ mobile_no
-			+ '\''
-			+ ", fullname='"
-			+ fullname
-			+ '\''
-			+ ", typeId="
-			+ typeId
-			+ ", updatedAt='"
-			+ updatedAt
-			+ '\''
-			+ ", groupSettings='"
-			+ groupSettings
-			+ '\''
-			+ '}';
+				+ "id="
+				+ id
+				+ ", groupId="
+				+ groupId
+				+ ", groupName='"
+				+ groupName
+				+ '\''
+				+ ", groupDesc='"
+				+ groupDesc
+				+ '\''
+				+ ", users='"
+				+ users
+				+ '\''
+				+ ", mobile_no='"
+				+ mobile_no
+				+ '\''
+				+ ", fullname='"
+				+ fullname
+				+ '\''
+				+ ", typeId="
+				+ typeId
+				+ ", createdAt='"
+				+ createdAt
+				+ '\''
+				+ ", groupSettings='"
+				+ groupSettings
+				+ '\''
+				+ '}';
 	}
 
 	//@Override public int compareTo(@NonNull GroupModel groupModel) {
-	//	return groupModel.getUpdatedAt().compareTo(updatedAt);
+	//	return groupModel.getCreatedAt().compareTo(createdAt);
 	//}
 }

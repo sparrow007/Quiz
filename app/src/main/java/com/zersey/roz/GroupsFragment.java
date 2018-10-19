@@ -24,12 +24,12 @@ import static android.app.Activity.RESULT_OK;
 public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.GroupItemClickListener, BillRecyclerAdapter.BillItemClickListener {
 
 	private RecyclerView billsRecyclerView, groupsRecyclerView, taskRecyclerView;
-	public static GroupRecyclerAdapter billsAdapter;
+	public static GroupRecyclerAdapter groupRecyclerAdapter;
 	private List<BillModel> billsList;
 	private List<TaskModel> taskList;
 	private List<GroupModel> groupsList;
 
-	public static BillRecyclerAdapter groupsAdapter;
+	public static BillRecyclerAdapter billRecyclerAdapter;
 	public static TaskRecyclerAdapter tasksAdapter;
 
 	public GroupsFragment() {
@@ -47,21 +47,25 @@ public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.Gro
 		TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(getContext());
 		taskList = new ArrayList<>();
 		taskList = dbHelper.getTask(-1);
+
+		tasksAdapter = new TaskRecyclerAdapter(taskList);
+		billRecyclerAdapter = new BillRecyclerAdapter(billsList, this);
+		groupRecyclerAdapter = new GroupRecyclerAdapter(getContext(), groupsList, this);
 	}
 
 	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
 		Bundle savedInstanceState) {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_groups, container, false);
-		TextView moreBillsButton = fragmentLayout.findViewById(R.id.First_More);
-		TextView moreGroupsButton = fragmentLayout.findViewById(R.id.Second_More);
-		moreBillsButton.setOnClickListener(new View.OnClickListener() {
+		TextView moreGroupsButton = fragmentLayout.findViewById(R.id.First_More);
+		TextView moreBillsButton = fragmentLayout.findViewById(R.id.Second_More);
+		moreGroupsButton.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
-				Intent intent = new Intent(getContext(), More_Activity.class);
-				intent.putExtra("More", (ArrayList<GroupModel>) groupsList);
+				Intent intent = new Intent(getContext(), MoreGroupsActivity.class);
+				intent.putExtra("groupList", (ArrayList<GroupModel>) groupsList);
 				startActivity(intent);
 			}
 		});
-		moreGroupsButton.setOnClickListener(new View.OnClickListener() {
+		moreBillsButton.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				Intent intent = new Intent(getContext(), Transactions.class);
 				startActivity(intent);
@@ -129,6 +133,9 @@ public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.Gro
 			if (prev != null) {
 				ft.remove(prev);
 			}
+			Bundle bundle = new Bundle();
+			bundle.putBoolean("fromGroup", false);
+			dialog.setArguments(bundle);
 			ft.addToBackStack(null);
 			dialog.show(ft, "dialog");
 		}
@@ -138,20 +145,17 @@ public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.Gro
 		taskRecyclerView = fragmentLayout.findViewById(R.id.Task_Slider);
 		taskRecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-		tasksAdapter = new TaskRecyclerAdapter(taskList);
 		taskRecyclerView.setAdapter(tasksAdapter);
 
 		billsRecyclerView = fragmentLayout.findViewById(R.id.First_Slider);
 		billsRecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-		billsAdapter = new GroupRecyclerAdapter(getContext(), groupsList, this);
-		billsRecyclerView.setAdapter(billsAdapter);
+		billsRecyclerView.setAdapter(groupRecyclerAdapter);
 
 		groupsRecyclerView = fragmentLayout.findViewById(R.id.Second_Slider);
 		groupsRecyclerView.setLayoutManager(
 			new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-		groupsAdapter = new BillRecyclerAdapter(billsList, this);
-		groupsRecyclerView.setAdapter(groupsAdapter);
+		groupsRecyclerView.setAdapter(billRecyclerAdapter);
 
 		return fragmentLayout;
 	}

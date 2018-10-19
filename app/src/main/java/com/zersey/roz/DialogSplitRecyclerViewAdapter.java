@@ -42,7 +42,7 @@ public class DialogSplitRecyclerViewAdapter
 			DecimalFormat formatter = new DecimalFormat("#,###");
 
 			BillsFormFragment.splitNotes.setText(Html.fromHtml("<font color=#000000>Total: Rs "+formatter.format(amount)+" of Rs "+formatter.format(amount)+"</font> <font color=#90A4AE> <br>left Rs "+0+"</font>"));
-			//MainActivity.splitNotes.setText(("Total: "+Amount+" of "+Amount+" \nleft "+0));
+			//MainActivity.splitNotes.setText(("Total: "+amount+" of "+amount+" \nleft "+0));
 		}
 	}
 
@@ -134,10 +134,10 @@ public class DialogSplitRecyclerViewAdapter
 					if (TextUtils.equals(Slider, "ratio")) {
 						MainActivity.splitNotes.setText("Total:" + "with 100%");
 					} else {
-						MainActivity.splitNotes.setText("All settle with " + Amount);
+						MainActivity.splitNotes.setText("All settle with " + amount);
 					}
 				} else {
-					MainActivity.splitNotes.setText("All Amount is not Split Correctly");
+					MainActivity.splitNotes.setText("All amount is not Split Correctly");
 				}*/
 			}
 
@@ -148,10 +148,10 @@ public class DialogSplitRecyclerViewAdapter
 					if (TextUtils.equals(Slider, "ratio")) {
 						MainActivity.splitNotes.setText("Total:" + "with 100%");
 					} else {
-						MainActivity.splitNotes.setText("All settle with " + Amount);
+						MainActivity.splitNotes.setText("All settle with " + amount);
 					}
 				} else {
-					MainActivity.splitNotes.setText("All Amount is not Split Correctly");
+					MainActivity.splitNotes.setText("All amount is not Split Correctly");
 				}*/
 			}
 		});

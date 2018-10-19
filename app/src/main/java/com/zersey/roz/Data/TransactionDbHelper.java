@@ -8,17 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import com.zersey.roz.BillModel;
-import com.zersey.roz.ContactModel;
-import com.zersey.roz.GroupModel;
-import com.zersey.roz.GroupsFragment;
-import com.zersey.roz.TaskModel;
-import com.zersey.roz.Temp;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
+import com.zersey.roz.*;
+
+import java.util.*;
 
 public class TransactionDbHelper extends SQLiteOpenHelper {
 
@@ -41,7 +33,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		return mInstance;
 	}
 
-	@Override public void onCreate(SQLiteDatabase db) {
+	@Override
+	public void onCreate(SQLiteDatabase db) {
 		db.execSQL(TransactionDbContract.Transaction_Entry.SQL_CREATE_TRANSACTIONS_TABLE);
 		db.execSQL(TransactionDbContract.GroupEntry.SQL_CREATE_GROUP_TABLE);
 		db.execSQL(TransactionDbContract.ContactEntry.SQL_CREATE_CONTACTS_TABLE);
@@ -49,7 +42,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		db.execSQL(TransactionDbContract.TempEntry.SQL_CREATE_TEMP_TABLE);
 	}
 
-	@Override public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+	@Override
+	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
 	}
 
@@ -62,6 +56,9 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME, model.getFullname());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_CREATED_AT, model.getCreatedAt());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT, model.getUpdatedAt());
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_SETTINGS, model.getGroupSettings());
 		return db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 	}
@@ -71,8 +68,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
 		return db.update(TransactionDbContract.GroupEntry.TABLE_NAME, cv,
-			TransactionDbContract.GroupEntry._ID + "=?",
-			new String[] { Long.toString(model.getId()) });
+				TransactionDbContract.GroupEntry._ID + "=?",
+				new String[]{Long.toString(model.getId())});
 	}
 
 	public void addGroups(List<GroupModel> list) {
@@ -87,9 +84,10 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME, model.getFullname());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID, model.getTypeId());
+			cv.put(TransactionDbContract.GroupEntry.COLUMN_CREATED_AT, model.getCreatedAt());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT, model.getUpdatedAt());
 			cv.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_SETTINGS,
-				model.getGroupSettings());
+					model.getGroupSettings());
 			db.insert(TransactionDbContract.GroupEntry.TABLE_NAME, null, cv);
 			cv.clear();
 		}
@@ -105,24 +103,27 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		for (BillModel model : list) {
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_DESCRIPTION,
-				model.getDescription());
-			values.put(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID, model.getGroupId());
+					model.getDescription());
+			values.put(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID, model.getGroupId
+					());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_UUID, model.getUuid());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
-			values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
-				model.getTotalAmount());
+			values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT,
+					model.getTotalAmount());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_DUE,
-				model.getAmountDue());
+					model.getAmountDue());
+			values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_PAID, model.getAmountPaid());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_INVOICE_ID,
-				model.getInvoiceId());
-			values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID, model.getPayerId());
+					model.getInvoiceId());
+			values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID, model.getPayerId
+					());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID,
-				model.getOnlineId());
+					model.getOnlineId());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
-				model.getPaidAtDate());
+					model.getPaidAtDate());
 			values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
-				model.getCreatedAt());
+					model.getCreatedAt());
 			db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
 			values.clear();
 		}
@@ -130,7 +131,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		db.setTransactionSuccessful();
 		db.endTransaction();
 		if (!groupEntries) {
-			GroupsFragment.groupsAdapter.addAll(list);
+			GroupsFragment.billRecyclerAdapter.addAll(list);
 		}
 	}
 
@@ -139,20 +140,24 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_DESCRIPTION,
-			model.getDescription());
+				model.getDescription());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID, model.getGroupId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_UUID, model.getUuid());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
-		values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT, model.getTotalAmount());
-		values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_DUE, model.getAmountDue());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT, model.getTotalAmount());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_PAID, model.getAmountPaid());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_DUE, model.getAmountDue
+				());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
-		values.put(TransactionDbContract.Transaction_Entry.COLUMN_INVOICE_ID, model.getInvoiceId());
+		values.put(TransactionDbContract.Transaction_Entry.COLUMN_INVOICE_ID, model.getInvoiceId
+				());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID, model.getPayerId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID, model.getOnlineId());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE, model.getPaidAtDate());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED,
-			model.getCreatedAt());
-		long newRowId = db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null, values);
+				model.getCreatedAt());
+		long newRowId = db.insert(TransactionDbContract.Transaction_Entry.TABLE_NAME, null,
+				values);
 		model.setId(newRowId);
 		return newRowId;
 	}
@@ -162,16 +167,17 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
-		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT, model.getTotalAmount());
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT, model.getTotalAmount
+		// ());
 		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 		//	model.getPaidAtDate());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
-			TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
+				TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				//Transactions.groupsAdapter.updateItem(pos, model);
-				GroupsFragment.groupsAdapter.updateItem(pos, model);
+				//Transactions.billRecyclerAdapter.updateItem(pos, model);
+				GroupsFragment.billRecyclerAdapter.updateItem(pos, model);
 			}
 		});
 	}
@@ -181,16 +187,17 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, model.getTitle());
 		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY, model.getCatId());
-		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT, model.getTotalAmount());
+		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT, model.getTotalAmount
+		// ());
 		//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 		//	model.getPaidAtDate());
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_TYPE, model.getType());
 		db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
-			TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
+				TransactionDbContract.Transaction_Entry._ID + "=" + model.getId(), null);
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				//Transactions.groupsAdapter.updateItem(pos, model);
-				GroupsFragment.groupsAdapter.updateItem(pos, model);
+				//Transactions.billRecyclerAdapter.updateItem(pos, model);
+				GroupsFragment.billRecyclerAdapter.updateItem(pos, model);
 			}
 		});
 	}
@@ -198,12 +205,12 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public void deleteEntry(final int pos, long id) {
 		SQLiteDatabase db = getWritableDatabase();
 		db.delete(TransactionDbContract.Transaction_Entry.TABLE_NAME,
-			TransactionDbContract.Transaction_Entry._ID + " = ?", new String[] { "" + id });
+				TransactionDbContract.Transaction_Entry._ID + " = ?", new String[]{"" + id});
 
 		new Handler(Looper.getMainLooper()).post(new Runnable() {
 			public void run() {
-				//Transactions.groupsAdapter.deleteItem(pos);
-				GroupsFragment.groupsAdapter.deleteItem(pos);
+				//Transactions.billRecyclerAdapter.deleteItem(pos);
+				GroupsFragment.billRecyclerAdapter.deleteItem(pos);
 			}
 		});
 	}
@@ -226,36 +233,39 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		int count = cursor.getCount();
 		cursor.moveToFirst();
 		long currentID =
-			cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
+				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
 		String title = cursor.getString(
-			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
 		String desc = cursor.getString(
-			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
 		long groupId =
-			cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
+				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry
+						.COLUMN_GROUP_ID));
 		String usersGroup =
-			cursor.getString(cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
+				cursor.getString(cursor.getColumnIndex(TransactionDbContract.GroupEntry
+						.COLUMN_USERS));
 		String fullnameGroup = cursor.getString(
-			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
 		String mobileGroup = cursor.getString(
-			cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
+				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
 		int te =
-			cursor.getInt(cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID));
+				cursor.getInt(cursor.getColumnIndex(TransactionDbContract.GroupEntry
+						.COLUMN_TYPE_ID));
 		Log.d("getGroupsCount: ", currentID
-			+ " "
-			+ title
-			+ " "
-			+ desc
-			+ " "
-			+ groupId
-			+ " "
-			+ usersGroup
-			+ " "
-			+ fullnameGroup
-			+ " "
-			+ mobileGroup
-			+ " "
-			+ te);
+				+ " "
+				+ title
+				+ " "
+				+ desc
+				+ " "
+				+ groupId
+				+ " "
+				+ usersGroup
+				+ " "
+				+ fullnameGroup
+				+ " "
+				+ mobileGroup
+				+ " "
+				+ te);
 		cursor.close();
 		//        db.close();
 
@@ -268,8 +278,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID, model.getGroupId());
 		// Updating row
 		int id = db.update(TransactionDbContract.GroupEntry.TABLE_NAME, values,
-			TransactionDbContract.GroupEntry._ID + "=?",
-			new String[] { String.valueOf(model.getId()) });
+				TransactionDbContract.GroupEntry._ID + "=?",
+				new String[]{String.valueOf(model.getId())});
 	}
 
 	public long addGroupNotes(TaskModel model) {
@@ -310,26 +320,28 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		Cursor cursor;
 		if (Group_id < 0) {
 			cursor =
-				db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, null, null, null, null,
-					null);
+					db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null, null, null, null,
+							null,
+							null);
 		} else {
 			cursor = db1.query(TransactionDbContract.NoteEntry.TABLE_NAME, null,
-				TransactionDbContract.NoteEntry.COLUMN_GROUP_ID + "=" + Long.toString(Group_id),
-				null, null, null, null);
+					TransactionDbContract.NoteEntry.COLUMN_GROUP_ID + "=" + Long.toString
+							(Group_id),
+					null, null, null, null);
 		}
 		while (cursor.moveToNext()) {
 			long currentID =
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry._ID));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.NoteEntry._ID));
 			long groupID = cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_GROUP_ID));
 
 			String title = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_TITLE));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_TITLE));
 			String desc = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DESCRIPTION));
 
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_DATE_REMINDER));
 
 			TaskModel model = new TaskModel();
 			model.setTask_Title(title);
@@ -341,11 +353,11 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			model.setGroup_Id(groupID);
 
 			model.setTask_Id(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID)));
 			model.setAssignedTo(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ASSIGNED)));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_ASSIGNED)));
 			model.setAssignedBy(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_CREATOR)));
+					cursor.getColumnIndex(TransactionDbContract.NoteEntry.COLUMN_NOTE_CREATOR)));
 
 			list.add(model);
 		}
@@ -369,39 +381,45 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		List<GroupModel> list = new ArrayList<>();
 
 		Cursor cursor = db1.query(TransactionDbContract.GroupEntry.TABLE_NAME, null,
-			TransactionDbContract.GroupEntry.COLUMN_TYPE_ID + "=" + Integer.toString(type), null,
-			null, null, null);
+				TransactionDbContract.GroupEntry.COLUMN_TYPE_ID + "=" + Integer.toString(type),
+				null,
+				null, null, TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT + " DESC");
 		while (cursor.moveToNext()) {
 
 			long currentID =
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.GroupEntry._ID));
 			String title = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_NAME));
 			String desc = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_DESC));
 			long groupId = cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_ID));
 			String usersGroup = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_USERS));
 			String fullnameGroup = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME));
 			String mobileGroup = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER));
 
 			GroupModel model = new GroupModel();
 			model.setId(currentID);
 			model.setTypeId(cursor.getInt(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_TYPE_ID)));
 			model.setGroupName(title);
 			model.setGroupDesc(desc);
 			model.setGroupId(groupId);
 			model.setUsers(usersGroup);
-			model.setFullname(fullnameGroup);
-			model.setMobile_no(mobileGroup);
+			model.setFullNames(fullnameGroup);
+			model.setMobileNos(mobileGroup);
+			model.setCreatedAt(cursor.getString(cursor.getColumnIndex(TransactionDbContract
+					.GroupEntry.COLUMN_CREATED_AT)));
+			model.setUpdatedAt(cursor.getString(cursor.getColumnIndex(TransactionDbContract
+					.GroupEntry.COLUMN_UPDATED_AT)));
 			model.setGroupSettings(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_GROUP_SETTINGS)));
-			model.setUpdatedAt(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT)));
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry
+							.COLUMN_GROUP_SETTINGS)));
+			model.setCreatedAt(cursor.getString(
+					cursor.getColumnIndex(TransactionDbContract.GroupEntry.COLUMN_CREATED_AT)));
 			list.add(model);
 		}
 		cursor.close();
@@ -413,45 +431,58 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ArrayList<BillModel> list = new ArrayList<>();
 
 		Cursor cursor = db1.rawQuery(
-			"SELECT * FROM expenses, groups WHERE groups.group_id=expenses.group_id AND groups.type_id=1 ORDER BY expenses.date_created DESC",
-			null);
+				"SELECT * FROM expenses, groups WHERE groups.group_id=expenses.group_id AND " +
+						"groups" +
+						".type_id=1 ORDER BY expenses.date_created DESC",
+				null);
 
 		while (cursor.moveToNext()) {
 			long currentID =
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry._ID));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							._ID));
 			String title = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
 			String category = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_CATEGORY));
 			String amount = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT));
 			String type = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_PAY_DATE));
 			BillModel model = new BillModel();
 			model.setId(currentID);
 			model.setGroupId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_GROUP_ID)));
 			model.setTitle(title);
 			model.setTotalAmount(amount);
 			model.setUuid(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_UUID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_UUID)));
 			model.setAmountDue(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_DUE)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_AMOUNT_DUE)));
 			model.setDescription(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DESCRIPTION)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_DESCRIPTION)));
 			model.setPayerId(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_PAYER_ID)));
+			model.setAmountPaid(cursor.getString(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+					.COLUMN_AMOUNT_PAID)));
 			model.setInvoiceId(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_INVOICE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_INVOICE_ID)));
 			model.setCatId(category);
 			model.setPaidAtDate(date);
 			model.setType(type);
 			model.setOnlineId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_ONLINE_ID)));
 			model.setCreatedAt(cursor.getString(cursor.getColumnIndex(
-				TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED)));
+					TransactionDbContract.Transaction_Entry.COLUMN_DATE_CREATED)));
 			list.add(model);
 		}
 		cursor.close();
@@ -473,18 +504,18 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		List<Temp> list = new ArrayList<>();
 
 		Cursor cursor =
-			db.query(TransactionDbContract.TempEntry.TABLE_NAME, null, null, null, null, null,
-				null);
+				db.query(TransactionDbContract.TempEntry.TABLE_NAME, null, null, null, null, null,
+						null);
 
 		while (cursor.moveToNext()) {
 			Temp temp = new Temp();
 			temp.setId(cursor.getLong(cursor.getColumnIndex(TransactionDbContract.TempEntry._ID)));
 			temp.setLocalId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.TempEntry.COLUMN_LOCAL_ID)));
+					cursor.getColumnIndex(TransactionDbContract.TempEntry.COLUMN_LOCAL_ID)));
 			temp.setAction(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.TempEntry.COLUMN_ACTION)));
+					cursor.getColumnIndex(TransactionDbContract.TempEntry.COLUMN_ACTION)));
 			temp.setOnlineId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.TempEntry.COLUMN_ONLINE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.TempEntry.COLUMN_ONLINE_ID)));
 			list.add(temp);
 		}
 		cursor.close();
@@ -495,22 +526,26 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		BillModel model = new BillModel();
 		SQLiteDatabase db = getReadableDatabase();
 		Cursor cursor = db.query(TransactionDbContract.Transaction_Entry.TABLE_NAME, null,
-			TransactionDbContract.Transaction_Entry._ID + "=" + temp.getLocalId(), null, null, null,
-			null);
+				TransactionDbContract.Transaction_Entry._ID + "=" + temp.getLocalId(), null, null,
+				null,
+				null);
 
 		while (cursor.moveToNext()) {
 			long currentID =
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry._ID));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							._ID));
 			String title = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
 			String category = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_CATEGORY));
 			String amount = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT));
 			String type = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_PAY_DATE));
 			model.setId(currentID);
 			model.setTitle(title);
 			//model.setTotalAmount(amount);
@@ -518,7 +553,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			//model.setPaidAtDate(date);
 			model.setType(type);
 			model.setOnlineId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_ONLINE_ID)));
 		}
 		cursor.close();
 		return model;
@@ -527,7 +563,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 	public void deleteTemp(Temp temp) {
 		SQLiteDatabase db = getWritableDatabase();
 		db.delete(TransactionDbContract.TempEntry.TABLE_NAME,
-			TransactionDbContract.TempEntry._ID + " = ?", new String[] { "" + temp.getId() });
+				TransactionDbContract.TempEntry._ID + " = ?", new String[]{"" + temp.getId()});
 		//printTempDb();
 	}
 
@@ -544,8 +580,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		values.put(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID, model.getOnlineId());
 		// Updating row
 		int id = db.update(TransactionDbContract.Transaction_Entry.TABLE_NAME, values,
-			TransactionDbContract.Transaction_Entry._ID + "=?",
-			new String[] { String.valueOf(model.getId()) });
+				TransactionDbContract.Transaction_Entry._ID + "=?",
+				new String[]{String.valueOf(model.getId())});
 	}
 
 	public List<BillModel> getGroupEntries(long groupId) {
@@ -553,43 +589,54 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db1 = getReadableDatabase();
 
 		Cursor cursor =
-			db1.rawQuery("SELECT * FROM expenses WHERE expenses.group_id=" + Long.toString(groupId),
-				null);
+				db1.rawQuery("SELECT * FROM expenses WHERE expenses.group_id=" + Long.toString
+								(groupId),
+						null);
 
 		while (cursor.moveToNext()) {
 			long currentID =
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry._ID));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry._ID));
 			String title = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TITLE));
 			String category = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_CATEGORY));
 			String amount = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT));
 			String type = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_TYPE));
 			String date = cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_PAY_DATE));
 			BillModel model = new BillModel();
 			model.setId(currentID);
 			model.setGroupId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_GROUP_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_GROUP_ID)));
 			model.setTitle(title);
+			model.setAmountPaid(cursor.getString(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+					.COLUMN_AMOUNT_PAID)));
 			model.setTotalAmount(amount);
 			model.setUuid(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_UUID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_UUID)));
 			model.setAmountDue(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT_DUE)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_AMOUNT_DUE)));
 			model.setDescription(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_DESCRIPTION)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_DESCRIPTION)));
 			model.setPayerId(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_PAYER_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_PAYER_ID)));
 			model.setInvoiceId(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_INVOICE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_INVOICE_ID)));
 			model.setCatId(category);
 			model.setPaidAtDate(date);
 			model.setType(type);
 			model.setOnlineId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.Transaction_Entry.COLUMN_ONLINE_ID)));
+					cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+							.COLUMN_ONLINE_ID)));
 			list.add(model);
 		}
 		cursor.close();
@@ -624,18 +671,19 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		List<ContactModel> list = new ArrayList<>();
 		List<ContactModel> listWithoutId = new ArrayList<>();
 		Cursor cursor =
-			db.query(TransactionDbContract.ContactEntry.TABLE_NAME, null, null, null, null, null,
-				null, null);
+				db.query(TransactionDbContract.ContactEntry.TABLE_NAME, null, null, null, null,
+						null,
+						null, null);
 		while (cursor.moveToNext()) {
 			ContactModel model = new ContactModel();
 			model.setId(
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.ContactEntry._ID)));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.ContactEntry._ID)));
 			model.setName(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NAME)));
+					cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NAME)));
 			model.setNumber(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
+					cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
 			model.setUserId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
+					cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
 
 			if (model.getUserId() == 0) {
 				listWithoutId.add(model);
@@ -646,13 +694,15 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		cursor.close();
 
 		Collections.sort(list, new Comparator<ContactModel>() {
-			@Override public int compare(ContactModel contactModel, ContactModel t1) {
+			@Override
+			public int compare(ContactModel contactModel, ContactModel t1) {
 				return contactModel.getName().compareTo(t1.getName());
 			}
 		});
 
 		Collections.sort(listWithoutId, new Comparator<ContactModel>() {
-			@Override public int compare(ContactModel contactModel, ContactModel t1) {
+			@Override
+			public int compare(ContactModel contactModel, ContactModel t1) {
 				return contactModel.getName().compareTo(t1.getName());
 			}
 		});
@@ -666,7 +716,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues cv = new ContentValues();
 		cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, model.getUserId());
 		db.update(TransactionDbContract.ContactEntry.TABLE_NAME, cv,
-			TransactionDbContract.ContactEntry._ID + "=?", new String[] { Long.toString(rowId) });
+				TransactionDbContract.ContactEntry._ID + "=?", new String[]{Long.toString(rowId)});
 	}
 
 	public List<ContactModel> getUserWithUserId(String[] userIds) {
@@ -679,22 +729,22 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		}
 
 		Cursor cursor = db.rawQuery("SELECT * FROM "
-			+ TransactionDbContract.ContactEntry.TABLE_NAME
-			+ " WHERE "
-			+ TransactionDbContract.ContactEntry.COLUMN_USER_ID
-			+ " IN ("
-			+ query.toString()
-			+ ");", null);
+				+ TransactionDbContract.ContactEntry.TABLE_NAME
+				+ " WHERE "
+				+ TransactionDbContract.ContactEntry.COLUMN_USER_ID
+				+ " IN ("
+				+ query.toString()
+				+ ");", null);
 		while (cursor.moveToNext()) {
 			ContactModel model = new ContactModel();
 			model.setId(
-				cursor.getLong(cursor.getColumnIndex(TransactionDbContract.ContactEntry._ID)));
+					cursor.getLong(cursor.getColumnIndex(TransactionDbContract.ContactEntry._ID)));
 			model.setName(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NAME)));
+					cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NAME)));
 			model.setNumber(cursor.getString(
-				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
+					cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_NUMBER)));
 			model.setUserId(cursor.getLong(
-				cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
+					cursor.getColumnIndex(TransactionDbContract.ContactEntry.COLUMN_USER_ID)));
 
 			list.add(model);
 		}
@@ -726,7 +776,7 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 			ContentValues cv = new ContentValues();
 			cv.put(TransactionDbContract.ContactEntry.COLUMN_USER_ID, map.get(key));
 			db.update(TransactionDbContract.ContactEntry.TABLE_NAME, cv,
-				TransactionDbContract.ContactEntry.COLUMN_NUMBER + "=?", new String[] { key });
+					TransactionDbContract.ContactEntry.COLUMN_NUMBER + "=?", new String[]{key});
 		}
 	}
 
@@ -735,8 +785,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		ContentValues values = new ContentValues();
 		values.put(TransactionDbContract.NoteEntry.COLUMN_NOTE_ID, model.getTask_Id());
 		int id = db.update(TransactionDbContract.NoteEntry.TABLE_NAME, values,
-			TransactionDbContract.NoteEntry._ID + "=?",
-			new String[] { String.valueOf(model.getId()) });
+				TransactionDbContract.NoteEntry._ID + "=?",
+				new String[]{String.valueOf(model.getId())});
 	}
 
 	public void clearDatabase() {
@@ -748,4 +798,33 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		db.execSQL("DELETE FROM " + TransactionDbContract.NoteEntry.TABLE_NAME);
 		db.close();
 	}
+
+	public void setGroupUpdatedDate(String max, long groupId) {
+		SQLiteDatabase db = getWritableDatabase();
+		ContentValues cv = new ContentValues();
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_UPDATED_AT, max);
+		int id = db.update(TransactionDbContract.GroupEntry.TABLE_NAME, cv, TransactionDbContract
+				.GroupEntry.COLUMN_GROUP_ID + "=?", new String[]{Long.toString(groupId)});
+		Log.d(TransactionDbHelper.class.getSimpleName(), "setGroupUpdatedDate:  + Id: " + id);
+	}
+
+	public double getTotalGroupAmount(long groupId) {
+		SQLiteDatabase db = getReadableDatabase();
+		Cursor cursor = db.rawQuery("SELECT * FROM expenses WHERE expenses.group_id=" + Long
+						.toString(groupId),
+				null);
+
+		double amount = 0.0;
+		while (cursor.moveToNext()) {
+			String[] vals = cursor.getString(cursor.getColumnIndex(TransactionDbContract.Transaction_Entry
+					.COLUMN_TOTAL_AMOUNT)).split(",");
+			for (String v : vals) {
+				double num = Double.parseDouble(v);
+				amount += num;
+			}
+		}
+		cursor.close();
+		return amount;
+	}
+
 }

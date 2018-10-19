@@ -1,75 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    >
+    android:layout_height="64dp"
+    android:layout_marginBottom="2dp">
 
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp">
 
-        <LinearLayout
-            android:padding="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_weight="1"
+        <TextView
+            android:id="@+id/group_transaction_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:textColor="#000000"
+            android:textSize="20sp"
+            tools:text="Title" />
 
-    <TextView
-        android:textColor="#000000"
-        android:id="@+id/Group_Transaction_TextView"
-        android:text="Title"
-        android:textSize="20dp"
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <TextView
-        android:id="@+id/Group_Transaction2_TextView"
-        android:text="Bharat paid Rs500"
-        android:textSize="12dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <TextView
+            android:id="@+id/group_borrowed_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="You lent"
+            android:textColor="#000000"
+            android:textSize="12sp" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/group_trans_desc_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:textSize="12sp"
+            tools:text="Bharat paid Rs500" />
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+        <TextView
+            android:id="@+id/group_transaction_amount_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="end"
+            android:textColor="#000000"
+            android:textSize="20sp"
+            tools:text="Rs 1000" />
 
-
-                <TextView
-
-                    android:textColor="#000000"
-                    android:id="@+id/Group_Borrowed_TextView"
-                    android:text="You lent"
-                    android:textSize="12dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <TextView
-                    android:layout_gravity="right"
-                    android:textColor="#000000"
-                    android:id="@+id/Group_Transaction_Amount_TextView"
-                    android:text="Rs 1000"
-                    android:textSize="20dp"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </LinearLayout>
-
-    </LinearLayout>
-
-            <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="#B0BEC5" />
-</LinearLayout>
+    </RelativeLayout>
 </android.support.v7.widget.CardView>

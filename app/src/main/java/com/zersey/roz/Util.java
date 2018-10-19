@@ -11,17 +11,13 @@ import com.fasterxml.uuid.Generators;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
+import retrofit2.Response;
+
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.UUID;
-import retrofit2.Response;
+import java.util.*;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -71,17 +67,29 @@ public class Util {
 			JsonArray array = response.body().get("entries").getAsJsonArray();
 			for (int i = 0; i < array.size(); i++) {
 				JsonObject obj = array.get(i).getAsJsonObject();
-				BillModel model = JsonHandler.handleSingleReminder(obj);
+				BillModel model = JsonHandler.handleSingleBill(obj);
 				if (groupEntries && (model.getType().equals("gt") || Util.isEmpty(
 					model.getType()))) {
 					list.add(model);
 				} else if (!groupEntries && !Util.isEmpty(model.getType())) list.add(model);
 			}
+
+			Collections.sort(list, new Comparator<BillModel>() {
+				@Override
+				public int compare(BillModel o1, BillModel o2) {
+					return o2.getCreatedAt().compareTo(o1.getCreatedAt());
+				}
+			});
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		TransactionDbHelper dbHelper = TransactionDbHelper.getInstance(context);
 		dbHelper.addTransactions(list, groupEntries);
+		if(list.size() > 0){
+			String max = list.get(0).getCreatedAt();
+			dbHelper.setGroupUpdatedDate(max, list.get(0).getGroupId());
+		}
 		return list;
 	}
 
@@ -131,17 +139,20 @@ public class Util {
 			}
 			if (!obj.get("users").isJsonNull()) model.setUsers(obj.get("users").getAsString());
 			if (!obj.get("mobile").isJsonNull()) {
-				model.setMobile_no(obj.get("mobile").getAsString());
+				model.setMobileNos(obj.get("mobile").getAsString());
 			}
 			if (!obj.get("fullname").isJsonNull()) {
-				model.setFullname(obj.get("fullname").getAsString());
+				model.setFullNames(obj.get("fullname").getAsString());
 			}
 			if (!obj.get("type_id").isJsonNull()) {
 				model.setTypeId(obj.get("type_id").getAsInt());
 			}
 			//if (!obj.get("updated_at").isJsonNull()) {
-			//	model.setUpdatedAt(obj.get("updated_at").getAsString());
+			//	model.setCreatedAt(obj.get("updated_at").getAsString());
 			//}
+
+			model.setCreatedAt(obj.get("created_at").getAsString());
+			model.setUpdatedAt(obj.get("created_at").getAsString());
 			list.add(model);
 		}
 

@@ -26,7 +26,7 @@ public class JsonHandler {
 	public static Call<JsonObject> createGroup(Context context, GroupModel groupModel) {
 		return NetworkUtil.getRestAdapter(context)
 			.createGroup(groupModel.getGroupName(), groupModel.getGroupDesc(),
-				groupModel.getUsers(), groupModel.getTypeId(), groupModel.getMobile_no(), null,
+				groupModel.getUsers(), groupModel.getTypeId(), null, null,
 				groupModel.getGroupSettings());
 	}
 
@@ -34,7 +34,7 @@ public class JsonHandler {
 		return NetworkUtil.getRestAdapter(context).deleteSpecificUserEntry(id);
 	}
 
-	public static BillModel handleSingleReminder(JsonObject obj) {
+	public static BillModel handleSingleBill(JsonObject obj) {
 
 		BillModel model = new BillModel();
 
@@ -61,6 +61,10 @@ public class JsonHandler {
 			}
 			if (!obj.get("amount_due").isJsonNull()) {
 				model.setAmountDue(obj.get("amount_due").getAsString());
+			}
+
+			if (!obj.get("amount_paid").isJsonNull()) {
+				model.setAmountPaid(obj.get("amount_paid").getAsString());
 			}
 			if (!obj.get("payer_id").isJsonNull()) {
 				model.setPayerId(obj.get("payer_id").getAsString());

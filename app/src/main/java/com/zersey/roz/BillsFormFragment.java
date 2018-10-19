@@ -32,7 +32,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.zersey.roz.Data.TransactionDbHelper;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -68,20 +70,26 @@ public class BillsFormFragment extends DialogFragment {
 	private Context context;
 	private ArrayList<Split_Contact_model> secondSplitList;
 	private List<GroupModel> groupList;
+	public InterfaceCommunicator communicator;
+	private long groupId = -1;
 
-	@Override public void onCreate(@Nullable Bundle savedInstanceState) {
+	@Override
+	public void onCreate(@Nullable Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		mDbHelper = TransactionDbHelper.getInstance(getContext());
 		secondSplitList = new ArrayList<>();
 		if (getArguments() != null) {
 			groupModel = (GroupModel) getArguments().getSerializable("model");
+			if (groupModel != null)
+				groupId = groupModel.getGroupId();
 		}
 		groupList = mDbHelper.getGroups(0);
 	}
 
-	@Nullable @Override
+	@Nullable
+	@Override
 	public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-		Bundle savedInstanceState) {
+	                         Bundle savedInstanceState) {
 		context = inflater.getContext();
 		View fragmentView = inflater.inflate(R.layout.fragment_bills_form, container, false);
 
@@ -92,11 +100,12 @@ public class BillsFormFragment extends DialogFragment {
 		categoryList.add("Group");
 
 		fragmentView.findViewById(R.id.Notes_Image_Button)
-			.setOnClickListener(new View.OnClickListener() {
-				@Override public void onClick(View view) {
-					Add_notes(view);
-				}
-			});
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Add_notes(view);
+					}
+				});
 
 		categoryRecyclerView = fragmentView.findViewById(R.id.Category_Recycler_View);
 		fragmentView = initView(fragmentView);
@@ -106,7 +115,8 @@ public class BillsFormFragment extends DialogFragment {
 		}
 		TextView splitButton = fragmentView.findViewById(R.id.Split_Dialog);
 		splitButton.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				splitDialog();
 			}
 		});
@@ -121,7 +131,7 @@ public class BillsFormFragment extends DialogFragment {
 
 		dateEditText = fragmentView.findViewById(R.id.Date_Edit);
 		dateEditText.setText(
-			String.format(Locale.getDefault(), "%d-%d-%d", year_x, month_x + 1, day_x));
+				String.format(Locale.getDefault(), "%d-%d-%d", year_x, month_x + 1, day_x));
 
 		titleEditText = fragmentView.findViewById(R.id.Title_Edit);
 		amountEditText = fragmentView.findViewById(R.id.Amount_Edit);
@@ -131,34 +141,37 @@ public class BillsFormFragment extends DialogFragment {
 
 		TextView submitButton = fragmentView.findViewById(R.id.Submit_Transaction_form);
 		dateEditText.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				datePicker.show();
 			}
 		});
 
 		DatePickerDialog.OnDateSetListener dateSetListener =
-			new DatePickerDialog.OnDateSetListener() {
-				@Override
-				public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-					dateEditText.setText(
-						String.format(Locale.getDefault(), "%d-%d-%d", year, month + 1,
-							dayOfMonth));
-				}
-			};
+				new DatePickerDialog.OnDateSetListener() {
+					@Override
+					public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+						dateEditText.setText(
+								String.format(Locale.getDefault(), "%d-%d-%d", year, month + 1,
+										dayOfMonth));
+					}
+				};
 		datePicker =
-			new DatePickerDialog(context, R.style.Theme_AppCompat_DayNight_Dialog, dateSetListener,
-				cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+				new DatePickerDialog(context, R.style.Theme_AppCompat_DayNight_Dialog, dateSetListener,
+						cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
-		datePicker.setTitle("Select Date");
+		datePicker.setTitle("Select date");
 		ImageButton cameraButton = fragmentView.findViewById(R.id.Fab_Camera_Button);
 		cameraButton.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
+			@Override
+			public void onClick(View view) {
 				selectImage();
 			}
 		});
 
 		submitButton.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				submitBill();
 				dismiss();
 			}
@@ -166,73 +179,77 @@ public class BillsFormFragment extends DialogFragment {
 
 		final View finalFragmentView = fragmentView;
 		fragmentView.findViewById(R.id.share_with_group)
-			.setOnClickListener(new View.OnClickListener() {
-				@Override public void onClick(final View view) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-					LayoutInflater inflater = getActivity().getLayoutInflater();
-					final View view2 = inflater.inflate(R.layout.select_group_dialog, null);
-					builder.setView(view2);
-					final AlertDialog dialog = builder.create();
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(final View view) {
+						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+						LayoutInflater inflater = getActivity().getLayoutInflater();
+						final View view2 = inflater.inflate(R.layout.select_group_dialog, null);
+						builder.setView(view2);
+						final AlertDialog dialog = builder.create();
 
-					if (groupModel != null) {
-						view2.findViewById(R.id.add_member).setVisibility(View.GONE);
+						if (groupModel != null) {
+							view2.findViewById(R.id.add_member).setVisibility(View.GONE);
+						}
+
+						RecyclerView recyclerView = view2.findViewById(R.id.group_list);
+						recyclerView.setHasFixedSize(true);
+						recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+						SelectGroupAdapter selectGroupAdapter = new SelectGroupAdapter(groupList);
+						selectGroupAdapter.setGroupSelectListener(
+								new SelectGroupAdapter.GroupSelectListener() {
+									@Override
+									public void groupSelected(GroupModel groupModel) {
+										BillsFormFragment.this.groupModel = groupModel;
+										((TextView) view.findViewById(R.id.group_name)).setText(
+												groupModel.getGroupName());
+										categoryRecyclerView.setVisibility(View.GONE);
+										finalFragmentView.findViewById(R.id.Category_text_view)
+												.setVisibility(View.GONE);
+										view.findViewById(R.id.share_with_box).setVisibility(View.VISIBLE);
+										dialog.dismiss();
+									}
+								});
+						recyclerView.setAdapter(selectGroupAdapter);
+
+						view.findViewById(R.id.cross_button)
+								.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View v) {
+										BillsFormFragment.this.groupModel = null;
+										((TextView) view.findViewById(R.id.group_name)).setText("None");
+										categoryRecyclerView.setVisibility(View.VISIBLE);
+										finalFragmentView.findViewById(R.id.Category_text_view)
+												.setVisibility(View.VISIBLE);
+										view.findViewById(R.id.share_with_box).setVisibility(View.GONE);
+									}
+								});
+
+						view2.findViewById(R.id.add_member)
+								.setOnClickListener(new View.OnClickListener() {
+									@Override
+									public void onClick(View view) {
+										Intent intent = new Intent(getContext(), AddMembersActivity.class);
+										startActivityForResult(intent, 4);
+										dialog.dismiss();
+									}
+								});
+						dialog.show();
 					}
-
-					RecyclerView recyclerView = view2.findViewById(R.id.group_list);
-					recyclerView.setHasFixedSize(true);
-					recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-					SelectGroupAdapter selectGroupAdapter = new SelectGroupAdapter(groupList);
-					selectGroupAdapter.setGroupSelectListener(
-						new SelectGroupAdapter.GroupSelectListener() {
-							@Override public void groupSelected(GroupModel groupModel) {
-								BillsFormFragment.this.groupModel = groupModel;
-								((TextView) view.findViewById(R.id.group_name)).setText(
-									groupModel.getGroupName());
-								categoryRecyclerView.setVisibility(View.GONE);
-								finalFragmentView.findViewById(R.id.Category_text_view)
-									.setVisibility(View.GONE);
-								view.findViewById(R.id.share_with_box).setVisibility(View.VISIBLE);
-								dialog.dismiss();
-							}
-						});
-					recyclerView.setAdapter(selectGroupAdapter);
-
-					view.findViewById(R.id.cross_button)
-						.setOnClickListener(new View.OnClickListener() {
-							@Override public void onClick(View v) {
-								BillsFormFragment.this.groupModel = null;
-								((TextView) view.findViewById(R.id.group_name)).setText("None");
-								categoryRecyclerView.setVisibility(View.VISIBLE);
-								finalFragmentView.findViewById(R.id.Category_text_view)
-									.setVisibility(View.VISIBLE);
-								view.findViewById(R.id.share_with_box).setVisibility(View.GONE);
-							}
-						});
-
-					view2.findViewById(R.id.add_member)
-						.setOnClickListener(new View.OnClickListener() {
-							@Override public void onClick(View view) {
-								Intent intent = new Intent(getContext(), AddMembersActivity.class);
-								startActivityForResult(intent, 4);
-								dialog.dismiss();
-							}
-						});
-					dialog.show();
-				}
-			});
+				});
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		if (getDialog().getWindow() != null) {
 			getDialog().getWindow()
-				.setBackgroundDrawable(
-					new ColorDrawable(context.getResources().getColor(R.color.TransparentWhite)));
+					.setBackgroundDrawable(
+							new ColorDrawable(context.getResources().getColor(R.color.TransparentWhite)));
 			getDialog().show();
 			getDialog().getWindow()
-				.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.MATCH_PARENT);
+					.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+							WindowManager.LayoutParams.MATCH_PARENT);
 			getDialog().getWindow()
-				.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-					| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+					.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+							| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 		}
 		return fragmentView;
 	}
@@ -240,23 +257,25 @@ public class BillsFormFragment extends DialogFragment {
 	public void selectImage() {
 		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 		alertDialogBuilder.setCancelable(true)
-			.setTitle(Html.fromHtml("<font color='#3F51B5'>Choose an Image from</font>"))
-			.setPositiveButton(Html.fromHtml("<font color='#3F51B5'>camera</font>"),
-				new DialogInterface.OnClickListener() {
-					@Override public void onClick(DialogInterface dialog, int which) {
-						Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-						startActivityForResult(intent, 2);
-					}
-				})
-			.setNegativeButton(Html.fromHtml("<font color='#3F51B5'>Gallery</font>"),
-				new DialogInterface.OnClickListener() {
-					@Override public void onClick(DialogInterface dialog, int which) {
-						Intent i = new Intent(Intent.ACTION_PICK,
-							android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+				.setTitle(Html.fromHtml("<font color='#3F51B5'>Choose an Image from</font>"))
+				.setPositiveButton(Html.fromHtml("<font color='#3F51B5'>camera</font>"),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+								startActivityForResult(intent, 2);
+							}
+						})
+				.setNegativeButton(Html.fromHtml("<font color='#3F51B5'>Gallery</font>"),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog, int which) {
+								Intent i = new Intent(Intent.ACTION_PICK,
+										android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-						startActivityForResult(i, 1);
-					}
-				});
+								startActivityForResult(i, 1);
+							}
+						});
 
 		AlertDialog alertDialog = alertDialogBuilder.create();
 		alertDialog.show();
@@ -267,10 +286,10 @@ public class BillsFormFragment extends DialogFragment {
 		if (TextUtils.isEmpty(amount)) {
 			amount = "0";
 		}
-		Boolean check = true;
-		if (!check) {
+
+		if (groupModel != null) {
 			groupSplit();
-		} else if (check) {
+		} else {
 			singleSplit();
 		}
 
@@ -284,7 +303,7 @@ public class BillsFormFragment extends DialogFragment {
 		splitNotes = dialogView.findViewById(R.id.Dialog_Split_Notes);
 		splitRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 		dialogSplitAdapter =
-			new DialogSplitRecyclerViewAdapter(splitList, "", Integer.parseInt(amount));
+				new DialogSplitRecyclerViewAdapter(splitList, "", Integer.parseInt(amount));
 		splitRecyclerView.setAdapter(dialogSplitAdapter);
 
 		splitSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -292,39 +311,42 @@ public class BillsFormFragment extends DialogFragment {
 			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 				if (position == 2) {
 					dialogSplitAdapter = new DialogSplitRecyclerViewAdapter(splitList, "ratio",
-						Integer.parseInt(amount));
+							Integer.parseInt(amount));
 					splitRecyclerView.setAdapter(dialogSplitAdapter);
 				}
 				if (position == 1) {
 					dialogSplitAdapter =
-						new DialogSplitRecyclerViewAdapter(splitList, "", Integer.parseInt(amount));
+							new DialogSplitRecyclerViewAdapter(splitList, "", Integer.parseInt(amount));
 					splitRecyclerView.setAdapter(dialogSplitAdapter);
 				}
 				if (position == 0) {
 					dialogSplitAdapter = new DialogSplitRecyclerViewAdapter(splitList, "Equally",
-						Integer.parseInt(amount));
+							Integer.parseInt(amount));
 					splitRecyclerView.setAdapter(dialogSplitAdapter);
 				}
 			}
 
-			@Override public void onNothingSelected(AdapterView<?> parent) {
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
 
 			}
 		});
 		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-			new android.support.v7.app.AlertDialog.Builder(context);
+				new android.support.v7.app.AlertDialog.Builder(context);
 		alertDialogBuilder.setView(dialogView);
 		alertDialogBuilder.setCancelable(false);
 
 		alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			@Override public void onClick(DialogInterface dialog, int which) {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
 				splitList = dialogSplitAdapter.getList();
 			}
 		});
 		final android.support.v7.app.AlertDialog dialog = alertDialogBuilder.create();
 		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
-			@Override public void onShow(DialogInterface dialogInterface) {
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
 				positive_Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
 				positive_Button.setTextColor(getResources().getColor(R.color.colorPrimary));
 			}
@@ -332,15 +354,15 @@ public class BillsFormFragment extends DialogFragment {
 
 		if (getDialog().getWindow() != null) {
 			getDialog().getWindow()
-				.setBackgroundDrawable(
-					new ColorDrawable(context.getResources().getColor(R.color.TransparentWhite)));
+					.setBackgroundDrawable(
+							new ColorDrawable(context.getResources().getColor(R.color.TransparentWhite)));
 			getDialog().show();
 			getDialog().getWindow()
-				.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-					WindowManager.LayoutParams.MATCH_PARENT);
+					.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+							WindowManager.LayoutParams.MATCH_PARENT);
 			getDialog().getWindow()
-				.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-					| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+					.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+							| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 		}
 		//getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -352,37 +374,40 @@ public class BillsFormFragment extends DialogFragment {
 		View notes_view = inflater.inflate(R.layout.notes_dialogue_layout, null);
 		Notes_Edit = notes_view.findViewById(R.id.Notes_EditText);
 		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-			new android.support.v7.app.AlertDialog.Builder(getContext());
+				new android.support.v7.app.AlertDialog.Builder(getContext());
 		alertDialogBuilder.setView(notes_view);
 		alertDialogBuilder.setCancelable(false);
 		alertDialogBuilder.setPositiveButton(Html.fromHtml("<font color='#00796B'>Ok</font>"),
-			null);
+				null);
 		//alertDialogBuilder.setNegativeButton("Cancel",null);
 		alertDialogBuilder.setNeutralButton("Cancel", null);
 
 		final android.support.v7.app.AlertDialog alertDialog = alertDialogBuilder.create();
 		alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
 
-			@Override public void onShow(DialogInterface dialogInterface) {
+			@Override
+			public void onShow(DialogInterface dialogInterface) {
 
 				Button button = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
 				Button Negative = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
-				Negative.setTextColor(getContext().getColor(R.color.colorPrimary));
-				button.setTextColor(getContext().getColor(R.color.colorPrimary));
+				Negative.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
+				button.setTextColor(getContext().getResources().getColor(R.color.colorPrimary));
 				Negative.setOnClickListener(new View.OnClickListener() {
-					@Override public void onClick(View v) {
+					@Override
+					public void onClick(View v) {
 						alertDialog.dismiss();
 					}
 				});
 				button.setOnClickListener(new View.OnClickListener() {
 
-					@Override public void onClick(View view) {
+					@Override
+					public void onClick(View view) {
 						// TODO Do something
 
 						//Dismiss once everything is OK.
 						if (TextUtils.isEmpty(Notes_Edit.getText().toString())) {
 							Toast.makeText(getContext(), "Please write something",
-								Toast.LENGTH_LONG).show();
+									Toast.LENGTH_LONG).show();
 						} else {
 							alertDialog.dismiss();
 						}
@@ -454,7 +479,7 @@ public class BillsFormFragment extends DialogFragment {
 	private View initView(View view) {
 		contactRecyclerView = view.findViewById(R.id.Add_Member_RecyclerView);
 		contactRecyclerView.setLayoutManager(
-			new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+				new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 		String updated_Type = "";
 		if (TextUtils.isEmpty(updated_Type)) {
 			categoryAdapter = new CategoryAdapter(context, categoryList, "");
@@ -462,7 +487,7 @@ public class BillsFormFragment extends DialogFragment {
 			categoryAdapter = new CategoryAdapter(context, categoryList, updated_Type);
 		}
 		categoryRecyclerView.setLayoutManager(
-			new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+				new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
 		categoryRecyclerView.setAdapter(categoryAdapter);
 		return view;
 	}
@@ -478,12 +503,12 @@ public class BillsFormFragment extends DialogFragment {
 		String categoryText = categoryAdapter.getLastCategory();
 
 		if (groupModel == null && TextUtils.isEmpty(categoryText)) {
-			Toast.makeText(context, "Category can't be empty", Toast.LENGTH_SHORT).show();
+			Toast.makeText(context, "category can't be empty", Toast.LENGTH_SHORT).show();
 			return;
 		}
 
 		if (day_x == 0) {
-			dateEditText.setError("Date can't be empty");
+			dateEditText.setError("date can't be empty");
 			return;
 		}
 		if (Util.isEmpty(amountText)) {
@@ -491,7 +516,7 @@ public class BillsFormFragment extends DialogFragment {
 			return;
 		}
 		if (Util.isEmpty(titleText)) {
-			titleEditText.setError("Title can't be empty");
+			titleEditText.setError("title can't be empty");
 			return;
 		}
 
@@ -523,8 +548,8 @@ public class BillsFormFragment extends DialogFragment {
 			amountsPaid.append(secondSplitList.get(i).getSplit_Amount()).append(",");
 
 			double amountDuePerPerson =
-				Double.parseDouble(s.getSplit_Amount()) - Double.parseDouble(
-					secondSplitList.get(i).getSplit_Amount());
+					Double.parseDouble(s.getSplit_Amount()) - Double.parseDouble(
+							secondSplitList.get(i).getSplit_Amount());
 			amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
 			datesPaid.append(dateText).append(",");
 			i++;
@@ -543,9 +568,9 @@ public class BillsFormFragment extends DialogFragment {
 
 		if (groupModel != null) {
 			billModel.setGroupId(groupModel.getGroupId());
-			String str = groupModel.getGroupId() + "";
-			Log.d("submitBill: ", str);
 			billModel.setType("gt");
+			groupModel.setUpdatedAt(Util.getDateTime());
+			mDbHelper.setGroupUpdatedDate(groupModel.getUpdatedAt(), groupModel.getGroupId());
 			long rowId = mDbHelper.createEntry(billModel);
 			new ServerUtil(context).createEntry(billModel);
 			billModel.setId(rowId);
@@ -555,7 +580,8 @@ public class BillsFormFragment extends DialogFragment {
 			GroupModel groupModel2 = new GroupModel();
 			groupModel2.setGroupName(titleText);
 			groupModel2.setTypeId(1);
-
+			groupModel2.setCreatedAt(Util.getDateTime());
+			groupModel2.setUpdatedAt(Util.getDateTime());
 			groupModel2.setUsers(users.toString());
 			long newRowId = mDbHelper.createGroup(groupModel2);
 			groupModel2.setId(newRowId);
@@ -564,14 +590,15 @@ public class BillsFormFragment extends DialogFragment {
 
 		Toast.makeText(context, "Success", Toast.LENGTH_LONG).show();
 
-		if (groupModel != null) {
-			Intent intent = new Intent();
-			intent.putExtra("model", billModel);
-			//set result
+		if (getArguments() != null && groupModel != null) {
+			if (getArguments().getBoolean("fromGroup") && groupId == groupModel.getGroupId()) {
+				communicator.sendRequestCode(billModel);
+			}
 		}
 	}
 
-	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == 2 && resultCode == RESULT_OK) {
 			Uri uri = data.getData();
@@ -590,11 +617,22 @@ public class BillsFormFragment extends DialogFragment {
 			List<ContactModel> list = (List<ContactModel>) data.getSerializableExtra("ADDED");
 			contactList.addAll(list);
 			ContactRecyclerViewAdapter contactRecyclerViewAdapter =
-				new ContactRecyclerViewAdapter(contactList);
+					new ContactRecyclerViewAdapter(contactList);
 			contactRecyclerView.setAdapter(contactRecyclerViewAdapter);
 			for (ContactModel model : list) {
 				users.append(model.getUserId()).append(",");
 			}
 		}
+	}
+
+	public interface InterfaceCommunicator {
+		void sendRequestCode(BillModel billModel);
+	}
+
+	@Override
+	public void onAttach(Context context) {
+		super.onAttach(context);
+		if (getArguments().getBoolean("fromGroup"))
+			communicator = (InterfaceCommunicator) context;
 	}
 }

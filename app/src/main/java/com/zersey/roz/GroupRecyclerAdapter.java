@@ -11,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import java.util.List;
 
 public class GroupRecyclerAdapter
-	extends RecyclerView.Adapter<GroupRecyclerAdapter.GroupItemViewHolder> {
+		extends RecyclerView.Adapter<GroupRecyclerAdapter.GroupItemViewHolder> {
 	Context context;
 	int ViewType = 0;
 	List<GroupModel> list;
@@ -26,21 +27,22 @@ public class GroupRecyclerAdapter
 	private GroupItemClickListener mListener;
 
 	public GroupRecyclerAdapter(Context context, List<GroupModel> list,
-		GroupItemClickListener listener) {
+	                            GroupItemClickListener listener) {
 		this.context = context;
 		this.list = list;
 		mListener = listener;
 	}
 
-	@NonNull @Override
+	@NonNull
+	@Override
 	public GroupItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		if (viewType == 1) {
 			View view = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.add_button, parent, false);
+					.inflate(R.layout.add_button, parent, false);
 			return new GroupItemViewHolder(view);
 		} else if (viewType == 2) {
 			View view = LayoutInflater.from(parent.getContext())
-				.inflate(R.layout.dummy_layout, parent, false);
+					.inflate(R.layout.dummy_layout, parent, false);
 			return new GroupItemViewHolder(view);
 		} else {
 			LayoutInflater inflater = LayoutInflater.from(parent.getContext());
@@ -49,16 +51,19 @@ public class GroupRecyclerAdapter
 		}
 	}
 
-	@Override public void onBindViewHolder(@NonNull GroupItemViewHolder holder, int position) {
+	@Override
+	public void onBindViewHolder(@NonNull GroupItemViewHolder holder, int position) {
 		if (list.size() == 0) {
 			holder.Dummy_Layout.setOnClickListener(new View.OnClickListener() {
-				@Override public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 					mListener.onGroupPlusClick();
 				}
 			});
 		} else if (position == list.size() && list.size() != 0) {
 			holder.Plus_Button.setOnClickListener(new View.OnClickListener() {
-				@Override public void onClick(View v) {
+				@Override
+				public void onClick(View v) {
 					mListener.onGroupPlusClick();
 				}
 			});
@@ -68,16 +73,18 @@ public class GroupRecyclerAdapter
 		}
 	}
 
-	@Override public int getItemCount() {
+	@Override
+	public int getItemCount() {
 		return list.size() + 1;
 	}
 
 	public void addItem(GroupModel model) {
-		list.add(model);
+		list.add(0, model);
 		notifyDataSetChanged();
 	}
 
-	@Override public int getItemViewType(int position) {
+	@Override
+	public int getItemViewType(int position) {
 		if (list.size() == 0) {
 			ViewType = 2;
 			return 2;
@@ -91,7 +98,7 @@ public class GroupRecyclerAdapter
 	}
 
 	public class GroupItemViewHolder extends RecyclerView.ViewHolder
-		implements View.OnClickListener {
+			implements View.OnClickListener {
 		TextView tv, Add_Group_TextView;
 		LinearLayout Dummy_Layout;
 		ImageButton Plus_Button;
@@ -101,11 +108,12 @@ public class GroupRecyclerAdapter
 			if (list.size() == 0) {
 				Dummy_Layout = itemView.findViewById(R.id.Dummy_Layout);
 			} else if (ViewType == 1
-				&& list.size()
-				!= 0) {                //Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
+					&& list.size()
+					!= 0) {                //Add_Group_TextView = (TextView) itemView.findViewById(R.id.Add_Group_TextView);
 				Plus_Button = itemView.findViewById(R.id.Add_Group_Plus_Button);
 				Plus_Button.setOnClickListener(new View.OnClickListener() {
-					@Override public void onClick(View v) {
+					@Override
+					public void onClick(View v) {
 
 					}
 				});
@@ -115,12 +123,13 @@ public class GroupRecyclerAdapter
 			itemView.setOnClickListener(this);
 		}
 
-		@Override public void onClick(View view) {
+		@Override
+		public void onClick(View view) {
 			if (Plus_Button != null) {
 				Intent intent = new Intent(view.getContext(), Group_Form.class);
 				((Activity) view.getContext()).startActivityForResult(intent, 1234);
 			} else {
-				Intent intent = new Intent(view.getContext(), Specific_Group.class);
+				Intent intent = new Intent(view.getContext(), SpecificGroup.class);
 				intent.putExtra("group", list.get(getAdapterPosition()));
 				view.getContext().startActivity(intent);
 			}

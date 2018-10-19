@@ -1,36 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ChatFragment"
-    >
+    tools:context=".ChatFragment">
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/chat_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycleListGroup"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:layout_width="48dp"
-        android:id="@+id/add_chat"
-        android:layout_height="48dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="24dp"
-        android:src="@drawable/plus"
-
-        />
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp" />
 
 
 </RelativeLayout>

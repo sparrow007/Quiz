@@ -23,15 +23,16 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class Specific_Group extends AppCompatActivity
-	implements Group_Balances.OnFragmentInteractionListener,
-	Group_Transactions.OnFragmentInteractionListener,
-	Task_Fragment.OnFragmentInteractionListener {
+public class SpecificGroup extends AppCompatActivity
+		implements GroupBalances.OnFragmentInteractionListener,
+		GroupTransactions.OnFragmentInteractionListener,
+		Task_Fragment.OnFragmentInteractionListener, BillsFormFragment.InterfaceCommunicator {
 	private ViewPager mViewPager;
 	private TabLayout tab_layout;
 	private PagerAdapter adapter;
@@ -44,7 +45,8 @@ public class Specific_Group extends AppCompatActivity
 	private Animator animator;
 	private int radiusEnd;
 
-	@Override protected void onCreate(Bundle savedInstanceState) {
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_specific_group);
 		Group_Name = findViewById(R.id.Group_Name_TextView);
@@ -56,13 +58,15 @@ public class Specific_Group extends AppCompatActivity
 		model = (GroupModel) getIntent().getSerializableExtra("group");
 		fab = findViewById(R.id.fab);
 		Search.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				Search_Layout.setVisibility(View.VISIBLE);
 				Search.setVisibility(View.GONE);
 			}
 		});
 		Back.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				Search_Layout.setVisibility(View.GONE);
 				Search.setVisibility(View.VISIBLE);
 			}
@@ -71,16 +75,19 @@ public class Specific_Group extends AppCompatActivity
 		initTabLayout();
 		initViewPager();
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-			@Override public void onTabSelected(TabLayout.Tab tab) {
+			@Override
+			public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
-				//				groupsAdapter.notifyDataSetChanged();
+				//				billRecyclerAdapter.notifyDataSetChanged();
 			}
 
-			@Override public void onTabUnselected(TabLayout.Tab tab) {
+			@Override
+			public void onTabUnselected(TabLayout.Tab tab) {
 
 			}
 
-			@Override public void onTabReselected(TabLayout.Tab tab) {
+			@Override
+			public void onTabReselected(TabLayout.Tab tab) {
 
 			}
 		});
@@ -90,99 +97,85 @@ public class Specific_Group extends AppCompatActivity
 
 			}
 
-			@Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-				Group_Transactions.adapter.Search(s.toString());
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				GroupTransactions.adapter.Search(s.toString());
 			}
 
-			@Override public void afterTextChanged(Editable s) {
-				Group_Transactions.adapter.Search(s.toString());
+			@Override
+			public void afterTextChanged(Editable s) {
+				GroupTransactions.adapter.Search(s.toString());
 			}
 		});
 
 		final View layer = findViewById(R.id.layer);
 		final View root = findViewById(R.id.root);
 		root.getViewTreeObserver()
-			.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-				@Override public void onGlobalLayout() {
-					root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-					radiusEnd = (int) Math.hypot(root.getWidth(), root.getHeight());
-				}
-			});
+				.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+					@Override
+					public void onGlobalLayout() {
+						root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+						radiusEnd = (int) Math.hypot(root.getWidth(), root.getHeight());
+					}
+				});
 
 		fab.setOnFloatingActionsMenuUpdateListener(
-			new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
-				@Override public void onMenuExpanded() {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-						animator = ViewAnimationUtils.createCircularReveal(layer,
-							(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab.getHeight(),
-							0, radiusEnd);
-						animator.start();
+				new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+					@Override
+					public void onMenuExpanded() {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+							animator = ViewAnimationUtils.createCircularReveal(layer,
+									(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab
+											.getHeight(),
+									0, radiusEnd);
+							animator.start();
+						}
+						layer.setVisibility(VISIBLE);
 					}
-					layer.setVisibility(VISIBLE);
-				}
 
-				@Override public void onMenuCollapsed() {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-						animator = ViewAnimationUtils.createCircularReveal(layer,
-							(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab.getHeight(),
-							radiusEnd, 0);
-						animator.addListener(new Animator.AnimatorListener() {
-							@Override public void onAnimationStart(Animator animation) {
+					@Override
+					public void onMenuCollapsed() {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+							animator = ViewAnimationUtils.createCircularReveal(layer,
+									(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab
+											.getHeight(),
+									radiusEnd, 0);
+							animator.addListener(new Animator.AnimatorListener() {
+								@Override
+								public void onAnimationStart(Animator animation) {
 
-							}
+								}
 
-							@Override public void onAnimationEnd(Animator animation) {
-								layer.setVisibility(GONE);
-							}
+								@Override
+								public void onAnimationEnd(Animator animation) {
+									layer.setVisibility(GONE);
+								}
 
-							@Override public void onAnimationCancel(Animator animation) {
+								@Override
+								public void onAnimationCancel(Animator animation) {
 
-							}
+								}
 
-							@Override public void onAnimationRepeat(Animator animation) {
+								@Override
+								public void onAnimationRepeat(Animator animation) {
 
-							}
-						});
-						animator.start();
-					} else {
-						layer.setVisibility(GONE);
+								}
+							});
+							animator.start();
+						} else {
+							layer.setVisibility(GONE);
+						}
 					}
-				}
-			});
+				});
 
-		//	fab.setOnClickListener(new View.OnClickListener() {
-		//		@Override public void onClick(View view) {
-		//			if (mViewPager.getCurrentItem() == 0) {
-		//				Intent intent = new Intent(Specific_Group.this, MainActivity.class);
-		//				intent.putExtra("group", model);
-		//				startActivityForResult(intent, 123);
-		//				final android.support.v4.app.FragmentTransaction ft =
-		//					getSupportFragmentManager().beginTransaction();
-		//				final Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-		//				if (prev != null) {
-		//					ft.remove(prev);
-		//				}
-		//				ft.addToBackStack(null);
-		//				new BillsFormFragment().show(ft, "dialog");
-		//			} else if (mViewPager.getCurrentItem() == 1) {
-		//				final android.support.v4.app.FragmentTransaction ft =
-		//					getSupportFragmentManager().beginTransaction();
-		//				final Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
-		//				if (prev != null) {
-		//					ft.remove(prev);
-		//				}
-		//				ft.addToBackStack(null);
-		//				new Add_Task_form().show(ft, "dialog");
-		//			}
-		//		}
-		//	});
-		//}
+
 		com.getbase.floatingactionbutton.FloatingActionButton openBillFab =
-			findViewById(R.id.fab_open_bill_form);
+				findViewById(R.id.fab_open_bill_form);
 		openBillFab.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
+			@Override
+			public void onClick(View view) {
 				final FragmentTransaction ft =
-					getSupportFragmentManager().beginTransaction();
+						getSupportFragmentManager().beginTransaction();
 				final Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
 				if (prev != null) {
 					ft.remove(prev);
@@ -191,6 +184,7 @@ public class Specific_Group extends AppCompatActivity
 				BillsFormFragment frag = new BillsFormFragment();
 				Bundle bundle = new Bundle();
 				bundle.putSerializable("model", model);
+				bundle.putBoolean("fromGroup", true);
 				frag.setArguments(bundle);
 				frag.show(ft, "dialog");
 				fab.collapse();
@@ -198,11 +192,12 @@ public class Specific_Group extends AppCompatActivity
 		});
 
 		com.getbase.floatingactionbutton.FloatingActionButton openTaskFormFab =
-			findViewById(R.id.fab_open_tasks_form);
+				findViewById(R.id.fab_open_tasks_form);
 		openTaskFormFab.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
+			@Override
+			public void onClick(View view) {
 				final FragmentTransaction ft =
-					getSupportFragmentManager().beginTransaction();
+						getSupportFragmentManager().beginTransaction();
 				final Fragment prev = getSupportFragmentManager().findFragmentByTag("dialog");
 				if (prev != null) {
 					ft.remove(prev);
@@ -226,17 +221,20 @@ public class Specific_Group extends AppCompatActivity
 	public void initViewPager() {
 		mViewPager = findViewById(R.id.Group_Pager);
 		adapter =
-			new Specific_Group.PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount());
+				new SpecificGroup.PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount
+						());
 		mViewPager.setAdapter(adapter);
-		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tab_layout));
+		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener
+				(tab_layout));
 		mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			@Override public void onPageScrolled(int position, float positionOffset,
-				int positionOffsetPixels) {
+			@Override
+			public void onPageScrolled(int position, float positionOffset,
+			                           int positionOffsetPixels) {
 				Fragment fragment =
-					((FragmentPagerAdapter) mViewPager.getAdapter()).getItem(position);
+						((FragmentPagerAdapter) mViewPager.getAdapter()).getItem(position);
 				if (position == 1) {
 					fragment.onStart();
-					//groupsAdapter.notifyDataSetChanged();
+					//billRecyclerAdapter.notifyDataSetChanged();
 				}
 /*				if (position == 0 && positionOffset == 0)
 					fab.show();
@@ -245,17 +243,20 @@ public class Specific_Group extends AppCompatActivity
 */
 			}
 
-			@Override public void onPageSelected(int position) {
+			@Override
+			public void onPageSelected(int position) {
 
 			}
 
-			@Override public void onPageScrollStateChanged(int state) {
+			@Override
+			public void onPageScrollStateChanged(int state) {
 
 			}
 		});
 	}
 
-	@Override public void onFragmentInteraction(Uri uri) {
+	@Override
+	public void onFragmentInteraction(Uri uri) {
 
 	}
 
@@ -265,12 +266,19 @@ public class Specific_Group extends AppCompatActivity
 		startActivityForResult(intent, 123);
 	}
 
-	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 	/*		if (resultCode == Activity.RESULT_OK){
-				Group_Transactions.groupsAdapter.addItem((BillModel) data.getSerializableExtra("model"));
+				GroupTransactions.billRecyclerAdapter.addItem((BillModel) data
+				.getSerializableExtra("model"));
 			}*/
 
+	}
+
+	@Override
+	public void sendRequestCode(BillModel billModel) {
+		GroupTransactions.adapter.addItem(billModel);
 	}
 
 	public class PagerAdapter extends FragmentPagerAdapter {
@@ -281,12 +289,13 @@ public class Specific_Group extends AppCompatActivity
 			mnooftabes = Numberoftabes;
 		}
 
-		@Override public Fragment getItem(int position) {
+		@Override
+		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
 			// Return a PlaceholderFragment (defined as a static inner class below).
 			switch (position) {
 				case 0:
-					return new Group_Transactions();
+					return new GroupTransactions();
 				case 1:
 					Fragment frag = new Task_Fragment();
 					Bundle args = new Bundle();
@@ -294,7 +303,7 @@ public class Specific_Group extends AppCompatActivity
 					frag.setArguments(args);
 					return frag;
 				case 2:
-					return new Group_Balances();
+					return new GroupBalances();
 				case 3:
 					Fragment frag1 = new GroupAbout();
 					Bundle args1 = new Bundle();
@@ -309,11 +318,13 @@ public class Specific_Group extends AppCompatActivity
 			//return PlaceholderFragment.newInstance(position + 1);
 		}
 
-		@Override public int getCount() {
+		@Override
+		public int getCount() {
 			return mnooftabes;
 		}
 
-		@Override public int getItemPosition(@NonNull Object object) {
+		@Override
+		public int getItemPosition(@NonNull Object object) {
 			return POSITION_NONE;
 		}
 	}

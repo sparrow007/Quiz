@@ -75,8 +75,8 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 		AMOUNT = findViewById(R.id.Transaction_AMOUNT_TextView);
 		TITLE = findViewById(R.id.Transaction_toolbar_TextView);
 		Settle_Button = findViewById(R.id.Transaction_Settle_Button);
-		Amount = getIntent().getStringExtra("Amount");
-		Title = getIntent().getStringExtra("Title");
+		Amount = getIntent().getStringExtra("amount");
+		Title = getIntent().getStringExtra("title");
 		Date = getIntent().getStringExtra("DateCreated");
 
 		if (!TextUtils.isEmpty(Amount) && !TextUtils.isEmpty(Date) && !TextUtils.isEmpty(Title)) {
@@ -106,10 +106,10 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 				//i.putExtra("pos", getAdapterPosition());
 				//i.putExtra("_ID", Updated_Id);
 				i.putExtra("CardClicked", "Yes");
-				i.putExtra("Title", Title);
+				i.putExtra("title", Title);
 				//i.putExtra("Type", Updated_Type);
-				//i.putExtra("Category", Updated_Category);
-				i.putExtra("Amount", Amount);
+				//i.putExtra("category", Updated_Category);
+				i.putExtra("amount", Amount);
 				i.putExtra("DateCreated", Date);
 				//i.putExtra("model", model);
 				startActivity(i);

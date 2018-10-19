@@ -304,7 +304,7 @@ public class PasswordOtpActivity extends BaseActivity {
 						Toast.makeText(getApplicationContext(), "please enter your name",
 							Toast.LENGTH_LONG).show();
 					} else if (Util.isEmpty(dob.getText().toString())) {
-						Toast.makeText(getApplicationContext(), "please enter Date of birth",
+						Toast.makeText(getApplicationContext(), "please enter date of birth",
 							Toast.LENGTH_LONG).show();
 					} else {
 						String otp =

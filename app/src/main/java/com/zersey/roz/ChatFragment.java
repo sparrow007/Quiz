@@ -6,78 +6,103 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.zersey.roz.Data.TransactionDbHelper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ChatFragment extends Fragment {
 
-	private RecyclerView recyclerListGroups;
-	//public FragGroupClickFloatButton onClickFloatButton;
-	//private ArrayList<Group> listGroup;
-	//private ListGroupsAdapter groupsAdapter;
-	private SwipeRefreshLayout mSwipeRefreshLayout;
-	public static final int CONTEXT_MENU_DELETE = 1;
-	public static final int CONTEXT_MENU_EDIT = 2;
-	public static final int CONTEXT_MENU_LEAVE = 3;
-	public static final int REQUEST_EDIT_GROUP = 0;
-	public static final String CONTEXT_MENU_KEY_INTENT_DATA_POS = "pos";
+    // private RecyclerView recyclerListGroups;
+    //public FragGroupClickFloatButton onClickFloatButton;
+    //private ArrayList<Group> listGroup;
+    //private ListGroupsAdapter billRecyclerAdapter;
+//    private SwipeRefreshLayout mSwipeRefreshLayout;
+//    public static final int CONTEXT_MENU_DELETE = 1;
+//    public static final int CONTEXT_MENU_EDIT = 2;
+//    public static final int CONTEXT_MENU_LEAVE = 3;
+//    public static final int REQUEST_EDIT_GROUP = 0;
+//    public static final String CONTEXT_MENU_KEY_INTENT_DATA_POS = "pos";
+    private TransactionDbHelper transactionDbHelper;
+    private List<GroupModel> list;
+    private ChatListAdapter chatListAdapter;
 
-	public ChatFragment() {
-		// Required empty public constructor
-	}
+    public ChatFragment() {
+        // Required empty public constructor
+    }
 
-	@Override public void onCreate(@Nullable Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		FirebaseDatabase database = FirebaseDatabase.getInstance();
-		DatabaseReference myRef = database.getReference("group_chats");
-	}
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("group_chats");
+        transactionDbHelper = TransactionDbHelper.getInstance(getContext());
+        list = new ArrayList<>();
+        list.addAll(transactionDbHelper.getGroups(0));
+    }
 
-	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-		Bundle savedInstanceState) {
-		// Inflate the layout for this fragment
-		View layout = inflater.inflate(R.layout.fragment_chat, container, false);
-		FloatingActionButton addChat = layout.findViewById(R.id.add_chat);
-		addChat.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View view) {
-				startActivity(new Intent(getContext(), ChatActivity.class));
-			}
-		});
-		//listGroup = GroupDB.getInstance(getContext()).getListGroups();
-		//recyclerListGroups = (RecyclerView) layout.findViewById(R.id.recycleListGroup);
-		//mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
-		//mSwipeRefreshLayout.setOnRefreshListener(this);
-		//GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
-		//recyclerListGroups.setLayoutManager(layoutManager);
-		//groupsAdapter = new ListGroupsAdapter(getContext(), listGroup);
-		//recyclerListGroups.setAdapter(groupsAdapter);
-		//onClickFloatButton = new FragGroupClickFloatButton();
-		//progressDialog = new LovelyProgressDialog(getContext())
-		//	.setCancelable(false)
-		//	.setIcon(R.drawable.ic_dialog_delete_group)
-		//	.setTitle("Deleting....")
-		//	.setTopColorRes(R.color.colorAccent);
-		//
-		//waitingLeavingGroup = new LovelyProgressDialog(getContext())
-		//	.setCancelable(false)
-		//	.setIcon(R.drawable.ic_dialog_delete_group)
-		//	.setTitle("Group leaving....")
-		//	.setTopColorRes(R.color.colorAccent);
-		//
-		//if(listGroup.size() == 0){
-		//	//Ket noi server hien thi group
-		//	mSwipeRefreshLayout.setRefreshing(true);
-		//	getListGroup();
-		//}
-		return layout;
-	}
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View layout = inflater.inflate(R.layout.fragment_chat, container, false);
+
+        RecyclerView chatRecyclerView = layout.findViewById(R.id.chat_list);
+        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        chatRecyclerView.setHasFixedSize(true);
+        chatListAdapter = new ChatListAdapter(list);
+        chatRecyclerView.setAdapter(chatListAdapter);
+
+        ((Main2Activity)getActivity()).setChatFragmentRefreshListener(new Main2Activity.ChatFragmentRefreshListener() {
+            @Override
+            public void onRefresh(List<GroupModel> l) {
+                list.clear();
+                list.addAll(l);
+                chatListAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        //listGroup = GroupDB.getInstance(getContext()).getListGroups();
+        //recyclerListGroups = (RecyclerView) layout.findViewById(R.id.recycleListGroup);
+        //mSwipeRefreshLayout = (SwipeRefreshLayout) layout.findViewById(R.id.swipeRefreshLayout);
+        //mSwipeRefreshLayout.setOnRefreshListener(this);
+        //GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
+        //recyclerListGroups.setLayoutManager(layoutManager);
+        //billRecyclerAdapter = new ListGroupsAdapter(getContext(), listGroup);
+        //recyclerListGroups.setAdapter(billRecyclerAdapter);
+        //onClickFloatButton = new FragGroupClickFloatButton();
+        //progressDialog = new LovelyProgressDialog(getContext())
+        //	.setCancelable(false)
+        //	.setIcon(R.drawable.ic_dialog_delete_group)
+        //	.setTitle("Deleting....")
+        //	.setTopColorRes(R.color.colorAccent);
+        //
+        //waitingLeavingGroup = new LovelyProgressDialog(getContext())
+        //	.setCancelable(false)
+        //	.setIcon(R.drawable.ic_dialog_delete_group)
+        //	.setTitle("Group leaving....")
+        //	.setTopColorRes(R.color.colorAccent);
+        //
+        //if(listGroup.size() == 0){
+        //	//Ket noi server hien thi group
+        //	mSwipeRefreshLayout.setRefreshing(true);
+        //	getListGroup();
+        //}
+        return layout;
+    }
+
 
 /*	private void getListGroup(){
 		FirebaseDatabase.getInstance().getReference().child("user/"+ StaticConfig.UID+"/group").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -95,7 +120,7 @@ public class ChatFragment extends Fragment {
 					getGroupInfo(0);
 				}else{
 					mSwipeRefreshLayout.setRefreshing(false);
-					groupsAdapter.notifyDataSetChanged();
+					billRecyclerAdapter.notifyDataSetChanged();
 				}
 			}
 

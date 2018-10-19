@@ -190,10 +190,10 @@ public class BillRecyclerAdapter
 				i.putExtra("pos", getAdapterPosition());
 				i.putExtra("_ID", list.get(getAdapterPosition()).getGroupId());
 				i.putExtra("CardClicked", "Yes");
-				i.putExtra("Title", list.get(getAdapterPosition()).getTitle());
+				i.putExtra("title", list.get(getAdapterPosition()).getTitle());
 				i.putExtra("Type", list.get(getAdapterPosition()).getType());
-				i.putExtra("Category", list.get(getAdapterPosition()).getCatId());
-				i.putExtra("Amount", list.get(getAdapterPosition()).getTotalAmount());
+				i.putExtra("category", list.get(getAdapterPosition()).getCatId());
+				i.putExtra("amount", list.get(getAdapterPosition()).getTotalAmount());
 				i.putExtra("DateCreated", list.get(getAdapterPosition()).getPaidAtDate());
 				i.putExtra("model", list.get(getAdapterPosition()));
 				view.getContext().startActivity(i);

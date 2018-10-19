@@ -9,91 +9,101 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
+
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ChatActivity extends AppCompatActivity {
 
-	EditText editWriteMessage;
-	private long userId;
-	private String fullname;
-	private GroupChat mGroupChat;
-	private DatabaseReference myRef;
-	public static final int VIEW_TYPE_USER_MESSAGE = 0;
-	public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
-	private ListMessageAdapter adapter;
+    EditText editWriteMessage;
+    private long userId;
+    private String fullname;
+    private GroupChat mGroupChat;
+    private DatabaseReference myRef;
+    public static final int VIEW_TYPE_USER_MESSAGE = 0;
+    public static final int VIEW_TYPE_FRIEND_MESSAGE = 1;
+    private ListMessageAdapter adapter;
+    private String nodeName;
 
-	@Override protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_chat);
-		editWriteMessage = findViewById(R.id.editWriteMessage);
-		mGroupChat = new GroupChat();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_chat);
+        editWriteMessage = findViewById(R.id.editWriteMessage);
+        mGroupChat = new GroupChat();
 
-		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
-		userId = Long.parseLong(prefs.getString("userid", null));
-		fullname = prefs.getString("fullname", null);
+        GroupModel groupModel = (GroupModel) getIntent().getSerializableExtra("group");
 
-		mGroupChat.setGroupId(103);
-		mGroupChat.setMessageList(new ArrayList<Message>());
+        SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
+        userId = Long.parseLong(prefs.getString("userid", null));
+        fullname = prefs.getString("fullname", null);
 
-		final RecyclerView recyclerChat = findViewById(R.id.recyclerChat);
-		recyclerChat.setLayoutManager(new LinearLayoutManager(this));
-		adapter = new ListMessageAdapter(mGroupChat, userId);
 
-		myRef = FirebaseDatabase.getInstance().getReference("group_chats");
-		myRef.child("103-planet-roz").addChildEventListener(new ChildEventListener() {
-			@Override
-			public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-				if (dataSnapshot.getValue() != null) {
-					HashMap mapMessage = (HashMap) dataSnapshot.getValue();
-					Message newMessage = new Message();
-					newMessage.setIdSender((long) mapMessage.get("idSender"));
-					newMessage.setText((String) mapMessage.get("text"));
-					newMessage.setTimestamp((long) mapMessage.get("timestamp"));
-					newMessage.setSenderName((String) mapMessage.get("senderName"));
-					mGroupChat.getMessageList().add(newMessage);
-					adapter.notifyDataSetChanged();
-					recyclerChat.getLayoutManager()
-						.scrollToPosition(mGroupChat.getMessageList().size() - 1);
-				}
-			}
+        nodeName = Long.toString(groupModel.getGroupId()) + "-" + groupModel.getGroupName();
+        mGroupChat.setGroupId(groupModel.getGroupId());
+        mGroupChat.setMessageList(new ArrayList<Message>());
 
-			@Override
-			public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+        final RecyclerView recyclerChat = findViewById(R.id.recyclerChat);
+        recyclerChat.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ListMessageAdapter(mGroupChat, userId);
 
-			}
+        myRef = FirebaseDatabase.getInstance().getReference("group_chats");
+        myRef.child(nodeName).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                if (dataSnapshot.getValue() != null) {
+                    HashMap mapMessage = (HashMap) dataSnapshot.getValue();
+                    Message newMessage = new Message();
+                    newMessage.setIdSender((long) mapMessage.get("idSender"));
+                    newMessage.setText((String) mapMessage.get("text"));
+                    newMessage.setTimestamp((long) mapMessage.get("timestamp"));
+                    newMessage.setSenderName((String) mapMessage.get("senderName"));
+                    mGroupChat.getMessageList().add(newMessage);
+                    adapter.notifyDataSetChanged();
+                    recyclerChat.getLayoutManager()
+                            .scrollToPosition(mGroupChat.getMessageList().size() - 1);
+                }
+            }
 
-			@Override public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-			}
+            }
 
-			@Override
-			public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
-			}
+            }
 
-			@Override public void onCancelled(@NonNull DatabaseError databaseError) {
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
 
-			}
-		});
-		recyclerChat.setAdapter(adapter);
-	}
+            }
 
-	public void buttonSend(View view) {
-		String content = editWriteMessage.getText().toString().trim();
-		if (content.length() > 0) {
-			editWriteMessage.setText("");
-			Message newMessage = new Message();
-			newMessage.setText(content);
-			newMessage.setIdSender(userId);
-			newMessage.setSenderName(fullname);
-			newMessage.setTimestamp(System.currentTimeMillis());
-			myRef.child("103-planet-roz").push().setValue(newMessage);
-		}
-	}
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        recyclerChat.setAdapter(adapter);
+    }
+
+    public void buttonSend(View view) {
+        String content = editWriteMessage.getText().toString().trim();
+        if (content.length() > 0) {
+            editWriteMessage.setText("");
+            Message newMessage = new Message();
+            newMessage.setText(content);
+            newMessage.setIdSender(userId);
+            newMessage.setSenderName(fullname);
+            newMessage.setTimestamp(System.currentTimeMillis());
+            myRef.child(nodeName).push().setValue(newMessage);
+        }
+    }
 }

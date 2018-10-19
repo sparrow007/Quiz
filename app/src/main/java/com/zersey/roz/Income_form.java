@@ -654,7 +654,7 @@ public class Income_form extends Fragment {
 			cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setOnDateSetListener(dateSetListener);
 		datePicker.setCancelable(true);
-		datePicker.setTitle("Select Date");
+		datePicker.setTitle("Select date");
 
 		dateEdit.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
@@ -841,17 +841,17 @@ public class Income_form extends Fragment {
 		Boolean cancel = false;
 
 		if (day_x == 0) {
-			dateEdit.setError("Date can't be empty");
+			dateEdit.setError("date can't be empty");
 			focus = dateEdit;
 			cancel = true;
 		}
 		if (!TextUtils.isDigitsOnly(Amount_text)) {
-			AmountEdit.setError("Amount can't be empty");
+			AmountEdit.setError("amount can't be empty");
 			focus = AmountEdit;
 			cancel = true;
 		}
 		if (TextUtils.isEmpty(Title_text)) {
-			TitleEdit.setError("Title can't be empty");
+			TitleEdit.setError("title can't be empty");
 			focus = TitleEdit;
 			cancel = true;
 		}
@@ -957,7 +957,7 @@ public class Income_form extends Fragment {
 				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, Updated_Title);
 				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY,
 				//		Updated_Category);
-				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
+				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT,
 				//		"Rs " + Updated_Amount);
 				//	values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 				//		Updated_Date);

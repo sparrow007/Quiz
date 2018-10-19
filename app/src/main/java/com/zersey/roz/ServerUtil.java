@@ -6,13 +6,14 @@ import com.crashlytics.android.Crashlytics;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
 import io.fabric.sdk.android.services.concurrency.AsyncTask;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ServerUtil {
 
@@ -213,7 +214,7 @@ public class ServerUtil {
 				mDbHelper.addOnlineId(groupModel);
 				long row = mDbHelper.createEntry(expenseModel);
 				expenseModel.setId(row);
-				GroupsFragment.groupsAdapter.addItem(expenseModel);
+				GroupsFragment.billRecyclerAdapter.addItem(expenseModel);
 				Call<JsonObject> res = JsonHandler.createEntry(context, expenseModel);
 				res.enqueue(new Callback<JsonObject>() {
 					@Override public void onResponse(@NonNull Call<JsonObject> call,

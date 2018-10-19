@@ -31,7 +31,7 @@ public class Specific_Group_transaction_Adapter
 		holder.textView.setText(list.get(position).getContact_Name().getName());
 		holder.totalAmountTextView.setText(list.get(position).getSplit_Amount());
 		if (SeparateGroupTransaction.class.isInstance(context)) {
-			holder.Pay_Button.setText("Amount Due");
+			holder.Pay_Button.setText("amount Due");
 		}
 	}
 

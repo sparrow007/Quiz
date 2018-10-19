@@ -47,10 +47,10 @@ public class Transaction_MoreAdapter extends RecyclerView.Adapter<Transaction_Mo
         TextView Category,Amount,Date,Title;
         public More_ViewHolder(View itemView) {
             super(itemView);
-            Category=(TextView)itemView.findViewById(R.id.Category_TextView);
-            Amount=(TextView)itemView.findViewById(R.id.Amount_TextView);
-            Date=(TextView)itemView.findViewById(R.id.Date_TextView);
-            Title=(TextView)itemView.findViewById(R.id.Title_TexTVew);
+            Category=(TextView)itemView.findViewById(R.id.category_text_view);
+            Amount=(TextView)itemView.findViewById(R.id.amount_text_view);
+            Date=(TextView)itemView.findViewById(R.id.date_text_view);
+            Title=(TextView)itemView.findViewById(R.id.title_text_view);
         }
     }
 }

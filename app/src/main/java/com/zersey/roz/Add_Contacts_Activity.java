@@ -87,7 +87,7 @@ public class Add_Contacts_Activity extends AppCompatActivity {
 					values.put(Contacts_contract.Contacts_Entry.Column_Contact_Name, name);
 					values.put(Contacts_contract.Contacts_Entry.Column_Contact_Number, Number);
 					//values.put(Transaction_contract.Transaction_Entry.Column_Amount, "Rs " + Amount_text);
-					//Log.d("Date created", DateEdit_text);
+					//Log.d("date created", DateEdit_text);
 					//values.put(Transaction_contract.Transaction_Entry.Column_Date_Created, DateEdit_text);
 
 					long newRowId =

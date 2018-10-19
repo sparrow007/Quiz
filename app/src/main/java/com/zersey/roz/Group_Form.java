@@ -61,13 +61,13 @@ public class Group_Form extends AppCompatActivity {
 	}
 
 	/*public void splitDialog(View view) {
-		String Amount = Amount_Edit.getText().toString();
+		String amount = Amount_Edit.getText().toString();
 		int no_of_Person = Item_list.size();
 		String Specific_Amount;
-		if (TextUtils.isEmpty(Amount)) {
+		if (TextUtils.isEmpty(amount)) {
 			Specific_Amount = "0";
 		} else {
-			Specific_Amount = "" + Integer.parseInt(Amount) / (Item_list.size() + 1);
+			Specific_Amount = "" + Integer.parseInt(amount) / (Item_list.size() + 1);
 		}
 		Log.d("splitDialog: ", Item_list.size() + "");
 		if (Item_list.size() > 0) {
@@ -89,7 +89,7 @@ public class Group_Form extends AppCompatActivity {
 		splitNotes = (TextView) PromptsView.findViewById(R.id.Dialog_Split_Notes);
 		Split_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
 		Adapter = new DialogSplitRecyclerViewAdapter(getApplicationContext(), Split_List, "",
-			Integer.parseInt(Amount));
+			Integer.parseInt(amount));
 		Split_RecyclerView.setAdapter(Adapter);
 
 		Split_Spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -169,7 +169,7 @@ public class Group_Form extends AppCompatActivity {
 		model.setGroupDesc(
 			((EditText) findViewById(R.id.group_desc_edit_text)).getText().toString());
 		model.setUsers(users.toString());
-		//model.setMobile_no(users_number.toString());
+		//model.setMobileNos(users_number.toString());
 
 		long groupId = mDbHelper.createGroup(model);
 		model.setId(groupId);
@@ -177,7 +177,7 @@ public class Group_Form extends AppCompatActivity {
 		new ServerUtil(this).createGroup(model, Item_list);
 		Intent intent = new Intent();
 		intent.putExtra("group", model);
-		GroupsFragment.billsAdapter.addItem(model);
+		GroupsFragment.groupRecyclerAdapter.addItem(model);
 		setResult(Activity.RESULT_OK, intent);
 		finish();
 	}

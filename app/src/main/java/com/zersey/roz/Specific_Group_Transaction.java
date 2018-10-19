@@ -35,8 +35,8 @@ public class Specific_Group_Transaction extends AppCompatActivity {
 		DATE = (TextView) findViewById(R.id.DATE_TextView);
 		AMOUNT = (TextView) findViewById(R.id.AMOUNT_TextView);
 		TITLE = (TextView) findViewById(R.id.toolbar_TextView);
-		Amount = getIntent().getStringExtra("Amount");
-		Title = getIntent().getStringExtra("Title");
+		Amount = getIntent().getStringExtra("amount");
+		Title = getIntent().getStringExtra("title");
 		Date = getIntent().getStringExtra("DateCreated");
 		Log.d("onCreate: ", Amount + "");
 		AMOUNT.setText("Rs " + Amount);

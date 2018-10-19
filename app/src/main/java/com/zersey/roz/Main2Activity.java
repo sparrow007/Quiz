@@ -26,12 +26,15 @@ import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.gson.JsonObject;
 import com.zersey.roz.Data.TransactionDbHelper;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -60,6 +63,16 @@ public class Main2Activity extends BaseActivity {
 	}
 
 	private FragmentRefreshListener fragmentRefreshListener;
+	private ChatFragmentRefreshListener chatFragmentRefreshListener;
+
+	public ChatFragmentRefreshListener getChatFragmentRefreshListener() {
+		return chatFragmentRefreshListener;
+	}
+
+	public void setChatFragmentRefreshListener(ChatFragmentRefreshListener
+			                                           chatFragmentRefreshListener) {
+		this.chatFragmentRefreshListener = chatFragmentRefreshListener;
+	}
 
 	public interface FragmentRefreshListener {
 		void onRefresh(List<GroupModel> list);
@@ -69,7 +82,12 @@ public class Main2Activity extends BaseActivity {
 		void onBillsRefresh(List<BillModel> billsList);
 	}
 
-	@Override protected void onCreate(Bundle savedInstanceState) {
+	public interface ChatFragmentRefreshListener {
+		void onRefresh(List<GroupModel> list);
+	}
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main2);
 		list = new ArrayList<>();
@@ -87,35 +105,39 @@ public class Main2Activity extends BaseActivity {
 		mDrawerLayout = findViewById(R.id.drawer_layout);
 
 		mDrawerToggle =
-			new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.navigation_drawer_open,
-				R.string.navigation_drawer_close);
+				new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string
+						.navigation_drawer_open,
+						R.string.navigation_drawer_close);
 		mDrawerLayout.addDrawerListener(mDrawerToggle);
 		mDrawerLayout.post(new Runnable() {
-			@Override public void run() {
+			@Override
+			public void run() {
 				mDrawerToggle.syncState();
 			}
 		});
 
 		NavigationView navigationView = findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(
-			new NavigationView.OnNavigationItemSelectedListener() {
-				@Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-					menuItem.setChecked(true);
-					switch (menuItem.getItemId()) {
-						case R.id.nav_gallery:
-							Intent i = new Intent(Main2Activity.this, Contact_List_Activity.class);
-							startActivity(i);
-							return true;
+				new NavigationView.OnNavigationItemSelectedListener() {
+					@Override
+					public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+						menuItem.setChecked(true);
+						switch (menuItem.getItemId()) {
+							case R.id.nav_gallery:
+								Intent i = new Intent(Main2Activity.this, Contact_List_Activity
+										.class);
+								startActivity(i);
+								return true;
 
-						case R.id.nav_logout:
-							logout();
-							return true;
+							case R.id.nav_logout:
+								logout();
+								return true;
+						}
+
+						mDrawerLayout.closeDrawers();
+						return true;
 					}
-
-					mDrawerLayout.closeDrawers();
-					return true;
-				}
-			});
+				});
 
 		TabLayout tabLayout = findViewById(R.id.Tab_layout);
 		final FloatingActionsMenu fab = findViewById(R.id.fab);
@@ -126,13 +148,14 @@ public class Main2Activity extends BaseActivity {
 
 		ViewPager viewPager = findViewById(R.id.container);
 		PagerAdapter adapter =
-			new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+				new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 		viewPager.setAdapter(adapter);
 		tabLayout.setupWithViewPager(viewPager);
 
 		viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-			@Override public void onPageScrolled(int position, float positionOffset,
-				int positionOffsetPixels) {
+			@Override
+			public void onPageScrolled(int position, float positionOffset,
+			                           int positionOffsetPixels) {
 				if (position == 1) {
 					fab.setVisibility(View.GONE);
 				} else {
@@ -140,63 +163,74 @@ public class Main2Activity extends BaseActivity {
 				}
 			}
 
-			@Override public void onPageSelected(int position) {
+			@Override
+			public void onPageSelected(int position) {
 			}
 
-			@Override public void onPageScrollStateChanged(int state) {
+			@Override
+			public void onPageScrollStateChanged(int state) {
 			}
 		});
 
 		final View layer = findViewById(R.id.layer);
 		final View root = findViewById(R.id.root);
 		root.getViewTreeObserver()
-			.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-				@Override public void onGlobalLayout() {
-					root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-					radiusEnd = (int) Math.hypot(root.getWidth(), root.getHeight());
-				}
-			});
+				.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+					@Override
+					public void onGlobalLayout() {
+						root.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+						radiusEnd = (int) Math.hypot(root.getWidth(), root.getHeight());
+					}
+				});
 
 		fab.setOnFloatingActionsMenuUpdateListener(
-			new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
-				@Override public void onMenuExpanded() {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-						animator = ViewAnimationUtils.createCircularReveal(layer,
-							(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab.getHeight(),
-							0, radiusEnd);
-						animator.start();
+				new FloatingActionsMenu.OnFloatingActionsMenuUpdateListener() {
+					@Override
+					public void onMenuExpanded() {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+							animator = ViewAnimationUtils.createCircularReveal(layer,
+									(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab
+											.getHeight(),
+									0, radiusEnd);
+							animator.start();
+						}
+						layer.setVisibility(VISIBLE);
 					}
-					layer.setVisibility(VISIBLE);
-				}
 
-				@Override public void onMenuCollapsed() {
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-						animator = ViewAnimationUtils.createCircularReveal(layer,
-							(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab.getHeight(),
-							radiusEnd, 0);
-						animator.addListener(new Animator.AnimatorListener() {
-							@Override public void onAnimationStart(Animator animation) {
+					@Override
+					public void onMenuCollapsed() {
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+							animator = ViewAnimationUtils.createCircularReveal(layer,
+									(int) fab.getX() + fab.getWidth(), (int) fab.getY() + fab
+											.getHeight(),
+									radiusEnd, 0);
+							animator.addListener(new Animator.AnimatorListener() {
+								@Override
+								public void onAnimationStart(Animator animation) {
 
-							}
+								}
 
-							@Override public void onAnimationEnd(Animator animation) {
-								layer.setVisibility(GONE);
-							}
+								@Override
+								public void onAnimationEnd(Animator animation) {
+									layer.setVisibility(GONE);
+								}
 
-							@Override public void onAnimationCancel(Animator animation) {
+								@Override
+								public void onAnimationCancel(Animator animation) {
 
-							}
+								}
 
-							@Override public void onAnimationRepeat(Animator animation) {
+								@Override
+								public void onAnimationRepeat(Animator animation) {
 
-							}
-						});
-						animator.start();
-					} else {
-						layer.setVisibility(GONE);
+								}
+							});
+							animator.start();
+						} else {
+							layer.setVisibility(GONE);
+						}
 					}
-				}
-			});
+				});
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
 
@@ -215,12 +249,13 @@ public class Main2Activity extends BaseActivity {
 	private void fetchBillsFromServer() {
 		if (NetworkUtil.hasInternetConnection(this)) {
 			Call<JsonObject> result =
-				NetworkUtil.getRestAdapter(this).fetchAllUserEntry(null, null);
+					NetworkUtil.getRestAdapter(this).fetchAllUserEntry(null, null);
 			result.enqueue(new Callback<JsonObject>() {
-				@Override public void onResponse(@NonNull Call<JsonObject> call,
-					@NonNull Response<JsonObject> response) {
+				@Override
+				public void onResponse(@NonNull Call<JsonObject> call,
+				                       @NonNull Response<JsonObject> response) {
 					Util.getNotesList(Main2Activity.this, response, false);
-					//GroupsFragment.groupsAdapter.addAll(mDbHelper.getAllEntries());
+					//GroupsFragment.billRecyclerAdapter.addAll(mDbHelper.getAllEntries());
 					getFragmentRefreshListener().onBillsRefresh(mDbHelper.getAllEntries());
 				}
 
@@ -235,10 +270,11 @@ public class Main2Activity extends BaseActivity {
 
 	private void fetchTasksFromServer() {
 		Call<JsonObject> taskResult =
-			NetworkUtil.getRestAdapter(Main2Activity.this).fetchGroupNotes(null, null);
+				NetworkUtil.getRestAdapter(Main2Activity.this).fetchGroupNotes(null, null);
 		taskResult.enqueue(new Callback<JsonObject>() {
-			@Override public void onResponse(@NonNull Call<JsonObject> call,
-				@NonNull Response<JsonObject> response) {
+			@Override
+			public void onResponse(@NonNull Call<JsonObject> call,
+			                       @NonNull Response<JsonObject> response) {
 				taskList.addAll(Util.parseTaskResponse(response.body()));
 				mDbHelper.addTasks(taskList);
 				//taskList.clear();
@@ -246,7 +282,8 @@ public class Main2Activity extends BaseActivity {
 				getFragmentRefreshListener().onTaskRefresh(taskList);
 			}
 
-			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
+			@Override
+			public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 
 			}
 		});
@@ -256,24 +293,28 @@ public class Main2Activity extends BaseActivity {
 		if (NetworkUtil.hasInternetConnection(this)) {
 			showProgress("Getting your groups...");
 			Call<JsonObject> result =
-				NetworkUtil.getRestAdapter(this).fetchGroups(prefs.getString("userid", null), null);
+					NetworkUtil.getRestAdapter(this).fetchGroups(prefs.getString("userid", null),
+							null);
 			result.enqueue(new Callback<JsonObject>() {
-				@Override public void onResponse(@NonNull Call<JsonObject> call,
-					@NonNull Response<JsonObject> response) {
+				@Override
+				public void onResponse(@NonNull Call<JsonObject> call,
+				                       @NonNull Response<JsonObject> response) {
 					list.addAll(Util.parseGroupResponse(response.body()));
 					mDbHelper.addGroups(list);
 					for (GroupModel groupModel : list) {
 						Call<JsonObject> groupResult =
-							NetworkUtil.getRestAdapter(Main2Activity.this)
-								.fetchAllUserEntry(null, Long.toString(groupModel.getGroupId()));
+								NetworkUtil.getRestAdapter(Main2Activity.this)
+										.fetchAllUserEntry(null, Long.toString(groupModel
+												.getGroupId()));
 						groupResult.enqueue(new Callback<JsonObject>() {
-							@Override public void onResponse(@NonNull Call<JsonObject> call,
-								@NonNull Response<JsonObject> response) {
+							@Override
+							public void onResponse(@NonNull Call<JsonObject> call,
+							                       @NonNull Response<JsonObject> response) {
 								Util.getNotesList(Main2Activity.this, response, true);
 							}
 
-							@Override public void onFailure(@NonNull Call<JsonObject> call,
-								@NonNull Throwable t) {
+							@Override
+							public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {
 								t.printStackTrace();
 							}
 						});
@@ -281,8 +322,9 @@ public class Main2Activity extends BaseActivity {
 
 					list.clear();
 					list.addAll(mDbHelper.getGroups(0));
-					//Collections.sort(list);
+
 					getFragmentRefreshListener().onRefresh(list);
+					getChatFragmentRefreshListener().onRefresh(list);
 				}
 
 				@Override
@@ -298,7 +340,8 @@ public class Main2Activity extends BaseActivity {
 	}
 
 	Thread thread = new Thread(new Runnable() {
-		@Override public void run() {
+		@Override
+		public void run() {
 			String phone = getSharedPreferences("login", MODE_PRIVATE).getString("phone", null);
 			if (phone != null) {
 				phone = phone.substring(phone.length() - 10, phone.length());
@@ -307,21 +350,22 @@ public class Main2Activity extends BaseActivity {
 			List<String> contactModelList = new ArrayList<>();
 			if (count == 0) {
 				Cursor phoneCursor =
-					getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-						null, null, null, null);
+						getContentResolver().query(ContactsContract.CommonDataKinds.Phone
+										.CONTENT_URI,
+								null, null, null, null);
 				if (phoneCursor != null) {
 					while (phoneCursor.moveToNext()) {
 						String name = phoneCursor.getString(phoneCursor.getColumnIndex(
-							ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
+								ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME));
 						String hasPhone = phoneCursor.getString(phoneCursor.getColumnIndex(
-							ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
+								ContactsContract.CommonDataKinds.Phone.HAS_PHONE_NUMBER));
 
 						String cNumber = null;
 						//String code = null;
 						if (hasPhone.equalsIgnoreCase("1")) {
 
 							cNumber = phoneCursor.getString(phoneCursor.getColumnIndex(
-								ContactsContract.CommonDataKinds.Phone.NUMBER));
+									ContactsContract.CommonDataKinds.Phone.NUMBER));
 							cNumber = cNumber.replaceAll("[^0-9]", "");
 							if (cNumber.length() > 10) {
 								//code = cNumber.substring(0, cNumber.length() - 10);
@@ -336,7 +380,7 @@ public class Main2Activity extends BaseActivity {
 
 							if (contactModelList.size() == 200) {
 								new ServerUtil(Main2Activity.this).verifyContacts(
-									contactModelList.toArray(new String[0]));
+										contactModelList.toArray(new String[0]));
 								contactModelList.clear();
 							}
 
@@ -345,19 +389,21 @@ public class Main2Activity extends BaseActivity {
 						}
 					}
 					new ServerUtil(Main2Activity.this).verifyContacts(
-						contactModelList.toArray(new String[0]));
+							contactModelList.toArray(new String[0]));
 					phoneCursor.close();
 				}
 			}
 		}
 	});
 
-	@Override public boolean onCreateOptionsMenu(Menu menu) {
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.menu_main2, menu);
 		return true;
 	}
 
-	@Override public boolean onOptionsItemSelected(MenuItem item) {
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 			case R.id.action_settings:
 				Intent i = new Intent(getApplicationContext(), OnBoarding_Screens.class);
@@ -379,7 +425,8 @@ public class Main2Activity extends BaseActivity {
 			this.numberOfTabs = numberOfTabs;
 		}
 
-		@Override public Fragment getItem(int position) {
+		@Override
+		public Fragment getItem(int position) {
 			switch (position) {
 
 				case 0:
@@ -399,7 +446,9 @@ public class Main2Activity extends BaseActivity {
 			}
 		}
 
-		@Nullable @Override public CharSequence getPageTitle(int position) {
+		@Nullable
+		@Override
+		public CharSequence getPageTitle(int position) {
 			switch (position) {
 				case 0:
 					return "Dashboard";
@@ -409,22 +458,27 @@ public class Main2Activity extends BaseActivity {
 			return null;
 		}
 
-		@Override public int getCount() {
+		@Override
+		public int getCount() {
 			return numberOfTabs;
 		}
 
-		@Override public int getItemPosition(@NonNull Object object) {
+		@Override
+		public int getItemPosition(@NonNull Object object) {
 			return POSITION_NONE;
 		}
 
-		@NonNull @Override public Object instantiateItem(ViewGroup container, int position) {
+		@NonNull
+		@Override
+		public Object instantiateItem(ViewGroup container, int position) {
 			Fragment createdFragment = (Fragment) super.instantiateItem(container, position);
 			tags[position] = createdFragment.getTag();
 			return createdFragment;
 		}
 	}
 
-	@Override protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		Fragment fragment = getSupportFragmentManager().findFragmentByTag(tags[0]);
 		fragment.onActivityResult(requestCode, resultCode, data);

@@ -214,7 +214,7 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
 					try{Total_Income_PM = Total_Income_PM + Integer.parseInt(amount);
 					}catch (Exception e){e.printStackTrace();}
 				}
-				Log.d("Income Date", dateCreated + "");
+				Log.d("Income date", dateCreated + "");
 				if (Current_month == 2) {
 					Income_date = Income_date + 31;
 				} else if (Current_month == 3) {
@@ -447,33 +447,33 @@ public class Graphs extends Fragment implements OnChartValueSelectedListener,OnC
 	public void GettingValueForBarEntryList(Float number){
 		if (Current_month == month_x) {
 			if (Current_day == day_x) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 1)) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 2)) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 3)) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 4)) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 5)) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 6)) {
-				//Log.d("Category ", Type);
+				//Log.d("category ", Type);
 				BarChart_Entries.add(new BarEntry(Income_date, number));
 			} if (Current_day == (day_x - 7)) {
 				//BarChart_Entries.add(new BarEntry(Income_date, number));
 			} else {
-				Log.d("Category ", Current_day + "  " + day_x);
+				Log.d("category ", Current_day + "  " + day_x);
 			}
 		} else {
-			Log.d("Category ", Current_month + "  " + month_x);
+			Log.d("category ", Current_month + "  " + month_x);
 		}
 
 	}

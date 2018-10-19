@@ -78,7 +78,7 @@ public class Task_Form_Activity extends AppCompatActivity {
 				dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 				cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
-		datePicker.setTitle("Select Date");
+		datePicker.setTitle("Select date");
 
 		if (getIntent().getSerializableExtra("Group") != null
 			&& getIntent().getSerializableExtra("Task") != null) {

@@ -116,7 +116,7 @@ public class Add_Task_form extends DialogFragment {
 
                         cal.get(Calendar.DAY_OF_MONTH));
         datePicker.setCancelable(true);
-        datePicker.setTitle("Select Date");
+        datePicker.setTitle("Select date");
 
         ArrayAdapter<String> adapter0 =
                 new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, stringlist);

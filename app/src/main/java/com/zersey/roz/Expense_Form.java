@@ -998,7 +998,7 @@ public class Expense_Form extends Fragment {
 			dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 			cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
-		datePicker.setTitle("Select Date");
+		datePicker.setTitle("Select date");
 		fab = (ImageButton) fragmentLayout.findViewById(R.id.Fab_Camera_Button);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
@@ -1092,9 +1092,9 @@ public class Expense_Form extends Fragment {
 			//Material_Date.setHasFocus(true);
 
             /*
-            Updated_Category = getIntent().getStringExtra("Category");
-            Updated_Amount = getIntent().getStringExtra("Amount");
-            Updated_Title = getIntent().getStringExtra("Title");
+            Updated_Category = getIntent().getStringExtra("category");
+            Updated_Amount = getIntent().getStringExtra("amount");
+            Updated_Title = getIntent().getStringExtra("title");
             Updated_Date = getIntent().getStringExtra("DateCreated");
             Updated_Id = getIntent().getIntExtra("_ID", 0);*/
 			/*if ("Clothing".equals(Updated_Category)) {
@@ -1530,22 +1530,22 @@ public class Expense_Form extends Fragment {
 		View focus = null;
 		Boolean cancel = false;
 		if (TextUtils.isEmpty(Category_text)) {
-			Snackbar.make(fragmentLayout, "Category can't be empty", Snackbar.LENGTH_LONG)
+			Snackbar.make(fragmentLayout, "category can't be empty", Snackbar.LENGTH_LONG)
 				.setAction("Action", null)
 				.show();
 		} else {
 			if (day_x == 0) {
-				dateEdit.setError("Date can't be empty");
+				dateEdit.setError("date can't be empty");
 				focus = dateEdit;
 				cancel = true;
 			}
 			if (!TextUtils.isDigitsOnly(Amount_text)) {
-				AmountEdit.setError("Amount can't be empty");
+				AmountEdit.setError("amount can't be empty");
 				focus = AmountEdit;
 				cancel = true;
 			}
 			if (TextUtils.isEmpty(Title_text)) {
-				TitleEdit.setError("Title can't be empty");
+				TitleEdit.setError("title can't be empty");
 				focus = TitleEdit;
 				cancel = true;
 			}
@@ -1624,7 +1624,7 @@ public class Expense_Form extends Fragment {
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, Title_text);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY,
 					//	Category_text);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
+					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT,
 					//	"Rs " + Amount_text);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 					//	DateEdit_text);
@@ -1673,7 +1673,7 @@ public class Expense_Form extends Fragment {
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, Updated_Title);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY,
 					//	Updated_Category);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
+					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT,
 					//	"Rs " + Updated_Amount);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 					//	Updated_Date);

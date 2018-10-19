@@ -43,6 +43,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.github.florent37.materialtextfield.MaterialTextField;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
@@ -54,8 +55,6 @@ import com.zersey.roz.Data.Contactsdbhelper;
 import com.zersey.roz.Data.TransactionDbHelper;
 
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -78,7 +77,7 @@ import java.util.List;
 	ImageView Img_File;
 	private TextView Submit_button;
 	private TextView More_TextButton;
-	private ImageButton Delete_Button, Camera_Button;
+	private ImageButton Camera_Button;
 	//private AutoCompleteTextView AutoCompleteContacts;
 	private ArrayAdapter<String> ContactAdapter;
 	private MaterialTextField Material_Title, Material_Amount, Material_Amount_Due;
@@ -124,7 +123,7 @@ import java.util.List;
 	private BillModel model;
 	private Boolean check = true;
 	private String Amount;
-	//private pageradapter groupsAdapter;
+	//private pageradapter billRecyclerAdapter;
 	private String Updated_Type = "";
 	private GroupModel groupModel;
 	private String payerId;
@@ -160,9 +159,9 @@ import java.util.List;
 
 			model = (BillModel) getIntent().getSerializableExtra("model");
 
-			Updated_Category = getIntent().getStringExtra("Category");
-			Updated_Amount = getIntent().getStringExtra("Amount");
-			Updated_Title = getIntent().getStringExtra("Title");
+			Updated_Category = getIntent().getStringExtra("category");
+			Updated_Amount = getIntent().getStringExtra("amount");
+			Updated_Title = getIntent().getStringExtra("title");
 			Updated_Date = getIntent().getStringExtra("DateCreated");
 			Updated_Type = getIntent().getStringExtra("Type");
 			Updated_Id = getIntent().getIntExtra("_ID", 0);
@@ -231,11 +230,6 @@ import java.util.List;
 			}
 		});
 
-		Delete_Button.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
-				Delete_Button();
-			}
-		});
 
 
         /*Camera_Button.setOnClickListener(new View.OnClickListener() {
@@ -261,7 +255,7 @@ import java.util.List;
 				dateSetListener, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH),
 				cal.get(Calendar.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
-		datePicker.setTitle("Select Date");
+		datePicker.setTitle("Select date");
 		fab = findViewById(R.id.Fab_Camera_Button);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View view) {
@@ -273,7 +267,6 @@ import java.util.List;
 		});
 
 		if (!TextUtils.isEmpty(CardClicked)) {
-			Delete_Button.setVisibility(View.VISIBLE);
 			Material_Title.setHasFocus(true);
 			Material_Amount.setHasFocus(true);
 			Updated_Amount = Updated_Amount.replace("Rs ", "");
@@ -660,21 +653,21 @@ import java.util.List;
 		View focus = null;
 		Boolean cancel = false;
 		if (groupModel == null && TextUtils.isEmpty(Category_text)) {
-			Snackbar.make(findViewById(R.id.myCoordinaterLayout), "Category can't be empty",
+			Snackbar.make(findViewById(R.id.myCoordinaterLayout), "category can't be empty",
 				Snackbar.LENGTH_LONG).setAction("Action", null).show();
 		} else {
 			if (day_x == 0) {
-				dateEdit.setError("Date can't be empty");
+				dateEdit.setError("date can't be empty");
 				focus = dateEdit;
 				cancel = true;
 			}
 			if (Util.isEmpty(Amount_text)) {
-				AmountEdit.setError("Amount can't be empty");
+				AmountEdit.setError("amount can't be empty");
 				focus = AmountEdit;
 				cancel = true;
 			}
 			if (TextUtils.isEmpty(Title_text)) {
-				TitleEdit.setError("Title can't be empty");
+				TitleEdit.setError("title can't be empty");
 				focus = TitleEdit;
 				cancel = true;
 			}
@@ -696,7 +689,7 @@ import java.util.List;
 						values.put(Contacts_contract.Contacts_Entry.Column_Contact_Number,
 							Contact_Person_Number);
 						//values.put(Transaction_contract.Transaction_Entry.Column_Amount, "Rs " + Amount_text);
-						//Log.d("Date created", DateEdit_text);
+						//Log.d("date created", DateEdit_text);
 						//values.put(Transaction_contract.Transaction_Entry.Column_Date_Created, DateEdit_text);
 
 						long newRowId =
@@ -812,7 +805,7 @@ import java.util.List;
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TITLE, Updated_Title);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_CATEGORY,
 					//	Updated_Category);
-					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_AMOUNT,
+					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_TOTAL_AMOUNT,
 					//	"Rs " + Updated_Amount);
 					//values.put(TransactionDbContract.Transaction_Entry.COLUMN_PAY_DATE,
 					//	Updated_Date);
