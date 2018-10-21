@@ -2,9 +2,9 @@ package com.zersey.roz;
 
 public class Split_Contact_model {
 	private ContactModel Contact_Name;
-	private String Split_Amount;
+	private double Split_Amount;
 
-	public Split_Contact_model(ContactModel contact, String amount) {
+	public Split_Contact_model(ContactModel contact, double amount) {
 		this.Contact_Name = contact;
 		this.Split_Amount = amount;
 	}
@@ -13,7 +13,7 @@ public class Split_Contact_model {
 		Contact_Name = contact_Name;
 	}
 
-	public void setSplit_Amount(String split_Amount) {
+	public void setSplit_Amount(double split_Amount) {
 		Split_Amount = split_Amount;
 	}
 
@@ -21,7 +21,7 @@ public class Split_Contact_model {
 		return Contact_Name;
 	}
 
-	public String getSplit_Amount() {
+	public double getSplit_Amount() {
 		return Split_Amount;
 	}
 }

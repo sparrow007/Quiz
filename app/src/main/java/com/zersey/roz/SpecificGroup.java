@@ -30,16 +30,12 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class SpecificGroup extends AppCompatActivity
-		implements GroupBalances.OnFragmentInteractionListener,
-		GroupTransactions.OnFragmentInteractionListener,
+		implements GroupTransactions.OnFragmentInteractionListener,
 		Task_Fragment.OnFragmentInteractionListener, BillsFormFragment.InterfaceCommunicator {
 	private ViewPager mViewPager;
 	private TabLayout tab_layout;
-	private PagerAdapter adapter;
-	private TextView Group_Name;
 	private LinearLayout Search_Layout;
-	private EditText Search_Edit;
-	private ImageButton Back, Search;
+	private ImageButton Search;
 	private FloatingActionsMenu fab;
 	public GroupModel model;
 	private Animator animator;
@@ -49,10 +45,10 @@ public class SpecificGroup extends AppCompatActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_specific_group);
-		Group_Name = findViewById(R.id.Group_Name_TextView);
-		Back = findViewById(R.id.back_Button_group);
+		TextView group_Name = findViewById(R.id.Group_Name_TextView);
+		ImageButton back = findViewById(R.id.back_Button_group);
 		Search = findViewById(R.id.Search_Icon_group);
-		Search_Edit = findViewById(R.id.Search_Edit);
+		EditText search_Edit = findViewById(R.id.Search_Edit);
 		Search_Layout = findViewById(R.id.Search_Layout);
 		Search_Layout.setVisibility(View.GONE);
 		model = (GroupModel) getIntent().getSerializableExtra("group");
@@ -64,21 +60,20 @@ public class SpecificGroup extends AppCompatActivity
 				Search.setVisibility(View.GONE);
 			}
 		});
-		Back.setOnClickListener(new View.OnClickListener() {
+		back.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				Search_Layout.setVisibility(View.GONE);
 				Search.setVisibility(View.VISIBLE);
 			}
 		});
-		Group_Name.setText(model.getGroupName());
+		group_Name.setText(model.getGroupName());
 		initTabLayout();
 		initViewPager();
 		tab_layout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 			@Override
 			public void onTabSelected(TabLayout.Tab tab) {
 				mViewPager.setCurrentItem(tab.getPosition());
-				//				billRecyclerAdapter.notifyDataSetChanged();
 			}
 
 			@Override
@@ -91,7 +86,7 @@ public class SpecificGroup extends AppCompatActivity
 
 			}
 		});
-		Search_Edit.addTextChangedListener(new TextWatcher() {
+		search_Edit.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -99,12 +94,12 @@ public class SpecificGroup extends AppCompatActivity
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				GroupTransactions.adapter.Search(s.toString());
+				GroupTransactions.adapter.searchBill(s.toString());
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
-				GroupTransactions.adapter.Search(s.toString());
+				GroupTransactions.adapter.searchBill(s.toString());
 			}
 		});
 
@@ -220,9 +215,8 @@ public class SpecificGroup extends AppCompatActivity
 
 	public void initViewPager() {
 		mViewPager = findViewById(R.id.Group_Pager);
-		adapter =
-				new SpecificGroup.PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount
-						());
+		PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tab_layout.getTabCount
+				());
 		mViewPager.setAdapter(adapter);
 		mViewPager.setOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener
 				(tab_layout));
@@ -258,12 +252,6 @@ public class SpecificGroup extends AppCompatActivity
 	@Override
 	public void onFragmentInteraction(Uri uri) {
 
-	}
-
-	public void addTransactionInGroup() {
-		Intent intent = new Intent(this, MainActivity.class);
-		intent.putExtra("group", model);
-		startActivityForResult(intent, 123);
 	}
 
 	@Override

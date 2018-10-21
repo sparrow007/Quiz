@@ -67,6 +67,8 @@ public class TransactionDbHelper extends SQLiteOpenHelper {
 		SQLiteDatabase db = getWritableDatabase();
 		ContentValues cv = new ContentValues();
 		cv.put(TransactionDbContract.GroupEntry.COLUMN_USERS, model.getUsers());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_MOBILE_NUMBER, model.getMobile_no());
+		cv.put(TransactionDbContract.GroupEntry.COLUMN_FULL_NAME, model.getFullname());
 		return db.update(TransactionDbContract.GroupEntry.TABLE_NAME, cv,
 				TransactionDbContract.GroupEntry._ID + "=?",
 				new String[]{Long.toString(model.getId())});

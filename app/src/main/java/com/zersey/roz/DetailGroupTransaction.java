@@ -19,7 +19,7 @@ import com.zersey.roz.Data.TransactionDbHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SeparateGroupTransaction extends AppCompatActivity {
+public class DetailGroupTransaction extends AppCompatActivity {
 	AppBarLayout mAppBarLayout;
 	private RecyclerView Specific_recyclerView;
 	private Toolbar toolbar;
@@ -61,10 +61,10 @@ public class SeparateGroupTransaction extends AppCompatActivity {
 				m.setName("You");
 				m.setUserId(Long.parseLong(prefs.getString("userid", null)));
 				m.setNumber(prefs.getString("phone", null));
-				splitList.add(new Split_Contact_model(m, totalAmounts[i]));
+				splitList.add(new Split_Contact_model(m, Double.parseDouble((totalAmounts[i]))));
 			} else {
 				List<ContactModel> m = mDbHelper.getUserWithUserId(new String[] { users[i] });
-				if (m.size() > 0) splitList.add(new Split_Contact_model(m.get(0), totalAmounts[i]));
+				if (m.size() > 0) splitList.add(new Split_Contact_model(m.get(0), Double.parseDouble(totalAmounts[i])));
 			}
 		}
 

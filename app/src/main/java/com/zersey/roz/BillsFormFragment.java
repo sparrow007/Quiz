@@ -1,6 +1,7 @@
 package com.zersey.roz;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -72,6 +72,7 @@ public class BillsFormFragment extends DialogFragment {
 	private List<GroupModel> groupList;
 	public InterfaceCommunicator communicator;
 	private long groupId = -1;
+	private String myUserId;
 
 	@Override
 	public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,7 +138,8 @@ public class BillsFormFragment extends DialogFragment {
 		amountEditText = fragmentView.findViewById(R.id.Amount_Edit);
 		splitRecyclerView = new RecyclerView(context);
 		SharedPreferences prefs = context.getSharedPreferences("login", MODE_PRIVATE);
-		users.append(prefs.getString("userid", null)).append(",");
+		myUserId = prefs.getString("userid", null);
+		users.append(myUserId).append(",");
 
 		TextView submitButton = fragmentView.findViewById(R.id.Submit_Transaction_form);
 		dateEditText.setOnClickListener(new View.OnClickListener() {
@@ -157,8 +159,10 @@ public class BillsFormFragment extends DialogFragment {
 					}
 				};
 		datePicker =
-				new DatePickerDialog(context, R.style.Theme_AppCompat_DayNight_Dialog, dateSetListener,
-						cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+				new DatePickerDialog(context, R.style.Theme_AppCompat_DayNight_Dialog,
+						dateSetListener,
+						cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar
+						.DAY_OF_MONTH));
 		datePicker.setCancelable(true);
 		datePicker.setTitle("Select date");
 		ImageButton cameraButton = fragmentView.findViewById(R.id.Fab_Camera_Button);
@@ -178,21 +182,29 @@ public class BillsFormFragment extends DialogFragment {
 		});
 
 		final View finalFragmentView = fragmentView;
+
+		if(groupModel!=null){
+			View shareWithView = fragmentView.findViewById(R.id.share_with_box);
+			shareWithView.setVisibility(View.VISIBLE);
+			((TextView) shareWithView.findViewById(R.id.group_name)).setText(groupModel.getGroupName());
+		}
+
+
 		fragmentView.findViewById(R.id.share_with_group)
 				.setOnClickListener(new View.OnClickListener() {
 					@Override
 					public void onClick(final View view) {
 						AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 						LayoutInflater inflater = getActivity().getLayoutInflater();
-						final View view2 = inflater.inflate(R.layout.select_group_dialog, null);
-						builder.setView(view2);
+						final View selectGroupDialog = inflater.inflate(R.layout.select_group_dialog, null);
+						builder.setView(selectGroupDialog);
 						final AlertDialog dialog = builder.create();
 
 						if (groupModel != null) {
-							view2.findViewById(R.id.add_member).setVisibility(View.GONE);
+							selectGroupDialog.findViewById(R.id.add_member).setVisibility(View.GONE);
 						}
 
-						RecyclerView recyclerView = view2.findViewById(R.id.group_list);
+						RecyclerView recyclerView = selectGroupDialog.findViewById(R.id.group_list);
 						recyclerView.setHasFixedSize(true);
 						recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 						SelectGroupAdapter selectGroupAdapter = new SelectGroupAdapter(groupList);
@@ -206,7 +218,8 @@ public class BillsFormFragment extends DialogFragment {
 										categoryRecyclerView.setVisibility(View.GONE);
 										finalFragmentView.findViewById(R.id.Category_text_view)
 												.setVisibility(View.GONE);
-										view.findViewById(R.id.share_with_box).setVisibility(View.VISIBLE);
+										view.findViewById(R.id.share_with_box).setVisibility(View
+												.VISIBLE);
 										dialog.dismiss();
 									}
 								});
@@ -217,19 +230,22 @@ public class BillsFormFragment extends DialogFragment {
 									@Override
 									public void onClick(View v) {
 										BillsFormFragment.this.groupModel = null;
-										((TextView) view.findViewById(R.id.group_name)).setText("None");
+										((TextView) view.findViewById(R.id.group_name)).setText
+												("None");
 										categoryRecyclerView.setVisibility(View.VISIBLE);
 										finalFragmentView.findViewById(R.id.Category_text_view)
 												.setVisibility(View.VISIBLE);
-										view.findViewById(R.id.share_with_box).setVisibility(View.GONE);
+										view.findViewById(R.id.share_with_box).setVisibility(View
+												.GONE);
 									}
 								});
 
-						view2.findViewById(R.id.add_member)
+						selectGroupDialog.findViewById(R.id.add_member)
 								.setOnClickListener(new View.OnClickListener() {
 									@Override
 									public void onClick(View view) {
-										Intent intent = new Intent(getContext(), AddMembersActivity.class);
+										Intent intent = new Intent(getContext(),
+												AddMembersActivity.class);
 										startActivityForResult(intent, 4);
 										dialog.dismiss();
 									}
@@ -242,14 +258,12 @@ public class BillsFormFragment extends DialogFragment {
 		if (getDialog().getWindow() != null) {
 			getDialog().getWindow()
 					.setBackgroundDrawable(
-							new ColorDrawable(context.getResources().getColor(R.color.TransparentWhite)));
+							new ColorDrawable(context.getResources().getColor(R.color
+									.TransparentWhite)));
 			getDialog().show();
 			getDialog().getWindow()
 					.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
 							WindowManager.LayoutParams.MATCH_PARENT);
-			getDialog().getWindow()
-					.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
-							| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
 		}
 		return fragmentView;
 	}
@@ -271,7 +285,8 @@ public class BillsFormFragment extends DialogFragment {
 							@Override
 							public void onClick(DialogInterface dialog, int which) {
 								Intent i = new Intent(Intent.ACTION_PICK,
-										android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+										android.provider.MediaStore.Images.Media
+												.EXTERNAL_CONTENT_URI);
 
 								startActivityForResult(i, 1);
 							}
@@ -285,6 +300,8 @@ public class BillsFormFragment extends DialogFragment {
 		amount = amountEditText.getText().toString();
 		if (TextUtils.isEmpty(amount)) {
 			amount = "0";
+			Toast.makeText(context, "Enter amount first", Toast.LENGTH_SHORT).show();
+			return;
 		}
 
 		if (groupModel != null) {
@@ -293,10 +310,8 @@ public class BillsFormFragment extends DialogFragment {
 			singleSplit();
 		}
 
-		if (TextUtils.isEmpty(amount)) {
-			amount = "0";
-		}
-		LayoutInflater inflater = LayoutInflater.from(context);
+
+		LayoutInflater inflater = LayoutInflater.from(getContext());
 		View dialogView = inflater.inflate(R.layout.split_dialog_layout, null);
 		Spinner splitSpinner = dialogView.findViewById(R.id.Split_Spinner);
 		splitRecyclerView = dialogView.findViewById(R.id.Dialog_RecyclerView);
@@ -316,7 +331,8 @@ public class BillsFormFragment extends DialogFragment {
 				}
 				if (position == 1) {
 					dialogSplitAdapter =
-							new DialogSplitRecyclerViewAdapter(splitList, "", Integer.parseInt(amount));
+							new DialogSplitRecyclerViewAdapter(splitList, "", Integer.parseInt
+									(amount));
 					splitRecyclerView.setAdapter(dialogSplitAdapter);
 				}
 				if (position == 0) {
@@ -332,9 +348,8 @@ public class BillsFormFragment extends DialogFragment {
 			}
 		});
 		android.support.v7.app.AlertDialog.Builder alertDialogBuilder =
-				new android.support.v7.app.AlertDialog.Builder(context);
+				new android.support.v7.app.AlertDialog.Builder(getActivity());
 		alertDialogBuilder.setView(dialogView);
-		alertDialogBuilder.setCancelable(false);
 
 		alertDialogBuilder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
 			@Override
@@ -342,28 +357,37 @@ public class BillsFormFragment extends DialogFragment {
 				splitList = dialogSplitAdapter.getList();
 			}
 		});
-		final android.support.v7.app.AlertDialog dialog = alertDialogBuilder.create();
+		final Dialog dialog = alertDialogBuilder.create();
 		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-
 			@Override
 			public void onShow(DialogInterface dialogInterface) {
-				positive_Button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
+				positive_Button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
 				positive_Button.setTextColor(getResources().getColor(R.color.colorPrimary));
 			}
 		});
 
-		if (getDialog().getWindow() != null) {
-			getDialog().getWindow()
-					.setBackgroundDrawable(
-							new ColorDrawable(context.getResources().getColor(R.color.TransparentWhite)));
-			getDialog().show();
-			getDialog().getWindow()
-					.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
-							WindowManager.LayoutParams.MATCH_PARENT);
-			getDialog().getWindow()
+
+		dialog.show();
+		dialog.getWindow()
 					.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
 							| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
-		}
+
+
+
+//		if (getDialog().getWindow() != null) {
+//
+//			getDialog().getWindow()
+//					.setBackgroundDrawable(
+//							new ColorDrawable(context.getResources().getColor(R.color
+//									.TransparentWhite)));
+//			getDialog().show();
+//			getDialog().getWindow()
+//					.setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+//							WindowManager.LayoutParams.MATCH_PARENT);
+//			getDialog().getWindow()
+//					.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE
+//							| WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM);
+//		}
 		//getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 	}
@@ -420,19 +444,21 @@ public class BillsFormFragment extends DialogFragment {
 
 	private void singleSplit() {
 		int no_of_Person = contactList.size();
-		String Specific_Amount;
+		int Specific_Amount;
 		amount = amountEditText.getText().toString();
-		if (TextUtils.isEmpty(amount)) {
-			Specific_Amount = "0";
-		} else {
-			Specific_Amount = "" + Integer.parseInt(amount) / (contactList.size() + 1);
+		if (Util.isEmpty(amount)) {
+			Toast.makeText(context, "Please enter amount first", Toast.LENGTH_SHORT).show();
+			return;
 		}
+
+		Specific_Amount = Integer.parseInt(amount) / (contactList.size() + 1);
+
 		splitList = new ArrayList<>();
 		secondSplitList = new ArrayList<>();
 		ContactModel you = new ContactModel();
 		you.setName("You");
 		splitList.add(new Split_Contact_model(you, Specific_Amount));
-		secondSplitList.add(new Split_Contact_model(you, amount));
+		secondSplitList.add(new Split_Contact_model(you, Integer.parseInt(amount)));
 
 		if (contactList.isEmpty()) {
 			Toast.makeText(context, "Add members ", Toast.LENGTH_SHORT).show();
@@ -441,38 +467,54 @@ public class BillsFormFragment extends DialogFragment {
 		for (int i = 0; i < contactList.size(); i++) {
 
 			if ((i == contactList.size() - 1) && (no_of_Person + 1) % 2 != 0) {
-				Specific_Amount = Integer.parseInt(Specific_Amount) + 1 + "";
+				Specific_Amount = Specific_Amount + 1;
 			}
 			splitList.add(new Split_Contact_model(contactList.get(i), Specific_Amount));
-			secondSplitList.add(new Split_Contact_model(contactList.get(i), "0"));
+			secondSplitList.add(new Split_Contact_model(contactList.get(i), 0));
 		}
 	}
 
 	private void groupSplit() {
-		String[] names = groupModel.getUsers().split(",");
-		List<ContactModel> userList = mDbHelper.getUserWithUserId(names);
-		String Specific_Amount;
+
 		amount = amountEditText.getText().toString();
-		if (TextUtils.isEmpty(amount)) {
-			Specific_Amount = "0";
-		} else {
-			Specific_Amount = "" + Integer.parseInt(amount) / (userList.size() + 1);
+		if (Util.isEmpty(amount)) {
+			Toast.makeText(context, "Please enter amount first", Toast.LENGTH_SHORT).show();
+			return;
 		}
+
+		String[] userIds = groupModel.getUsers().split(",");
+		String[] fullNames = groupModel.getFullname().split(",");
+		String[] phones = groupModel.getMobile_no().split(",");
+
+		int specificAmount;
+		specificAmount = Integer.parseInt(amount) / userIds.length;
+
 		splitList = new ArrayList<>();
 		secondSplitList = new ArrayList<>();
 
 		ContactModel you = new ContactModel();
 		you.setName("You");
-		splitList.add(new Split_Contact_model(you, Specific_Amount));
-		secondSplitList.add(new Split_Contact_model(you, amount));
+		you.setUserId(Long.parseLong(myUserId));
+		splitList.add(new Split_Contact_model(you, specificAmount));
+		secondSplitList.add(new Split_Contact_model(you, Double.parseDouble(amount)));
 
-		for (int i = 0; i < userList.size(); i++) {
+		for (int i = 0; i < userIds.length; i++) {
 
-			if ((i == userList.size() - 1) && (userList.size() + 1) % 2 != 0) {
-				Specific_Amount = Integer.parseInt(Specific_Amount) + 1 + "";
+			if (userIds[i].equals(myUserId))
+				continue;
+
+			ContactModel contactModel = new ContactModel();
+			contactModel.setUserId(Long.parseLong(userIds[i]));
+			contactModel.setName(fullNames[i]);
+			contactModel.setNumber(phones[i]);
+
+
+			if (i == userIds.length - 1 && (i + 1) * specificAmount < Integer.parseInt(amount)) {
+				specificAmount += Integer.parseInt(amount) - (i + 1) * specificAmount;
 			}
-			splitList.add(new Split_Contact_model(userList.get(i), Specific_Amount));
-			secondSplitList.add(new Split_Contact_model(userList.get(i), "0"));
+
+			splitList.add(new Split_Contact_model(contactModel, specificAmount));
+			secondSplitList.add(new Split_Contact_model(contactModel, 0));
 		}
 	}
 
@@ -547,9 +589,8 @@ public class BillsFormFragment extends DialogFragment {
 			}
 			amountsPaid.append(secondSplitList.get(i).getSplit_Amount()).append(",");
 
-			double amountDuePerPerson =
-					Double.parseDouble(s.getSplit_Amount()) - Double.parseDouble(
-							secondSplitList.get(i).getSplit_Amount());
+			double amountDuePerPerson = s.getSplit_Amount() - secondSplitList.get(i)
+					.getSplit_Amount();
 			amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
 			datesPaid.append(dateText).append(",");
 			i++;

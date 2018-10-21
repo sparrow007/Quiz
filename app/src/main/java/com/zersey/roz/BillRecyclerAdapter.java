@@ -186,7 +186,7 @@ public class BillRecyclerAdapter
 			if (Plus_Button == null) {
 				String temp = list.get(getAdapterPosition()).getCatId();
 				//Log.d( "onClick: ",temp);
-				Intent i = new Intent(view.getContext(), SeparateGroupTransaction.class);
+				Intent i = new Intent(view.getContext(), DetailGroupTransaction.class);
 				i.putExtra("pos", getAdapterPosition());
 				i.putExtra("_ID", list.get(getAdapterPosition()).getGroupId());
 				i.putExtra("CardClicked", "Yes");

@@ -18,7 +18,6 @@ import com.zersey.roz.Data.TransactionDbHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 
 public class GroupTransactions extends Fragment {
@@ -30,8 +29,6 @@ public class GroupTransactions extends Fragment {
 	private OnFragmentInteractionListener mListener;
 	public static GroupTransactionAdapter adapter;
 
-	private Map<String, Double> aggregates;
-	List<String> balances;
 
 	public GroupTransactions() {
 		// Required empty public constructor
@@ -47,7 +44,7 @@ public class GroupTransactions extends Fragment {
 
 		list.addAll(mDbHelper.getGroupEntries(((SpecificGroup) getActivity()).model.getGroupId()));
 		SharedPreferences prefs = getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
-		adapter = new GroupTransactionAdapter(list, prefs.getString("userid", null));
+		adapter = new GroupTransactionAdapter(list, prefs.getString("userid", null), ((SpecificGroup) getActivity()).model);
 	}
 
 

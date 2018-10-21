@@ -437,7 +437,7 @@ import java.util.List;
 	}
 
 	private void singleSplit() {
-		int no_of_Person = Item_list.size();
+	/*	int no_of_Person = Item_list.size();
 		String Specific_Amount;
 		Amount = Material_Amount.getEditText().getText().toString();
 		if (TextUtils.isEmpty(Amount)) {
@@ -466,11 +466,11 @@ import java.util.List;
 			Contact_list.add(Item_list.get(i));
 			Split_List.add(new Split_Contact_model(Item_list.get(i), Specific_Amount));
             Second_split_list.add(new Split_Contact_model(Item_list.get(i), "0"));
-		}
+		} */
 	}
 
 	private void groupSplit() {
-		String[] names = groupModel.getUsers().split(",");
+	/*	String[] names = groupModel.getUsers().split(",");
 		List<ContactModel> userList = mDbHelper.getUserWithUserId(names);
 		String Specific_Amount;
 		Amount = Material_Amount.getEditText().getText().toString();
@@ -490,7 +490,7 @@ import java.util.List;
 		for (int i = 0; i < userList.size(); i++) {
 			Contact_list.add(Item_list.get(i));
 			Split_List.add(new Split_Contact_model(userList.get(i), Specific_Amount));
-		}
+		} */
 	}
 
 	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -642,10 +642,10 @@ import java.util.List;
 		Amount_text = AmountEdit.getText().toString();
         ContactModel you = new ContactModel();
         you.setName("You");
-        Second_split_list.add(new Split_Contact_model(you, "0"));
+        Second_split_list.add(new Split_Contact_model(you, 0));
         for (int i = 0; i < Item_list.size(); i++) {
 
-            Second_split_list.add(new Split_Contact_model(Item_list.get(i), "0"));
+            Second_split_list.add(new Split_Contact_model(Item_list.get(i), 0));
         }
 		//Add_Person_text = AutoCompleteContacts.getText().toString();
 		Title_text = TitleEdit.getText().toString();
@@ -736,7 +736,7 @@ import java.util.List;
 
 						amountsPaid.append(Second_split_list.get(i).getSplit_Amount()).append(",");
 
-						double amountDuePerPerson = Double.parseDouble(s.getSplit_Amount()) - Double.parseDouble(Second_split_list.get(i).getSplit_Amount());
+						double amountDuePerPerson = s.getSplit_Amount() - Second_split_list.get(i).getSplit_Amount();
 						amountsDue.append(Double.toString(amountDuePerPerson)).append(",");
 						datesPaid.append(DateEdit_text).append(",");
 						i++;

@@ -4,28 +4,30 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import com.zersey.roz.Data.TransactionDbHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class GroupTransactionAdapter
 		extends RecyclerView.Adapter<GroupTransactionAdapter.TransactionViewHolder> {
-	private List<BillModel> list, temp_list, Permanent_list;
-	private List<ContactModel> ContactList;
-	private TransactionDbHelper mdbHelper;
+	private List<BillModel> list;
+	private List<BillModel> permanentList;
 	private String userId;
-	private int noOfMembers;
+	private GroupModel groupModel;
 
-	public GroupTransactionAdapter(List<BillModel> list, String userId) {
-		ContactList = new ArrayList<>();
+	public GroupTransactionAdapter(List<BillModel> list, String userId, GroupModel groupModel) {
+		this.groupModel = groupModel;
 		this.list = list;
-		this.Permanent_list = list;
+		this.permanentList = list;
 		this.userId = userId;
 	}
 
@@ -33,17 +35,14 @@ public class GroupTransactionAdapter
 	@Override
 	public TransactionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 		LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-		mdbHelper = TransactionDbHelper.getInstance(parent.getContext());
 		View view = inflater.inflate(R.layout.group_transactions_layout, parent, false);
-
-		return new GroupTransactionAdapter.TransactionViewHolder(view);
+		return new TransactionViewHolder(view);
 	}
 
 	@Override
 	public void onBindViewHolder(@NonNull TransactionViewHolder holder, int position) {
-		holder.Transaction_TextView.setText(list.get(position).getTitle());
+		holder.groupTransactionTitle.setText(list.get(position).getTitle());
 		String[] amounts = list.get(position).getTotalAmount().split(",");
-
 
 		double sum = 0;
 		for (String s : amounts) {
@@ -54,40 +53,48 @@ public class GroupTransactionAdapter
 			}
 		}
 
-		if (list.get(position).getPayerId() != null) {
-			if (list.get(position).getPayerId().split(",").length > 0) {
-				noOfMembers = list.get(position).getPayerId().split(",").length;
-			} else {
-				noOfMembers = Integer.parseInt(list.get(position).getPayerId());
-			}
-			if (userId.equals(list.get(position).getPayerId().split(",")[0])) {
-				holder.Paid.setText(String.format("%s paid Rs %s", "You", sum));
-				if (noOfMembers > 1) {
-					//--noOfMembers;
-					holder.groupTransactionAmount.setText(String.format(Locale.getDefault(), "Rs %.2f", (sum /
-							noOfMembers) * (noOfMembers - 1)));
-				} else {
-					holder.groupTransactionAmount.setText("Rs " + 0.00);
-				}
+		if (!Util.isEmpty(list.get(position).getPayerId())) {
 
+			String[] payerIds = list.get(position).getPayerId().split(",");
+			int noOfMembers = payerIds.length;
+
+			String[] fullNames = groupModel.getFullname().split(",");
+			String[] phones = groupModel.getMobile_no().split(",");
+			String[] groupMembers = groupModel.getUsers().split(",");
+
+			Log.d(GroupTransactionAdapter.class.getSimpleName(), "onBindViewHolder: " + groupModel
+					.getFullname() + " # " + groupModel.getMobile_no());
+
+			Map<String, String> nameFinder = new HashMap<>();
+			Map<String, String> phoneFinder = new HashMap<>();
+			for (int i = 0; i < groupMembers.length; i++) {
+				nameFinder.put(groupMembers[i], fullNames[i]);
+				phoneFinder.put(groupMembers[i], phones[i]);
+			}
+
+			holder.groupTransactionAmount.setText(String.format("Rs %s", 0.0));
+
+			if (userId.equals(payerIds[0])) {
+				holder.groupTransactionDescription.setText(String.format("%s paid Rs %s", "You",
+						sum));
+				holder.groupTransactionAmount.setText(String.format(Locale.getDefault(), "Rs " +
+						"%.2f", (sum / noOfMembers) * (noOfMembers - 1)));
 			} else {
-				List<ContactModel> contactList =
-						mdbHelper.getUserWithUserId(list.get(position).getPayerId().split(","));
-				if (contactList.size() > 0) {
-					holder.Paid.setText(
-							String.format("%s paid Rs %s", contactList.get(0).getName(), sum));
-					if (noOfMembers > 1) {
-						--noOfMembers;
-						holder.groupTransactionAmount.setText(String.format(Locale.getDefault(), "Rs %.2f", (sum /
-								noOfMembers) * (noOfMembers - 1)));
-					} else {
-						holder.groupTransactionAmount.setText("Rs " + 0.00);
-					}
+				holder.groupTransactionDescription.setText(String.format("%s paid Rs %s",
+						nameFinder.get(payerIds[0]),
+						sum));
+
+				if (Arrays.asList(payerIds).contains(userId)) {
+					holder.groupBorrowedTextView.setText("You borrowed");
+					holder.groupTransactionAmount.setText(String.format(Locale.getDefault(), "Rs" +
+							" " +
+							"%.2f", sum / noOfMembers));
 				}
 			}
+
 		} else {
-			holder.Paid.setText(" PayerID: null ");
-			holder.groupTransactionAmount.setText("Rs " + 0.0);
+			holder.groupTransactionDescription.setText("PayerID: null");
+			holder.groupTransactionAmount.setText(String.format("Rs %s", 0.0));
 		}
 	}
 
@@ -96,26 +103,23 @@ public class GroupTransactionAdapter
 		notifyItemInserted(list.size() - 1);
 	}
 
-	public void Search(String str) {
-		temp_list = new ArrayList<>();
+	public void searchBill(String str) {
+		List<BillModel> tempList = new ArrayList<>();
 
 		if (!TextUtils.isEmpty(str)) {
-			for (int i = 0; i < Permanent_list.size(); i++) {
-				if (Permanent_list.get(i).getTitle().toLowerCase().contains(str.toLowerCase())) {
-					temp_list.add(Permanent_list.get(i));
+			for (int i = 0; i < permanentList.size(); i++) {
+				if (permanentList.get(i).getTitle().toLowerCase().contains(str.toLowerCase())) {
+					tempList.add(permanentList.get(i));
 				}
 			}
-
-			if (temp_list.size() > 0) {
-				list = temp_list;
+			if (tempList.size() > 0) {
+				list = tempList;
 			} else {
 				list = new ArrayList<>();
 			}
 		} else {
-			//list=new ArrayList<>();
-			list = Permanent_list;
+			list = permanentList;
 		}
-
 		notifyDataSetChanged();
 	}
 
@@ -125,17 +129,20 @@ public class GroupTransactionAdapter
 	}
 
 	public class TransactionViewHolder extends RecyclerView.ViewHolder {
-		TextView Transaction_TextView, groupTransactionAmount, Paid;
+		TextView groupTransactionTitle, groupTransactionAmount, groupTransactionDescription,
+				groupBorrowedTextView;
 
 		public TransactionViewHolder(View itemView) {
 			super(itemView);
-			Transaction_TextView = itemView.findViewById(R.id.group_transaction_text_view);
-			groupTransactionAmount = itemView.findViewById(R.id.group_transaction_amount_text_view);
-			Paid = itemView.findViewById(R.id.group_trans_desc_text_view);
+			groupTransactionTitle = itemView.findViewById(R.id.group_transaction_text_view);
+			groupTransactionAmount = itemView.findViewById(R.id
+					.group_transaction_amount_text_view);
+			groupBorrowedTextView = itemView.findViewById(R.id.group_borrowed_text_view);
+			groupTransactionDescription = itemView.findViewById(R.id.group_trans_desc_text_view);
 			itemView.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(v.getContext(), SeparateGroupTransaction.class);
+					Intent intent = new Intent(v.getContext(), DetailGroupTransaction.class);
 					intent.putExtra("pos", getAdapterPosition());
 					intent.putExtra("_ID", list.get(getAdapterPosition()).getGroupId());
 					intent.putExtra("CardClicked", "Yes");

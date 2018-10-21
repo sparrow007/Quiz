@@ -1,41 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/Black"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/Category_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:layout_marginStart="15dp"
+        android:layout_marginEnd="10dp"
         android:text="Category"
         android:textColor="#ffffff"
-        android:textSize="18sp"
-        />
+        android:textSize="18sp" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/Category_Recycler_View"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        />
+        android:layout_height="wrap_content" />
 
     <com.github.florent37.materialtextfield.MaterialTextField
         android:id="@+id/Material_Title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         app:mtf_hasFocus="true"
-        app:mtf_labelColor="#ffffff"
-        >
+        app:mtf_labelColor="#ffffff">
+
         <EditText
             android:id="@+id/Title_Edit"
             android:layout_width="match_parent"
@@ -43,8 +39,7 @@
             android:hint="Title"
             android:inputType="text"
             android:textColor="#000000"
-            app:backgroundTint="#000000"
-            />
+            app:backgroundTint="#000000" />
     </com.github.florent37.materialtextfield.MaterialTextField>
 
 
@@ -53,11 +48,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         app:mtf_hasFocus="true"
-        app:mtf_labelColor="#ffffff"
-        >
+        app:mtf_labelColor="#ffffff">
 
         <EditText
             android:id="@+id/Amount_Edit"
@@ -66,8 +60,7 @@
             android:hint="Amount"
             android:inputType="number"
             android:textColor="#000000"
-            app:backgroundTint="#3F51B5"
-            />
+            app:backgroundTint="#3F51B5" />
     </com.github.florent37.materialtextfield.MaterialTextField>
 
 
@@ -76,29 +69,26 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
         android:text="Share With"
         android:textColor="@android:color/white"
-        android:textSize="16sp"
-        />
+        android:textSize="16sp" />
 
     <FrameLayout
         android:id="@+id/share_with_group"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_margin="8dp"
-        android:background="@android:color/white"
-        >
+        android:background="@android:color/white">
 
         <include
-            layout="@layout/group_name_bubble"
             android:id="@+id/share_with_box"
+            layout="@layout/group_name_bubble"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </FrameLayout>
 
@@ -106,30 +96,29 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="#B0BEC5"
-        />
+        android:background="#B0BEC5" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/Add_Member_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        />
+        android:background="@android:color/transparent" />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="5dp"
             android:text="Paid By "
-            android:textColor="@android:color/white"
-            />
+            android:textColor="@android:color/white" />
+
         <TextView
             android:id="@+id/Paid_Dialog"
             android:layout_width="wrap_content"
@@ -139,16 +128,16 @@
             android:background="#ffffff"
             android:padding="5dp"
             android:text="You"
-            android:textColor="#000000"
-            />
+            android:textColor="#000000" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="5dp"
             android:text="Split in "
-            android:textColor="@android:color/white"
-            />
+            android:textColor="@android:color/white" />
+
         <TextView
             android:id="@+id/Split_Dialog"
             android:layout_width="wrap_content"
@@ -159,8 +148,7 @@
             android:onClick="Dialog"
             android:padding="5dp"
             android:text="Equally"
-            android:textColor="#000000"
-            />
+            android:textColor="#000000" />
 
 
     </LinearLayout>
@@ -170,31 +158,27 @@
         android:layout_width="match_parent"
         android:layout_height="180dp"
         android:layout_margin="20dp"
-        android:scaleType="fitXY"
-        />
+        android:scaleType="fitXY" />
 
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#B0BEC5"
-        android:padding="5dp"
-        />
+        android:padding="5dp" />
 
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="5dp"
             android:src="@drawable/calendar"
-            tools:ignore="contentDescription"
-            />
+            tools:ignore="contentDescription" />
 
         <TextView
             android:id="@+id/Date_Edit"
@@ -207,15 +191,14 @@
             android:padding="5dp"
             android:textColor="#ffffff"
             android:textSize="20sp"
-            app:backgroundTint="#000000"
-            />
+            app:backgroundTint="#000000" />
+
         <LinearLayout
 
             android:layout_width="1dp"
             android:layout_height="40dp"
             android:background="#B0BEC5"
-            android:padding="5dp"
-            />
+            android:padding="5dp" />
 
 
         <ImageButton
@@ -229,14 +212,14 @@
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
             android:src="@drawable/cameragreen"
-            tools:ignore="contentDescription"
-            />
+            tools:ignore="contentDescription" />
+
         <View
             android:layout_width="1dp"
             android:layout_height="40dp"
             android:background="#B0BEC5"
-            android:padding="5dp"
-            />
+            android:padding="5dp" />
+
         <ImageButton
             android:id="@+id/Notes_Image_Button"
             android:layout_width="35dp"
@@ -248,8 +231,7 @@
             android:background="@android:color/transparent"
             android:scaleType="centerInside"
             android:src="@drawable/writing"
-            tools:ignore="contentDescription"
-            />
+            tools:ignore="contentDescription" />
     </LinearLayout>
 
     <LinearLayout
@@ -257,14 +239,13 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#B0BEC5"
-        android:padding="5dp"
-        />
+        android:padding="5dp" />
+
     <Button
         android:id="@+id/Submit_Transaction_form"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:text="Submit"
-        android:textColor="#ffffff"
-        />
+        android:textColor="#ffffff" />
 </LinearLayout>

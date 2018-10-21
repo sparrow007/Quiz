@@ -29,8 +29,8 @@ public class Specific_Group_transaction_Adapter
 
 	@Override public void onBindViewHolder(@NonNull Specific_ViewHolder holder, int position) {
 		holder.textView.setText(list.get(position).getContact_Name().getName());
-		holder.totalAmountTextView.setText(list.get(position).getSplit_Amount());
-		if (SeparateGroupTransaction.class.isInstance(context)) {
+		holder.totalAmountTextView.setText(Double.toString(list.get(position).getSplit_Amount()));
+		if (DetailGroupTransaction.class.isInstance(context)) {
 			holder.Pay_Button.setText("amount Due");
 		}
 	}

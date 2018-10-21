@@ -1,50 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal">
-    <TextView
-        android:id="@+id/RecyclerView_Contact_Name"
-        android:layout_marginLeft="10dp"
-        android:layout_gravity="center_vertical"
-        android:gravity="center_vertical"
-        android:layout_width="wrap_content"
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="#000000"
-        android:textSize="17dp"
-        android:text="Bharat"/>
-    <TextView
-        android:layout_gravity="center_vertical"
-        android:textColor="#000000"
-        android:id="@+id/Currency"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rs"/>
-    <EditText
-        android:hint="000"
-        android:inputType="number"
-        android:textSize="14dp"
-        android:id="@+id/RecyclerView_Split_Amount"
-        android:gravity="center_vertical"
-        android:layout_gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="500"/>
-    <TextView
-        android:layout_gravity="center_vertical"
-        android:textColor="#000000"
-        android:id="@+id/Currency2"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="%"/>
-</LinearLayout>
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/RecyclerView_Contact_Name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            tools:text="Bharat" />
+
+        <TextView
+            android:id="@+id/Currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="Rs"
+            android:textColor="#000000" />
+
+        <EditText
+            android:id="@+id/RecyclerView_Split_Amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:hint="000"
+            android:inputType="number"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/Currency2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:text="%"
+            android:textColor="#000000" />
+    </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -14,7 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import com.zersey.roz.Data.TransactionDbHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,12 +29,15 @@ public class GroupAbout extends Fragment {
 
 	private GroupModel groupModel;
 	private StringBuilder newUsers = new StringBuilder();
+	private StringBuilder newUsersNames = new StringBuilder();
+	private StringBuilder newUsersPhones = new StringBuilder();
 
 	public GroupAbout() {
 		// Required empty public constructor
 	}
 
-	@Override public void onCreate(Bundle savedInstanceState) {
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		if (getArguments() != null) {
 			groupModel = (GroupModel) getArguments().getSerializable("group");
@@ -47,7 +52,7 @@ public class GroupAbout extends Fragment {
 
 		if (getActivity() != null) {
 			SharedPreferences prefs =
-				getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
+					getActivity().getSharedPreferences("login", Context.MODE_PRIVATE);
 			myUserId = prefs.getString("userid", null);
 			myNumber = prefs.getString("phone", null);
 		}
@@ -84,13 +89,15 @@ public class GroupAbout extends Fragment {
 		}
 	}
 
-	@Override public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-		Bundle savedInstanceState) {
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+	                         Bundle savedInstanceState) {
 		View fragmentLayout = inflater.inflate(R.layout.fragment_group__about, container, false);
 		TextView desc = fragmentLayout.findViewById(R.id.group_desc);
 		LinearLayout addMember = fragmentLayout.findViewById(R.id.Add_Group_Member_Layout);
 		addMember.setOnClickListener(new View.OnClickListener() {
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				Intent intent = new Intent(getContext(), AddMembersActivity.class);
 				startActivityForResult(intent, REQUEST_CODE_ADD_MEMBER);
 			}
@@ -108,19 +115,26 @@ public class GroupAbout extends Fragment {
 		return fragmentLayout;
 	}
 
-	@Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE_ADD_MEMBER) {
 			if (resultCode == Activity.RESULT_OK) {
-				@SuppressWarnings("unchecked") ArrayList<ContactModel> itemList =
-					new ArrayList<>((ArrayList<ContactModel>) data.getSerializableExtra("ADDED"));
+				//noinspection unchecked
+				ArrayList<ContactModel> itemList = new ArrayList<>((ArrayList<ContactModel>) data
+						.getSerializableExtra("ADDED"));
 				list.addAll(itemList);
 				groupAboutAdapter.notifyDataSetChanged();
 				for (ContactModel contactModel : itemList) {
 					newUsers.append(",").append(contactModel.getUserId());
+					newUsersNames.append(",").append(contactModel.getName());
+					newUsersPhones.append(",").append(contactModel.getName());
 				}
 				groupModel.setUsers(groupModel.getUsers() + newUsers.toString());
+				groupModel.setFullNames(groupModel.getFullname() + newUsersNames.toString());
+				groupModel.setMobileNos(groupModel.getMobile_no() + newUsersPhones.toString());
 				mDbHelper.updateGroup(groupModel);
+				((SpecificGroup) getActivity()).model = groupModel;
 				new ServerUtil(getContext()).editGroup(groupModel, itemList);
 			}
 		}
