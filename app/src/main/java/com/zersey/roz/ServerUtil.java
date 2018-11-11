@@ -220,9 +220,14 @@ public class ServerUtil {
 					@Override public void onResponse(@NonNull Call<JsonObject> call,
 						@NonNull Response<JsonObject> response) {
 						JsonObject object = response.body();
-						long id = object.get("id").getAsLong();
-						expenseModel.setOnlineId(id);
-						mDbHelper.addTransactionOnlineId(expenseModel);
+						try {
+							long id = object.get("id").getAsLong();
+							expenseModel.setOnlineId(id);
+							mDbHelper.addTransactionOnlineId(expenseModel);
+						}catch (NullPointerException exp) {
+							exp.printStackTrace();
+						}
+
 					}
 
 					@Override
@@ -254,9 +259,13 @@ public class ServerUtil {
 			@Override public void onResponse(@NonNull Call<JsonObject> call,
 				@NonNull Response<JsonObject> response) {
 				JsonObject jsonObject = response.body();
-				long id = jsonObject.get("id").getAsLong();
-				taskModel.setTask_Id(id);
-				mDbHelper.addOnlineIdForNote(taskModel);
+				try {
+					long id = jsonObject.get("id").getAsLong();
+					taskModel.setTask_Id(id);
+					mDbHelper.addOnlineIdForNote(taskModel);
+				}catch (NullPointerException exp) {
+					exp.printStackTrace();
+				}
 			}
 
 			@Override public void onFailure(@NonNull Call<JsonObject> call, @NonNull Throwable t) {

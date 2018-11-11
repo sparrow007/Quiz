@@ -20,12 +20,14 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.google.gson.JsonObject;
@@ -53,6 +55,18 @@ public class Main2Activity extends BaseActivity {
 	private List<BillModel> billList;
 	private Animator animator;
 	private int radiusEnd;
+
+	OnCommunicateListener onCommunicateListener;
+
+	BillsFormFragment.UpdateFrag updatfrag ;
+	public void updateApi(BillsFormFragment.UpdateFrag listener) {
+		updatfrag = listener;
+	}
+
+
+	public interface OnCommunicateListener {
+		void onCommunicate();
+	}
 
 	public FragmentRefreshListener getFragmentRefreshListener() {
 		return fragmentRefreshListener;
@@ -117,6 +131,7 @@ public class Main2Activity extends BaseActivity {
 		});
 
 		NavigationView navigationView = findViewById(R.id.nav_view);
+		View headerLayout = navigationView.getHeaderView(0);
 		navigationView.setNavigationItemSelectedListener(
 				new NavigationView.OnNavigationItemSelectedListener() {
 					@Override
@@ -142,13 +157,14 @@ public class Main2Activity extends BaseActivity {
 		TabLayout tabLayout = findViewById(R.id.Tab_layout);
 		final FloatingActionsMenu fab = findViewById(R.id.fab);
 
+		TextView navigationUserName = headerLayout.findViewById(R.id.navigation_user_name);
+
 		tabLayout.addTab(tabLayout.newTab().setText("Dashboard"));
 		tabLayout.addTab(tabLayout.newTab().setText("Chat"));
 		tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
 		ViewPager viewPager = findViewById(R.id.container);
-		PagerAdapter adapter =
-				new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
+		PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
 		viewPager.setAdapter(adapter);
 		tabLayout.setupWithViewPager(viewPager);
 
@@ -233,6 +249,8 @@ public class Main2Activity extends BaseActivity {
 				});
 
 		SharedPreferences prefs = getSharedPreferences("login", MODE_PRIVATE);
+		String userName = "Hello "+prefs.getString("fullname", "Hello, User");
+		navigationUserName.setText(userName);
 
 		if (!prefs.getBoolean("dataFetched", false)) {
 			prefs.edit().putBoolean("dataFetched", true).apply();
@@ -482,6 +500,20 @@ public class Main2Activity extends BaseActivity {
 		super.onActivityResult(requestCode, resultCode, data);
 		Fragment fragment = getSupportFragmentManager().findFragmentByTag(tags[0]);
 		fragment.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (onCommunicateListener != null) {
+			onCommunicateListener.onCommunicate();
+		}
+		updatfrag.updatefrag();
+		super.onBackPressed();
+
+	}
+
+	public void setActivityCommunicateListner(OnCommunicateListener onCommunicateListener) {
+		this.onCommunicateListener = onCommunicateListener;
 	}
 }
 

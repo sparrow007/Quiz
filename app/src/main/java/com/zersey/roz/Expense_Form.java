@@ -159,7 +159,7 @@ public class Expense_Form extends Fragment {
 		//customlist=(ArrayList<Custom_items>)getIntent().getBundleExtra("Bundle").getSerializable("ARRAYLIST");
 		Material_Title = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Title);
 		Material_Title.setHasFocus(true);
-		Material_Amount = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount);
+		//Material_Amount = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Amount);
 		Material_Amount.setHasFocus(true);
 		//Material_Date = (MaterialTextField) fragmentLayout.findViewById(R.id.Material_Date);
 		//Material_Date.setHasFocus(true);

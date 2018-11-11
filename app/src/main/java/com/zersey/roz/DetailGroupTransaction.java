@@ -35,7 +35,7 @@ public class DetailGroupTransaction extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_spererate_group_transaction);
 		Toolbar toolbar = findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
+		//setSupportActionBar(toolbar);
 		model = (BillModel) getIntent().getSerializableExtra("model");
 		mDbHelper = TransactionDbHelper.getInstance(this);
 		splitList = new ArrayList<>();
@@ -63,8 +63,15 @@ public class DetailGroupTransaction extends AppCompatActivity {
 				m.setNumber(prefs.getString("phone", null));
 				splitList.add(new Split_Contact_model(m, Double.parseDouble((totalAmounts[i]))));
 			} else {
-				List<ContactModel> m = mDbHelper.getUserWithUserId(new String[] { users[i] });
-				if (m.size() > 0) splitList.add(new Split_Contact_model(m.get(0), Double.parseDouble(totalAmounts[i])));
+				List<ContactModel> m = null;
+				try {
+					m = mDbHelper.getUserWithUserId(new String[] { users[i] });
+					if (m.size() > 0) splitList.add(new Split_Contact_model(m.get(0), Double.parseDouble(totalAmounts[i])));
+				} catch (ArrayIndexOutOfBoundsException e) {
+					e.printStackTrace();
+					break;
+				}
+
 			}
 		}
 

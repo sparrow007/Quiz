@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
-import android.widget.Toast;
 import java.util.List;
 
 public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.CategoryViewHolder> {
@@ -17,6 +16,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 	private String lastCategory = "";
 	private Context context;
 	private String Category;
+	OnCategoryClickListener onCategoryClickListener;
+	public interface OnCategoryClickListener {
+		void onClick(String category);
+	}
 
 	public CategoryAdapter(Context context, List<String> list, String Category) {
 		this.context = context;
@@ -52,6 +55,10 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 		return lastCategory;
 	}
 
+	public void setOnCategoryClickListener(OnCategoryClickListener onCategoryClickListener) {
+		this.onCategoryClickListener = onCategoryClickListener;
+	}
+
 	public class CategoryViewHolder extends RecyclerView.ViewHolder {
 		RadioButton category;
 
@@ -66,8 +73,11 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.Catego
 					if (!lastCategory.equalsIgnoreCase(category.getText().toString())) {
 						lastCategory = category.getText().toString();
 					}
-					Toast.makeText(context, "selected offer is " + category.getText(),
-						Toast.LENGTH_LONG).show();
+					if (onCategoryClickListener!= null) {
+						onCategoryClickListener.onClick(category.getText().toString());
+					}
+					/*Toast.makeText(context, "selected offer is " + category.getText(),
+						Toast.LENGTH_LONG).show();*/
 				}
 			});
 		}

@@ -138,11 +138,12 @@ private ArrayList<Custom_Contact_items> Item_list;
     }
     public void OnBackPressed(View view){
         Intent intent=new Intent(Contact_List_Activity.this, Main2Activity.class);
-        startActivity(intent);
+        //startActivity(intent);
     }
     @Override public void onBackPressed() {
-        Intent intent=new Intent(Contact_List_Activity.this,Main2Activity.class);
-        startActivity(intent);
+        super.onBackPressed();
+       /* Intent intent=new Intent(Contact_List_Activity.this,Main2Activity.class);
+        startActivity(intent);*/
     }
 
 }

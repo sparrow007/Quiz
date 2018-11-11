@@ -130,6 +130,7 @@ import java.util.List;
 	private String cNumber, code;
 	private String users = "";
 
+	@SuppressLint("WrongViewCast")
 	@Override protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -178,7 +179,7 @@ import java.util.List;
 		Paid_TextView=findViewById(R.id.Paid_Dialog);
 		Material_Title = findViewById(R.id.Material_Title);
 		Material_Title.setHasFocus(true);
-		Material_Amount = findViewById(R.id.Material_Amount);
+		//Material_Amount = findViewById(R.id.Material_Amount);
 		Material_Amount.setHasFocus(true);
 		//Material_Amount_Due = findViewById(R.id.Material_Amount_Due);
 		//Material_Amount_Due.setVisibility(View.GONE);
@@ -238,14 +239,14 @@ import java.util.List;
                 selectImage();
             }
         });*/
-		More_TextButton.setOnClickListener(new View.OnClickListener() {
+		/*More_TextButton.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
 				MoreButton();
 			}
-		});
+		});*/
 		Submit_button.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
-
+				Log.e("MY TAG", "I AM IN MAIN AND SUBMIT ");
 				Submit();
 			}
 		});

@@ -58,9 +58,9 @@ public class BillRecyclerAdapter
 		if (list.size() == 0) {
 			holder.Dummy_Layout.setOnClickListener(new View.OnClickListener() {
 				@Override public void onClick(View v) {
-					Intent intent = new Intent(context, MainActivity.class);
-					intent.putExtra("Activity", "Transactions");
-					context.startActivity(intent);
+
+					if (mListener != null)
+						mListener.onBillPlusCLick();
 				}
 			});
 		} else if (list.size() > position && list.size() != 0) {

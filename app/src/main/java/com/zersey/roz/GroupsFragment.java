@@ -67,6 +67,11 @@ public class GroupsFragment extends Fragment implements GroupRecyclerAdapter.Gro
 		});
 		moreBillsButton.setOnClickListener(new View.OnClickListener() {
 			@Override public void onClick(View v) {
+
+				if (billsList.size() <= 0 ){
+					startDialogTransaction(new BillsFormFragment());
+					return;
+				}
 				Intent intent = new Intent(getContext(), Transactions.class);
 				startActivity(intent);
 			}
